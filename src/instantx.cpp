@@ -184,6 +184,18 @@ void CInstantSend::CreateEmptyTxLockCandidate(const uint256& txHash)
     mapTxLockCandidates.insert(std::make_pair(txHash, CTxLockCandidate(txLockRequest)));
 }
 
+void CInstantSend::Vote(const uint256& txHash, CConnman& connman)
+{
+    AssertLockHeld(cs_main);
+    LOCK(cs_instantsend);
+
+    std::map<uint256, CTxLockCandidate>::iterator itLockCandidate = mapTxLockCandidates.find(txHash);
+    if (itLockCandidate == mapTxLockCandidates.end()) return;
+    Vote(itLockCandidate->second, connman);
+    // Let's see if our vote changed smth
+    TryToFinalizeLockCandidate(itLockCandidate->second);
+}
+
 void CInstantSend::Vote(CTxLockCandidate& txLockCandidate, CConnman& connman)
 {
     if(!fMasterNode) return;
@@ -192,6 +204,8 @@ void CInstantSend::Vote(CTxLockCandidate& txLockCandidate, CConnman& connman)
     LOCK2(cs_main, cs_instantsend);
 
     uint256 txHash = txLockCandidate.GetHash();
+	// We should never vote on a Transaction Lock Request that was not (yet) accepted by the mempool
+    if(mapLockRequestAccepted.find(txHash) == mapLockRequestAccepted.end()) return;
     // check if we need to vote on this candidate's outpoints,
     // it's possible that we need to vote for several of them
     std::map<COutPoint, COutPointLock>::iterator itOutpointLock = txLockCandidate.mapOutPointLocks.begin();
