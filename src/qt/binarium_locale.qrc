@@ -1,0 +1,20 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/translations">
+        <file alias="bg">locale/binarium_bg.qm</file>
+        <file alias="de">locale/binarium_de.qm</file>
+        <file alias="en">locale/binarium_en.qm</file>
+        <file alias="es">locale/binarium_es.qm</file>
+        <file alias="fi">locale/binarium_fi.qm</file>
+        <file alias="fr">locale/binarium_fr.qm</file>
+        <file alias="it">locale/binarium_it.qm</file>
+        <file alias="ja">locale/binarium_ja.qm</file>
+        <file alias="pl">locale/binarium_pl.qm</file>
+        <file alias="pt">locale/binarium_pt.qm</file>
+        <file alias="ru">locale/binarium_ru.qm</file>
+        <file alias="sk">locale/binarium_sk.qm</file>
+        <file alias="sv">locale/binarium_sv.qm</file>
+        <file alias="vi">locale/binarium_vi.qm</file>
+        <file alias="zh_CN">locale/binarium_zh_CN.qm</file>
+        <file alias="zh_TW">locale/binarium_zh_TW.qm</file>
+    </qresource>
+</RCC>
