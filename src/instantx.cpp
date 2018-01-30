@@ -122,15 +122,17 @@ bool CInstantSend::ProcessTxLockRequest(const CTxLockRequest& txLockRequest, CCo
     }
     LogPrintf("CInstantSend::ProcessTxLockRequest -- accepted, txid=%s\n", txHash.ToString());
 
-    std::map<uint256, CTxLockCandidate>::iterator itLockCandidate = mapTxLockCandidates.find(txHash);
-    CTxLockCandidate& txLockCandidate = itLockCandidate->second;
-    Vote(txLockCandidate, connman);
-    ProcessOrphanTxLockVotes(connman);
+    //std::map<uint256, CTxLockCandidate>::iterator itLockCandidate = mapTxLockCandidates.find(txHash);
+    //CTxLockCandidate& txLockCandidate = itLockCandidate->second;
+    //Vote(txLockCandidate, connman);
+    //ProcessOrphanTxLockVotes(connman);
 
     // Masternodes will sometimes propagate votes before the transaction is known to the client.
     // If this just happened - lock inputs, resolve conflicting locks, update transaction status
     // forcing external script notification.
-    TryToFinalizeLockCandidate(txLockCandidate);
+	std::map<uint256, CTxLockCandidate>::iterator itLockCandidate = mapTxLockCandidates.find(txHash);
+    TryToFinalizeLockCandidate(itLockCandidate->second);
+    //TryToFinalizeLockCandidate(txLockCandidate);
 
     return true;
 }
