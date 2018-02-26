@@ -451,6 +451,19 @@ void BitcoinApplication::requestInitialize()
 
 void BitcoinApplication::requestShutdown()
 {
+    /*fprintf(stdout, "binarium.cpp : requestShutdown () : Application close request has came.\n");
+
+    bool fRet = uiInterface.ThreadSafeQuestion(
+                    "Are you sure want to quit?",
+                    "Are you sure want to quit 2?",
+                    "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
+    if (!fRet) {
+        return;
+
+    } //-if (fRet)*/
+
+
+
     // Show a simple window indicating shutdown status
     // Do this first as some of the steps may take some time below,
     // for example the RPC console may still be executing a command.
@@ -533,6 +546,7 @@ void BitcoinApplication::initializeResult(int retval)
 
 void BitcoinApplication::shutdownResult(int retval)
 {
+    fprintf(stdout, "BitcoinApplication.shutdownResult () : retval = %i .\n", retval);  // strUsage.c_str()
     qDebug() << __func__ << ": Shutdown result: " << retval;
     quit(); // Exit main loop after shutdown finished
 }

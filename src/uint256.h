@@ -169,6 +169,24 @@ public:
     uint512(const base_blob<512>& b) : base_blob<512>(b) {}
     explicit uint512(const std::vector<unsigned char>& vch) : base_blob<512>(vch) {}
 
+    void XOROperator ( const uint512 & _uint512B );
+    void XOROperator ( const uint256 & _uint256B, uint32_t _iOffset );
+
+    uint256 trim256() const
+    {
+        uint256 result;
+        memcpy((void*)&result, (void*)data, 32);
+        return result;
+    }
+};
+
+/** 1024-bit unsigned big integer. */
+class uint1024 : public base_blob<1024> {
+public:
+    uint1024() {}
+    uint1024(const base_blob<1024>& b) : base_blob<1024>(b) {}
+    explicit uint1024(const std::vector<unsigned char>& vch) : base_blob<1024>(vch) {}
+
     uint256 trim256() const
     {
         uint256 result;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>576</width>
-    <height>402</height>
+    <width>577</width>
+    <height>490</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,7 +42,7 @@
          <item>
           <widget class="QLabel" name="databaseCacheLabel">
            <property name="text">
-            <string>Size of &amp;database cache</string>
+            <string>&amp;Size of database cache</string>
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>
@@ -116,6 +116,62 @@
           </spacer>
          </item>
         </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMaximumSize</enum>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Data directory</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="edDataDir">
+           <property name="maximumSize">
+            <size>
+             <width>800</width>
+             <height>36</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btDataDir">
+           <property name="maximumSize">
+            <size>
+             <width>84</width>
+             <height>36</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="autoDefault">
+            <bool>true</bool>
+           </property>
+           <property name="default">
+            <bool>false</bool>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="lbDataDirMessage">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="verticalSpacer_Main">
@@ -517,7 +573,7 @@
          <item>
           <widget class="QLabel" name="proxyIpTorLabel">
            <property name="text">
-            <string>Proxy &amp;IP:</string>
+            <string>P&amp;roxy IP:</string>
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>
@@ -549,7 +605,7 @@
          <item>
           <widget class="QLabel" name="proxyPortTorLabel">
            <property name="text">
-            <string>&amp;Port:</string>
+            <string>P&amp;ort:</string>
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>
@@ -742,7 +798,7 @@ https://www.transifex.com/projects/p/binarium/</string>
          <item>
           <widget class="QLabel" name="unitLabel">
            <property name="text">
-            <string>&amp;Unit to show amounts in:</string>
+            <string>Unit to &amp;show amounts in:</string>
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>
@@ -783,7 +839,7 @@ https://www.transifex.com/projects/p/binarium/</string>
             <string>Third party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</string>
            </property>
            <property name="text">
-            <string>Third party transaction URLs</string>
+            <string>&amp;Third party transaction URLs</string>
            </property>
            <property name="buddy">
             <cstring>thirdPartyTxUrls</cstring>

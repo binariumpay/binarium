@@ -442,7 +442,9 @@ void BitcoinGUI::createActions()
     showPrivateSendHelpAction->setMenuRole(QAction::NoRole);
     showPrivateSendHelpAction->setStatusTip(tr("Show the PrivateSend basic information"));
 
-    connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+    //connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));     
+    connect(quitAction, SIGNAL(triggered()), this, SLOT(slotCheckApplicationQuit()));
+
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(optionsAction, SIGNAL(triggered()), this, SLOT(optionsClicked()));
@@ -466,7 +468,7 @@ void BitcoinGUI::createActions()
     connect(rpcConsole, SIGNAL(handleRestart(QStringList)), this, SLOT(handleRestart(QStringList)));
     
     // prevents an open debug window from becoming stuck/unusable on client shutdown
-    connect(quitAction, SIGNAL(triggered()), rpcConsole, SLOT(hide()));
+    //connect(quitAction, SIGNAL(triggered()), rpcConsole, SLOT(hide()));
 
 #ifdef ENABLE_WALLET
     if(walletFrame)
@@ -792,6 +794,21 @@ void BitcoinGUI::showDebugWindow()
     rpcConsole->show();
     rpcConsole->raise();
     rpcConsole->activateWindow();
+}
+
+void BitcoinGUI::slotCheckApplicationQuit () {
+    fprintf(stdout, "BitcoinGUI.slotCheckApplicationQuit () : Application slot has been called.\n");
+
+    bool fRet = uiInterface.ThreadSafeQuestion(
+                    "BitcoinGUI.slotCheckApplicationQuit () : Are you sure want to quit?",
+                    "BitcoinGUI.slotCheckApplicationQuit () : Are you sure want to quit 2?",
+                    "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
+    if ( fRet ) {        
+        qApp -> quit ();
+        rpcConsole -> hide ();
+
+    } //-if (fRet)
+
 }
 
 void BitcoinGUI::showInfo()
@@ -1179,25 +1196,54 @@ void BitcoinGUI::changeEvent(QEvent *e)
 #ifndef Q_OS_MAC // Ignored on Mac
     if(e->type() == QEvent::WindowStateChange)
     {
-        if(clientModel && clientModel->getOptionsModel() && clientModel->getOptionsModel()->getMinimizeToTray())
+        if(clientModel && clientModel->getOptionsModel()) // && clientModel->getOptionsModel()->getMinimizeToTray()
         {
-            QWindowStateChangeEvent *wsevt = static_cast<QWindowStateChangeEvent*>(e);
-            if(!(wsevt->oldState() & Qt::WindowMinimized) && isMinimized())
-            {
-                QTimer::singleShot(0, this, SLOT(hide()));
-                e->ignore();
-            }
-        }
-    }
+            if ( clientModel->getOptionsModel()->getMinimizeToTray() ) {
+                QWindowStateChangeEvent *wsevt = static_cast<QWindowStateChangeEvent*>(e);
+                if(!(wsevt->oldState() & Qt::WindowMinimized) && isMinimized())
+                {
+                    QTimer::singleShot(0, this, SLOT(hide()));
+                    e->ignore();
+                } //-if
+
+            } /*else {
+                bool fRet = uiInterface.ThreadSafeQuestion(
+                    "BitcoinGUI.changeEvent () : Are you sure want to quit?",
+                    "BitcoinGUI.changeEvent () : Are you sure want to quit 2?",
+                    "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
+                if (fRet) {
+                    e->ignore();
+
+                } //-if (fRet)                
+
+            } //-else*/
+
+        } //-if
+
+    } //-if
 #endif
 }
 
 void BitcoinGUI::closeEvent(QCloseEvent *event)
 {
+    fprintf(stdout, "BitcoinGUI.closeEvent () : Application close event has came.\n");
+
+    bool fRet = uiInterface.ThreadSafeQuestion(
+                    "BitcoinGUI.closeEvent () : Are you sure want to quit?",
+                    "BitcoinGUI.closeEvent () : Are you sure want to quit 2?",
+                    "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
+    if (!fRet) {
+        event -> ignore();
+        return;
+
+    } //-if (fRet)
+
+
+
 #ifndef Q_OS_MAC // Ignored on Mac
     if(clientModel && clientModel->getOptionsModel())
     {
-        if(!clientModel->getOptionsModel()->getMinimizeOnClose())
+        if(!clientModel->getOptionsModel()->getMinimizeOnClose() ) // && fRet
         {
             // close rpcConsole in case it was open to make some space for the shutdown window
             rpcConsole->close();

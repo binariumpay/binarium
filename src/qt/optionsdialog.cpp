@@ -13,6 +13,8 @@
 #include "guiutil.h"
 #include "optionsmodel.h"
 
+#include "intro.h"
+
 #include "validation.h" // for DEFAULT_SCRIPTCHECK_THREADS and MAX_SCRIPTCHECK_THREADS
 #include "netbase.h"
 #include "txdb.h" // for -dbcache defaults
@@ -24,13 +26,16 @@
 #endif // ENABLE_WALLET
 
 #include <boost/thread.hpp>
+#include <boost/filesystem.hpp>
 
 #include <QDataWidgetMapper>
 #include <QDir>
 #include <QIntValidator>
 #include <QLocale>
 #include <QMessageBox>
+#include <QFileDialog>
 #include <QTimer>
+#include <QSettings>
 
 #ifdef ENABLE_WALLET
 extern CWallet* pwalletMain;
@@ -145,6 +150,9 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     connect(ui->proxyIpTor, SIGNAL(validationDidChange(QValidatedLineEdit *)), this, SLOT(updateProxyValidationState()));
     connect(ui->proxyPort, SIGNAL(textChanged(const QString&)), this, SLOT(updateProxyValidationState()));
     connect(ui->proxyPortTor, SIGNAL(textChanged(const QString&)), this, SLOT(updateProxyValidationState()));
+
+
+
 }
 
 OptionsDialog::~OptionsDialog()
@@ -167,11 +175,16 @@ void OptionsDialog::setModel(OptionsModel *model)
             strLabel = tr("none");
         ui->overriddenByCommandLineLabel->setText(strLabel);
 
+        ui -> edDataDir -> setText ( model -> sDataDir );
+
         mapper->setModel(model);
         setMapper();
         mapper->toFirst();
 
         updateDefaultProxyNets();
+
+        ui -> edDataDir -> setText ( model -> sDataDir );
+
     }
 
     /* warn when one of the following settings changes by user action (placed here so init via mapper doesn't trigger them) */
@@ -191,6 +204,14 @@ void OptionsDialog::setModel(OptionsModel *model)
     connect(ui->theme, SIGNAL(valueChanged()), this, SLOT(showRestartWarning()));
     connect(ui->lang, SIGNAL(valueChanged()), this, SLOT(showRestartWarning()));
     connect(ui->thirdPartyTxUrls, SIGNAL(textChanged(const QString &)), this, SLOT(showRestartWarning()));
+    
+    connect(ui->btDataDir, SIGNAL(released()), this, SLOT(btDataDirClicked()));  // clicked(bool)
+    connect(ui -> edDataDir, SIGNAL(editingFinished()), this, SLOT(edDataDir_editingFinished()));
+    connect(ui -> edDataDir, SIGNAL(textEdited(const QString &)), this, SLOT(edDataDir_textEdited(const QString &)));
+
+    QByteArray array = model -> sDataDir.toUtf8();
+    fprintf(stdout, "OptionsDialog.setModel () : sDataDir = %s.\n", array.data ());  // strUsage.c_str()    
+
 }
 
 void OptionsDialog::setMapper()
@@ -263,6 +284,12 @@ void OptionsDialog::on_resetButton_clicked()
 
 void OptionsDialog::on_okButton_clicked()
 {
+    QSettings settings;
+
+    if ( ! model -> sDataDir.isEmpty () ) {
+        settings.setValue("strDataDir", model -> sDataDir);
+    }
+
     mapper->submit();
 #ifdef ENABLE_WALLET
     privateSendClient.nCachedNumBlocks = std::numeric_limits<int>::max();
@@ -306,6 +333,39 @@ void OptionsDialog::showRestartWarning(bool fPersistent)
         // Todo: should perhaps be a class attribute, if we extend the use of statusLabel
         QTimer::singleShot(10000, this, SLOT(clearStatusLabel()));
     }
+}
+
+void OptionsDialog::btDataDirClicked () { // bool fPersistent
+    //QSettings settings;
+
+    /*Intro::pickDataDirectory( true );
+
+    fprintf(stdout, "OptionsDialog.btDataDirClicked () : Function is called : %s.\n", settings.value("strDataDir", "").toString());  // strUsage.c_str()
+
+    ui -> lbDataDir -> setText ( QString::fromStdString( GetDataDir().string() ) ); // GetDataDir().string() settings.value("strDataDirDefault").toString()
+    ui -> edDataDir -> setText ( QString::fromStdString( GetDataDir().string() ) ); // QString::fromStdString( GetDataDir( true ).string() )*/
+
+    QString dir = QDir::toNativeSeparators(QFileDialog::getExistingDirectory(0, "Choose data directory", ui -> edDataDir -> text () ) );
+    if ( ! dir.isEmpty () ) {
+        model -> sDataDir = dir;
+        ui -> edDataDir -> setText ( dir );
+        //settings.setValue("strDataDir", dir);
+    } //-if
+}
+
+void OptionsDialog::edDataDir_editingFinished () {
+    if ( !boost::filesystem::exists ( GUIUtil::qstringToBoostPath ( ui -> edDataDir -> text () ) ) ) {
+        ui -> lbDataDirMessage -> setText ( "Given directory does not exist." );
+    } else ui -> lbDataDirMessage -> setText ( "" );
+}
+
+void OptionsDialog::edDataDir_textEdited ( const QString &text ) {
+    QByteArray array = text.toUtf8();
+    fprintf(stdout, "OptionsDialog.edDataDir_textEdited () : text = %s.\n", array.data ());
+
+   if ( !boost::filesystem::exists ( GUIUtil::qstringToBoostPath ( text ) ) ) {
+        ui -> lbDataDirMessage -> setText ( "Given directory does not exist." );
+    } else ui -> lbDataDirMessage -> setText ( "" );
 }
 
 void OptionsDialog::clearStatusLabel()

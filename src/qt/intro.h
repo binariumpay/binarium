@@ -32,13 +32,15 @@ public:
     QString getDataDirectory();
     void setDataDirectory(const QString &dataDir);
 
+    //bool bSetDataDirFromGUI = false;
+
     /**
      * Determine data directory. Let the user choose if the current one doesn't exist.
      *
      * @note do NOT call global GetDataDir() before calling this function, this
      * will cause the wrong path to be cached.
      */
-    static void pickDataDirectory();
+    static void pickDataDirectory( bool _bSetDataDirFromGUI = false );
 
     /**
      * Determine default data directory for operating system.

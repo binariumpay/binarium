@@ -508,8 +508,10 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state)
     if (tx.IsCoinBase())
     {
         if (tx.vin[0].scriptSig.size() < 2 || tx.vin[0].scriptSig.size() > 100) {
-            fprintf(stdout, "validation.cpp : CheckTransaction () : %s .\n", tx.ToString() );
-            fprintf(stdout, "validation.cpp : CheckTransaction () : %s .\n", tx.vin[0].ToString() );
+            //QByteArray array = tx.ToString().toUtf8();
+            fprintf(stdout, "validation.cpp : CheckTransaction () : %s .\n", tx.ToString().c_str () );
+            //array = tx.vin[0].ToString().toUtf8();
+            fprintf(stdout, "validation.cpp : CheckTransaction () : %s .\n", tx.vin[0].ToString().c_str () );
             fprintf(stdout, "validation.cpp : CheckTransaction () : %i .\n", tx.vin[0].scriptSig.size());
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-length");
         } //-if
@@ -1303,28 +1305,28 @@ bool IsInitialBlockDownload()
 {
     static bool lockIBDState = false;
     if (lockIBDState){
-        LogPrintf("validation.cpp : IsInitialBlockDownload () : if (lockIBDState) :  %i.\n", lockIBDState);
+        //LogPrintf("validation.cpp : IsInitialBlockDownload () : if (lockIBDState) :  %i.\n", lockIBDState);
         return false;
     }
     if (fImporting || fReindex){
-        LogPrintf("validation.cpp : IsInitialBlockDownload () : if (fImporting || fReindex) : %i, %i.\n", fImporting, fReindex);
+        //LogPrintf("validation.cpp : IsInitialBlockDownload () : if (fImporting || fReindex) : %i, %i.\n", fImporting, fReindex);
         return true;
     }
     LOCK(cs_main);
     const CChainParams& chainParams = Params();
     if (chainActive.Tip() == NULL){
-        LogPrintf("validation.cpp : IsInitialBlockDownload () : if (chainActive.Tip() == NULL) : %i.\n", chainActive.Tip() == NULL);
+        //LogPrintf("validation.cpp : IsInitialBlockDownload () : if (chainActive.Tip() == NULL) : %i.\n", chainActive.Tip() == NULL);
         return true;
     }
     if (chainActive.Tip()->nChainWork < UintToArith256(chainParams.GetConsensus().nMinimumChainWork)){
         //LogPrintf("validation.cpp : IsInitialBlockDownload () : if (chainActive.Tip()->nChainWork < UintToArith256(chainParams.GetConsensus().nMinimumChainWork))." );
-        LogPrintf("validation.cpp : IsInitialBlockDownload () : if (chainActive.Tip()->nChainWork < UintToArith256(chainParams.GetConsensus().nMinimumChainWork)) : %s, %s.\n",
-            chainActive.Tip()->nChainWork.ToString(), chainParams.GetConsensus().nMinimumChainWork.ToString());
+        //LogPrintf("validation.cpp : IsInitialBlockDownload () : if (chainActive.Tip()->nChainWork < UintToArith256(chainParams.GetConsensus().nMinimumChainWork)) : %s, %s.\n",
+        //    chainActive.Tip()->nChainWork.ToString(), chainParams.GetConsensus().nMinimumChainWork.ToString());
         return true;
     }
     if (chainActive.Tip()->GetBlockTime() < (GetTime() - chainParams.MaxTipAge())){
-        LogPrintf("validation.cpp : IsInitialBlockDownload () : if (chainActive.Tip()->GetBlockTime() < (GetTime() - chainParams.MaxTipAge())) : %i, %i, %i.\n",
-            chainActive.Tip()->GetBlockTime(), GetTime(), chainParams.MaxTipAge());
+        //LogPrintf("validation.cpp : IsInitialBlockDownload () : if (chainActive.Tip()->GetBlockTime() < (GetTime() - chainParams.MaxTipAge())) : %i, %i, %i.\n",
+        //    chainActive.Tip()->GetBlockTime(), GetTime(), chainParams.MaxTipAge());
         return true;
     }
     lockIBDState = true;
@@ -3124,9 +3126,11 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool fCheckPOW)
 {
     // Check proof of work matches claimed amount
-    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, Params().GetConsensus()))
+    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, Params().GetConsensus())){
+        fprintf(stdout, "validation.cpp : CheckBlockHeader () : proof of work failed : %i, %i .\n", block.nTime, block.nNonce );
         return state.DoS(50, error("CheckBlockHeader(): proof of work failed"),
                          REJECT_INVALID, "high-hash");
+    }
 
     // Check timestamp
     if (block.GetBlockTime() > GetAdjustedTime() + 2 * 60 * 60)

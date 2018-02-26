@@ -163,6 +163,7 @@ UniValue generate(const UniValue& params, bool fHelp)
     }
     unsigned int nExtraNonce = 0;
     UniValue blockHashes(UniValue::VARR);
+    uint256 uint256Hash;
     while (nHeight < nHeightEnd)
     {
         std::unique_ptr<CBlockTemplate> pblocktemplate(CreateNewBlock(Params(), coinbaseScript->reserveScript));
@@ -172,16 +173,18 @@ UniValue generate(const UniValue& params, bool fHelp)
         {
             LOCK(cs_main);
             IncrementExtraNonce(pblock, chainActive.Tip(), nExtraNonce);
-        }
-        while (!CheckProofOfWork(pblock->GetHash(), pblock->nBits, Params().GetConsensus())) {
+        }        
+        uint256Hash = pblock->GetHash();
+        while (!CheckProofOfWork ( uint256Hash, pblock->nBits, Params().GetConsensus()) ) {
             // Yes, there is a chance every nonce could fail to satisfy the -regtest
             // target -- 1 in 2^(2^32). That ain't gonna happen.
             ++pblock->nNonce;
+            uint256Hash = pblock->GetHash();
         }
         if (!ProcessNewBlock(Params(), pblock, true, NULL, NULL))
             throw JSONRPCError(RPC_INTERNAL_ERROR, "ProcessNewBlock, block not accepted");
         ++nHeight;
-        blockHashes.push_back(pblock->GetHash().GetHex());
+        blockHashes.push_back(uint256Hash.GetHex());  // pblock->GetHash()
 
         //mark script as important because it was used at least for one coinbase output
         coinbaseScript->KeepScript();

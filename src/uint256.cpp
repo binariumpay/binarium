@@ -80,3 +80,43 @@ template std::string base_blob<256>::GetHex() const;
 template std::string base_blob<256>::ToString() const;
 template void base_blob<256>::SetHex(const char*);
 template void base_blob<256>::SetHex(const std::string&);
+
+// Explicit instantiations for base_blob<512>
+template base_blob<512>::base_blob(const std::vector<unsigned char>&);
+template std::string base_blob<512>::GetHex() const;
+template std::string base_blob<512>::ToString() const;
+template void base_blob<512>::SetHex(const char*);
+template void base_blob<512>::SetHex(const std::string&);
+
+// Explicit instantiations for base_blob<1024>
+template base_blob<1024>::base_blob(const std::vector<unsigned char>&);
+template std::string base_blob<1024>::GetHex() const;
+template std::string base_blob<1024>::ToString() const;
+template void base_blob<1024>::SetHex(const char*);
+template void base_blob<1024>::SetHex(const std::string&);
+
+void uint512 :: XOROperator ( const uint512 & _uint512B ) {
+    uint32_t i;
+
+    for ( i = 0; i < 512 / 8 / 8; i ++ ) { // 8 bits in byte and 8 bytes in uint64_t.
+        //fprintf(stdout, "uint512.XOROperator () : %i .\n", i * 8 );
+
+        * ( ( uint64_t * ) ( begin () + i * 8 ) ) = 
+            * ( ( uint64_t * ) ( begin () + i * 8 ) ) ^
+            * ( ( uint64_t * ) ( _uint512B.begin () + i * 8 ) );        
+
+    } //-for
+
+}
+
+void uint512 :: XOROperator ( const uint256 & _uint256B, uint32_t _iOffset ) {
+    uint32_t i;
+
+    for ( i = 0; i < 256 / 8 / 8; i ++ ) {
+        * ( ( uint64_t * ) ( begin () + _iOffset + i * 8 ) ) =
+            * ( ( uint64_t * ) ( begin () + _iOffset + i * 8 ) ) ^
+            * ( ( uint64_t * ) ( _uint256B.begin () + i * 8 ) );
+
+    } //-for
+
+}

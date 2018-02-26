@@ -160,13 +160,16 @@ QString Intro::getDefaultDataDirectory()
     return GUIUtil::boostPathToQString(GetDefaultDataDir());
 }
 
-void Intro::pickDataDirectory()
+void Intro::pickDataDirectory( bool _bSetDataDirFromGUI )
 {
     namespace fs = boost::filesystem;
     QSettings settings;
+
+    fprintf(stdout, "Intro.pickDataDirectory () :  %i.\n", _bSetDataDirFromGUI);
+
     /* If data directory provided on command line, no need to look at settings
        or show a picking dialog */
-    if(!GetArg("-datadir", "").empty())
+    if(!GetArg("-datadir", "").empty() && ! _bSetDataDirFromGUI)
         return;
     /* 1) Default data directory for operating system */
     QString dataDirDefaultCurrent = getDefaultDataDirectory();
@@ -175,12 +178,19 @@ void Intro::pickDataDirectory()
     /* 3) Check to see if default datadir is the one we expect */
     QString dataDirDefaultSettings = settings.value("strDataDirDefault").toString();
 
-    if(!fs::exists(GUIUtil::qstringToBoostPath(dataDir)) || GetBoolArg("-choosedatadir", DEFAULT_CHOOSE_DATADIR) || dataDirDefaultCurrent != dataDirDefaultSettings)
+    fprintf(stdout, "Intro.pickDataDirectory () : 2 :  %i.\n", _bSetDataDirFromGUI);
+
+    if(!fs::exists(GUIUtil::qstringToBoostPath(dataDir)) || GetBoolArg("-choosedatadir", DEFAULT_CHOOSE_DATADIR) ||
+        dataDirDefaultCurrent != dataDirDefaultSettings || _bSetDataDirFromGUI)
     {
         /* Let the user choose one */
         Intro intro;
         intro.setDataDirectory(dataDirDefaultCurrent);
         intro.setWindowIcon(QIcon(":icons/bitcoin"));
+
+        intro.show();
+        intro.raise();
+        intro.activateWindow();
 
         while(true)
         {

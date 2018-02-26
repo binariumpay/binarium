@@ -239,6 +239,8 @@ private Q_SLOTS:
     /** Show debug window */
     void showDebugWindow();
 
+    void slotCheckApplicationQuit ();
+
     /** Show debug window and set focus to the appropriate tab */
     void showInfo();
     void showConsole();

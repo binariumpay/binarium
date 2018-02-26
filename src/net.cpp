@@ -345,17 +345,22 @@ bool CConnman::CheckIncomingNonce(uint64_t nonce)
 
 CNode* CConnman::ConnectNode(CAddress addrConnect, const char *pszDest, bool fConnectToMasternode)
 {
+    //LogPrintf ( "CConnman.ConnectNode () : %s, %i.\n", addrConnect.ToString (), pszDest == NULL );
+
     // TODO: This is different from what we have in Bitcoin which only calls ConnectNode from OpenNetworkConnection
     //       If we ever switch to using OpenNetworkConnection for MNs as well, this can be removed
     if (!fNetworkActive) {
+        LogPrintf ( "CConnman.ConnectNode () : if (!fNetworkActive).\n" );
         return NULL;
     }
 
     if (pszDest == NULL) {
         // we clean masternode connections in CMasternodeMan::ProcessMasternodeConnections()
         // so should be safe to skip this and connect to local Hot MN on CActiveMasternode::ManageState()
-        if (IsLocal(addrConnect) && !fConnectToMasternode)
+        if (IsLocal(addrConnect) && !fConnectToMasternode){
+            LogPrintf ( "CConnman.ConnectNode () : if (IsLocal(addrConnect) && !fConnectToMasternode).\n" );
             return NULL;
+        }
 
         LOCK(cs_vNodes);
         // Look for an existing connection
@@ -376,6 +381,9 @@ CNode* CConnman::ConnectNode(CAddress addrConnect, const char *pszDest, bool fCo
     LogPrint("net", "trying connection %s lastseen=%.1fhrs\n",
         pszDest ? pszDest : addrConnect.ToString(),
         pszDest ? 0.0 : (double)(GetAdjustedTime() - addrConnect.nTime)/3600.0);
+    //LogPrintf ( "CConnman.ConnectNode () : trying connection %s lastseen=%.1fhrs\n",
+    //    pszDest ? pszDest : addrConnect.ToString(),
+    //    pszDest ? 0.0 : (double)(GetAdjustedTime() - addrConnect.nTime)/3600.0 );
 
     // Connect
     SOCKET hSocket;
@@ -389,17 +397,20 @@ CNode* CConnman::ConnectNode(CAddress addrConnect, const char *pszDest, bool fCo
             return NULL;
         }
 
+        //LogPrintf ( "CConnman.ConnectNode () : Before if (pszDest && addrConnect.IsValid()) .\n" );
         if (pszDest && addrConnect.IsValid()) {
             // It is possible that we already have a connection to the IP/port pszDest resolved to.
             // In that case, drop the connection that was just created, and return the existing CNode instead.
             // Also store the name we used to connect in that CNode, so that future FindNode() calls to that
             // name catch this early.
             LOCK(cs_vNodes);
+            //LogPrintf ( "CConnman.ConnectNode () : Before CNode* pnode = FindNode((CService)addrConnect) .\n" );
             CNode* pnode = FindNode((CService)addrConnect);
             if (pnode)
             {
                 // we have existing connection to this node but it was not a connection to masternode,
                 // change flag and add reference so that we can correctly clear it later
+                //LogPrintf ( "CConnman.ConnectNode () : Before if(fConnectToMasternode && !pnode->fMasternode) .\n" );
                 if(fConnectToMasternode && !pnode->fMasternode) {
                     pnode->AddRef();
                     pnode->fMasternode = true;
@@ -432,9 +443,11 @@ CNode* CConnman::ConnectNode(CAddress addrConnect, const char *pszDest, bool fCo
     } else if (!proxyConnectionFailed) {
         // If connecting to the node failed, and failure is not caused by a problem connecting to
         // the proxy, mark this as an attempt.
+        //LogPrintf ( "CConnman.ConnectNode () : addrman.Attempt(addrConnect) .\n" );
         addrman.Attempt(addrConnect);
     }
 
+    //LogPrintf ( "CConnman.ConnectNode () : return NULL , %i .\n", proxyConnectionFailed );
     return NULL;
 }
 
@@ -1559,11 +1572,17 @@ void CConnman::ThreadDNSAddressSeed()
             // addrman assigning the same source to results from different seeds.
             // This should switch to a hard-coded stable dummy IP for each seed name, so that the
             // resolve is not required at all.
+
+            //LogPrintf ( "CConnman.ThreadDNSAddressSeed () : %d , %d .\n", vIPs.size (), vAdd.size () );
+
             if (!vIPs.empty()) {
                 CService seedSource;
                 Lookup(seed.name.c_str(), seedSource, 0, true);
                 addrman.Add(vAdd, seedSource);
             }
+
+            //LogPrintf ( "CConnman.ThreadDNSAddressSeed () : %d .\n", GetAddressCount () );
+
         }
     }
 
@@ -1679,6 +1698,7 @@ void CConnman::ThreadOpenConnections()
         {
             LOCK(cs_vNodes);
             BOOST_FOREACH(CNode* pnode, vNodes) {
+                //LogPrintf ( "CConnman.ThreadOpenConnections () : setConnected : %i, %i .\n", !pnode->fInbound, !pnode->fMasternode );
                 if (!pnode->fInbound && !pnode->fMasternode) {
                     setConnected.insert(pnode->addr.GetGroup());
                     nOutbound++;
@@ -1716,30 +1736,44 @@ void CConnman::ThreadOpenConnections()
             CAddrInfo addr = addrman.Select(fFeeler);
 
             // if we selected an invalid address, restart
-            if (!addr.IsValid() || setConnected.count(addr.GetGroup()) || IsLocal(addr))
+            if (!addr.IsValid() || setConnected.count(addr.GetGroup()) || IsLocal(addr)) {
+                //LogPrintf ( "CConnman.ThreadOpenConnections () : if (!addr.IsValid() || setConnected.count(addr.GetGroup()) || IsLocal(addr)) : %i, %i, %i .\n",
+                //    ! addr.IsValid(), setConnected.count(addr.GetGroup()), IsLocal(addr) );
                 break;
+            }
+            
 
             // If we didn't find an appropriate destination after trying 100 addresses fetched from addrman,
             // stop this loop, and let the outer loop run again (which sleeps, adds seed nodes, recalculates
             // already-connected network ranges, ...) before trying new addrman addresses.
             nTries++;
-            if (nTries > 100)
+            if (nTries > 100) {
+                //LogPrintf ( "CConnman.ThreadOpenConnections () : if (nTries > 100) .\n" );
                 break;
+            }
 
-            if (IsLimited(addr))
+            if (IsLimited(addr)) {
+                //LogPrintf ( "CConnman.ThreadOpenConnections () : if (IsLimited(addr)) .\n" );
                 continue;
+            }
 
             // only connect to full nodes
-            if ((addr.nServices & REQUIRED_SERVICES) != REQUIRED_SERVICES)
+            if ((addr.nServices & REQUIRED_SERVICES) != REQUIRED_SERVICES) {
+                //LogPrintf ( "CConnman.ThreadOpenConnections () : if ((addr.nServices & REQUIRED_SERVICES) != REQUIRED_SERVICES) .\n" );
                 continue;
+            }
 
             // only consider very recently tried nodes after 30 failed attempts
-            if (nANow - addr.nLastTry < 600 && nTries < 30)
+            if (nANow - addr.nLastTry < 600 && nTries < 30) {
+                //LogPrintf ( "CConnman.ThreadOpenConnections () : if (nANow - addr.nLastTry < 600 && nTries < 30) : %i, %i.\n", nANow - addr.nLastTry, nTries );
                 continue;
+            }
 
             // do not allow non-default ports, unless after 50 invalid addresses selected already
-            if (addr.GetPort() != Params().GetDefaultPort() && nTries < 50)
+            if (addr.GetPort() != Params().GetDefaultPort() && nTries < 50) {
+                //LogPrintf ( "CConnman.ThreadOpenConnections () : if (addr.GetPort() != Params().GetDefaultPort() && nTries < 50) .\n" );
                 continue;
+            }
 
             addrConnect = addr;
             break;
@@ -1756,7 +1790,8 @@ void CConnman::ThreadOpenConnections()
             }
 
             OpenNetworkConnection(addrConnect, &grant, NULL, false, fFeeler);
-        }
+        
+        } //else LogPrintf ( "CConnman.ThreadOpenConnections () : addrConnect is no valid : %s .\n", addrConnect.ToString () );
     }
 }
 
@@ -1888,23 +1923,33 @@ bool CConnman::OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGran
     // Initiate outbound network connection
     //
     if (interruptNet) {
+        LogPrintf ( "CConnman.OpenNetworkConnection () : if (interruptNet).\n" );
         return false;
     }
     if (!fNetworkActive) {
+        LogPrintf ( "CConnman.OpenNetworkConnection () : if (!fNetworkActive).\n" );
         return false;
     }	
     if (!pszDest) {
         if (IsLocal(addrConnect) ||
             FindNode((CNetAddr)addrConnect) || IsBanned(addrConnect) ||
-            FindNode(addrConnect.ToStringIPPort()))
+            FindNode(addrConnect.ToStringIPPort())) {
+            LogPrintf ( "CConnman.OpenNetworkConnection () : if (!pszDest).\n" );
             return false;
-    } else if (FindNode(std::string(pszDest)))
+
+        }
+
+    } else if (FindNode(std::string(pszDest))) {
+        LogPrintf ( "CConnman.OpenNetworkConnection () : if (FindNode(std::string(pszDest))).\n" );
         return false;
+    }
 
     CNode* pnode = ConnectNode(addrConnect, pszDest);
 
-    if (!pnode)
+    if (!pnode) {
+        //LogPrintf ( "CConnman.OpenNetworkConnection () : if (!pnode).\n" );
         return false;
+    }
     if (grantOutbound)
         grantOutbound->MoveTo(pnode->grantOutbound);
     if (fOneShot)

@@ -228,14 +228,14 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
 
     // Check range
     if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(params.powLimit)) {
-        fprintf(stdout, "pow.cpp : CheckProofOfWork () : nBits below minimum work : %s, %i, %i, %i, %i .\n", params.powLimit.ToString().c_str(),
-              nBits, fNegative, fOverflow, bnTarget );
+        fprintf(stdout, "pow.cpp : CheckProofOfWork () : nBits below minimum work : %s, %i, %i, %i, %s .\n", params.powLimit.ToString().c_str(),
+              nBits, fNegative, fOverflow, bnTarget.ToString ().c_str () );
         return error("CheckProofOfWork(): nBits below minimum work");        
     } //-if
 
     // Check proof of work matches claimed amount
     if (UintToArith256(hash) > bnTarget) {
-        fprintf(stdout, "pow.cpp : CheckProofOfWork () : hash doesn't match nBits : %i, %i .\n", hash, bnTarget );
+        fprintf(stdout, "pow.cpp : CheckProofOfWork () : hash doesn't match nBits : %s %s .\n", hash.ToString ().c_str (), bnTarget.ToString ().c_str () );
         return error("CheckProofOfWork(): hash doesn't match nBits");    
     }
 

@@ -57,6 +57,8 @@ public:
         OptionIDRowCount,
     };
 
+    QString sDataDir;
+
     void Init(bool resetSettings = false);
     void Reset();
 
@@ -91,7 +93,7 @@ private:
     int nDisplayUnit;
     QString strThirdPartyTxUrls;
     bool fCoinControlFeatures;
-    bool fShowAdvancedPSUI;
+    bool fShowAdvancedPSUI;    
     /* settings that were overriden by command-line */
     QString strOverriddenByCommandLine;
 

@@ -196,6 +196,7 @@ public:
     unsigned int nTime;
     unsigned int nBits;
     unsigned int nNonce;
+    //uint64_t nHeightOfPreviousBlock;
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
     uint32_t nSequenceId;
@@ -220,6 +221,7 @@ public:
         nTime          = 0;
         nBits          = 0;
         nNonce         = 0;
+        //nHeightOfPreviousBlock = 0;
     }
 
     CBlockIndex()
@@ -236,6 +238,7 @@ public:
         nTime          = block.nTime;
         nBits          = block.nBits;
         nNonce         = block.nNonce;
+        //nHeightOfPreviousBlock = block.nHeightOfPreviousBlock;
     }
 
     CDiskBlockPos GetBlockPos() const {
@@ -266,6 +269,7 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
+        //block.nHeightOfPreviousBlock = nHeightOfPreviousBlock;
         return block;
     }
 
@@ -390,6 +394,7 @@ public:
         block.nTime           = nTime;
         block.nBits           = nBits;
         block.nNonce          = nNonce;
+        //block.nHeightOfPreviousBlock = nHeightOfPreviousBlock;
         return block.GetHash();
     }
 

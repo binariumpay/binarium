@@ -308,6 +308,7 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
         UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
         pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus());
         pblock->nNonce         = 0;
+        //pblock->nHeightOfPreviousBlock = pindexPrev->nHeightOfPreviousBlock + 1;
         pblocktemplate->vTxSigOps[0] = GetLegacySigOpCount(pblock->vtx[0]);
 
         CValidationState state;
@@ -479,6 +480,8 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
                         ProcessBlockFound(pblock, chainparams);
                         SetThreadPriority(THREAD_PRIORITY_LOWEST);
                         coinbaseScript->KeepScript();
+
+                        //assert ( false );
 
                         // In regression test mode, stop mining after a block is found. This
                         // allows developers to controllably generate a block on demand.

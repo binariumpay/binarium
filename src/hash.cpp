@@ -216,3 +216,19 @@ uint64_t SipHashUint256Extra(uint64_t k0, uint64_t k1, const uint256& val, uint3
     SIPROUND;
     return v0 ^ v1 ^ v2 ^ v3;
 }
+
+
+
+//---Hash generator.----------------------------------------------
+/*#define I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS 14
+#define I_AMOUNT_OF_INTERMEDIATE_ENCRYPTION_FUNCTIONS 3
+
+// Data, key, result
+//uint512 ( * aIntermediateHashFunctions [ I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS ] ) ( const void *, const uint32_t, const void *, void * );
+//uint512 ( * aIntermediateEncryptionFunctions [ I_AMOUNT_OF_INTERMEDIATE_ENCRYPTION_FUNCTIONS ] ) ( const void *, const uint32_t, const void *, void * );*/
+
+TCryptographyFunction aIntermediateHashFunctions [ I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS ];
+TCryptographyFunction aIntermediateEncryptionFunctions [ I_AMOUNT_OF_INTERMEDIATE_ENCRYPTION_FUNCTIONS ];
+
+/*inline TCryptographyFunction GetHashingFunction ( int _iIndex ) { return aIntermediateHashFunctions [ _iIndex ]; }
+inline TCryptographyFunction GetEcryptionFunction ( int _iIndex ) { return aIntermediateEncryptionFunctions [ _iIndex ]; }*/

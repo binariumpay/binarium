@@ -39,7 +39,7 @@ EXTRA_LIBRARIES += \
   libbitcoin_util.a \
   libbitcoin_common.a \
   libbitcoin_server.a \
-  libbitcoin_cli.a
+  libbitcoin_cli.a  
 if ENABLE_WALLET
 BITCOIN_INCLUDES += $(BDB_CPPFLAGS)
 EXTRA_LIBRARIES += libbitcoin_wallet.a
@@ -64,7 +64,7 @@ if BUILD_BITCOIND
 endif
 
 if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += binarium-cli binarium-tx
+  bin_PROGRAMS += binarium-cli #binarium-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
@@ -330,6 +330,15 @@ crypto_libbitcoin_crypto_a_SOURCES += \
   crypto/shavite.c \
   crypto/simd.c \
   crypto/skein.c \
+  crypto/hashing/streebog/table/stribog.c \
+  crypto/hashing/whirlpool/byte_order.c \
+  crypto/hashing/whirlpool/whirlpool.c \
+  crypto/hashing/swifft/swifft.c \
+  crypto/hashing/swifft/setup.c \
+  crypto/encryption/gost2015_kuznechik/optimised.c \
+  crypto/encryption/gost2015_kuznechik/optimised_tables.c \
+  crypto/encryption/gost2015_kuznechik/shared/tables.c \
+  crypto/encryption/three_fish/libskein_skein.cc \
   crypto/sph_blake.h \
   crypto/sph_bmw.h \
   crypto/sph_cubehash.h \
@@ -341,7 +350,14 @@ crypto_libbitcoin_crypto_a_SOURCES += \
   crypto/sph_shavite.h \
   crypto/sph_simd.h \
   crypto/sph_skein.h \
-  crypto/sph_types.h
+  crypto/sph_types.h \
+  crypto/hashing/streebog/stribog.h \
+  crypto/hashing/whirlpool/whirlpool.h \
+  crypto/hashing/swifft/swifft.h \
+  crypto/encryption/gost2015_kuznechik/libgost15/libgost15.h \
+  crypto/encryption/three_fish/libskein_skein.h
+
+#  crypto/hashing/streebog/table/stribog_data.h
 
 # common: shared between binariumd, and binarium-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
@@ -461,23 +477,23 @@ binarium_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
 # binarium-tx binary #
-binarium_tx_SOURCES = binarium-tx.cpp
-binarium_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-binarium_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-binarium_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+#binarium_tx_SOURCES = binarium-tx.cpp
+#binarium_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+#binarium_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+#binarium_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
-if TARGET_WINDOWS
-binarium_tx_SOURCES += binarium-tx-res.rc
-endif
+#if TARGET_WINDOWS
+#binarium_tx_SOURCES += binarium-tx-res.rc
+#endif
 
-binarium_tx_LDADD = \
-  $(LIBUNIVALUE) \
-  $(LIBBITCOIN_COMMON) \
-  $(LIBBITCOIN_UTIL) \
-  $(LIBBITCOIN_CRYPTO) \
-  $(LIBSECP256K1)
+#binarium_tx_LDADD = \
+#  $(LIBUNIVALUE) \
+#  $(LIBBITCOIN_COMMON) \
+#  $(LIBBITCOIN_UTIL) \
+#  $(LIBBITCOIN_CRYPTO) \
+#  $(LIBSECP256K1)
 
-binarium_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+#binarium_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
 # binariumconsensus library #
@@ -515,6 +531,8 @@ CLEANFILES += *.gcda *.gcno
 CLEANFILES += compat/*.gcda compat/*.gcno
 CLEANFILES += consensus/*.gcda consensus/*.gcno
 CLEANFILES += crypto/*.gcda crypto/*.gcno
+CLEANFILES += crypto/cppcrypto/*.gcda crypto/cppcrypto/*.gcno
+CLEANFILES += crypto/cppcrypto/3rdparty/*.gcda crypto/cppcrypto/3rdparty/*.gcno
 CLEANFILES += policy/*.gcda policy/*.gcno
 CLEANFILES += primitives/*.gcda primitives/*.gcno
 CLEANFILES += script/*.gcda script/*.gcno

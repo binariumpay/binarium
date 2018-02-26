@@ -53,6 +53,9 @@ private Q_SLOTS:
     void on_hideTrayIcon_stateChanged(int fState);
 
     void showRestartWarning(bool fPersistent = false);
+    void btDataDirClicked (); // bool fPersistent
+    void edDataDir_editingFinished ();
+    void edDataDir_textEdited ( const QString &text );
     void clearStatusLabel();
     void updateProxyValidationState();
     /* query the networks, for which the default proxy is used */

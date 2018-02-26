@@ -11,7 +11,15 @@
 #include "primitives/block.h"
 #include "protocol.h"
 
+#include <time.h>
+
 #include <vector>
+
+
+
+#define I_AMOUNT_OF_SECONDS_IN_1_MONTH 2592000
+
+
 
 struct CDNSSeedData {
     std::string name, host;
@@ -31,6 +39,13 @@ struct CCheckpointData {
     int64_t nTransactionsLastCheckpoint;
     double fTransactionsPerDay;
 };
+
+struct THashFunctionsAddEvent {  // THashFunctionsChangeEvent iHashFunctionIndex
+    int64_t iBlockTime;
+    int64_t iHashFunctionsAmount;
+};
+
+
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
@@ -81,6 +96,17 @@ public:
     int PoolMaxTransactions() const { return nPoolMaxTransactions; }
     int FulfilledRequestExpireTime() const { return nFulfilledRequestExpireTime; }
     std::string SporkPubKey() const { return strSporkPubKey; }
+
+    uint32_t iHashAlgorithmChangeInterval = 60;
+    //uint256 Hash ();
+
+    uint32_t iMonthFromGenesisToWhichThisClientBelongs = 0;
+
+    bool CheckMonthOfClientFromGenesisBlockTime () const {
+        return ( time ( NULL ) - GenesisBlock ().nTime ) / I_AMOUNT_OF_SECONDS_IN_1_MONTH <= iMonthFromGenesisToWhichThisClientBelongs;
+
+    }
+
 protected:
     CChainParams() {}
 
@@ -108,6 +134,11 @@ protected:
     int nFulfilledRequestExpireTime;
     std::string strSporkPubKey;
     std::string strMasternodePaymentsPubKey;
+
+    //std::vector < THashFunctionsChangeEvent > aHashFunctionsChangesHistory;
+    std::vector < THashFunctionsAddEvent > aHashFunctionsAdditionsHistory;
+    //std::vector < void * > aHashFunctions;
+
 };
 
 /**

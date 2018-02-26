@@ -447,8 +447,10 @@ bool static ConnectSocketDirectly(const CService &addrConnect, SOCKET& hSocketRe
     }
 
     SOCKET hSocket = socket(((struct sockaddr*)&sockaddr)->sa_family, SOCK_STREAM, IPPROTO_TCP);
-    if (hSocket == INVALID_SOCKET)
+    if (hSocket == INVALID_SOCKET){
+        LogPrintf ( "netbase.cpp : ConnectSocketDirectly () : if (hSocket == INVALID_SOCKET) .\n" );
         return false;
+    }
 
     int set = 1;
 #ifdef SO_NOSIGPIPE
@@ -464,13 +466,17 @@ bool static ConnectSocketDirectly(const CService &addrConnect, SOCKET& hSocketRe
 #endif
 
     // Set to non-blocking
-    if (!SetSocketNonBlocking(hSocket, true))
+    if (!SetSocketNonBlocking(hSocket, true)) {
+        LogPrintf ( "netbase.cpp : ConnectSocketDirectly () : !SetSocketNonBlocking(hSocket, true) : %s .\n", NetworkErrorString(WSAGetLastError()) );
         return error("ConnectSocketDirectly: Setting socket to non-blocking failed, error %s\n", NetworkErrorString(WSAGetLastError()));
+    }
 
+    //LogPrintf ( "netbase.cpp : ConnectSocketDirectly () : Before if (connect(hSocket, (struct sockaddr*)&sockaddr, len) == SOCKET_ERROR) .\n" );
     if (connect(hSocket, (struct sockaddr*)&sockaddr, len) == SOCKET_ERROR)
     {
         int nErr = WSAGetLastError();
         // WSAEINVAL is here because some legacy version of winsock uses it
+        //LogPrintf ( "netbase.cpp : ConnectSocketDirectly () : Before if (nErr == WSAEINPROGRESS || nErr == WSAEWOULDBLOCK || nErr == WSAEINVAL) .\n" );
         if (nErr == WSAEINPROGRESS || nErr == WSAEWOULDBLOCK || nErr == WSAEINVAL)
         {
             struct timeval timeout = MillisToTimeval(nTimeout);
@@ -481,6 +487,7 @@ bool static ConnectSocketDirectly(const CService &addrConnect, SOCKET& hSocketRe
             if (nRet == 0)
             {
                 LogPrint("net", "connection to %s timeout\n", addrConnect.ToString());
+                //LogPrintf ( "netbase.cpp : ConnectSocketDirectly () : connection to %s timeout : %i .\n", addrConnect.ToString(), timeout.tv_sec );
                 CloseSocket(hSocket);
                 return false;
             }
@@ -521,6 +528,7 @@ bool static ConnectSocketDirectly(const CService &addrConnect, SOCKET& hSocketRe
     }
 
     hSocketRet = hSocket;
+    //LogPrintf ( "netbase.cpp : ConnectSocketDirectly () : return true .\n" );
     return true;
 }
 
@@ -603,10 +611,13 @@ bool ConnectSocket(const CService &addrDest, SOCKET& hSocketRet, int nTimeout, b
     if (outProxyConnectionFailed)
         *outProxyConnectionFailed = false;
 
-    if (GetProxy(addrDest.GetNetwork(), proxy))
+    if (GetProxy(addrDest.GetNetwork(), proxy)){
+        //LogPrintf ( "netbase.cpp : ConnectSocket () : in if (GetProxy(addrDest.GetNetwork(), proxy)) .\n" );
         return ConnectThroughProxy(proxy, addrDest.ToStringIP(), addrDest.GetPort(), hSocketRet, nTimeout, outProxyConnectionFailed);
-    else // no proxy needed (none set for target network)
+    } else { // no proxy needed (none set for target network)
+        //LogPrintf ( "netbase.cpp : ConnectSocket () : no proxy needed (none set for target network) .\n" );
         return ConnectSocketDirectly(addrDest, hSocketRet, nTimeout);
+    }
 }
 
 bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest, int portDefault, int nTimeout, bool *outProxyConnectionFailed)

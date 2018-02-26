@@ -66,6 +66,9 @@
 #include "privatesend-server.h"
 #include "spork.h"
 
+//#include "hash.h"
+#include "crypto/hashing/swifft/swifft.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #include <memory>
@@ -166,10 +169,23 @@ volatile bool fRequestShutdown = false;
 
 void StartShutdown()
 {
+    /*bool fRet = uiInterface.ThreadSafeQuestion(
+                    "Are you sure want to quit?",
+                    "Are you sure want to quit 2?",
+                    "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
+    if (fRet) {
+        return;
+
+    } //-if (fRet)*/
+
+    fprintf(stdout, "init.cpp : StartShutdown () : Function has been called. \n");
+
     fRequestShutdown = true;
 }
 bool ShutdownRequested()
 {
+    //fprintf(stdout, "init.cpp : ShutdownRequested () : Function has been called. \n");
+
     return fRequestShutdown || fRestartRequested;
 }
 
@@ -211,6 +227,19 @@ void Interrupt(boost::thread_group& threadGroup)
 /** Preparing steps before shutting down or restarting the wallet */
 void PrepareShutdown()
 {
+    /*bool fRet = uiInterface.ThreadSafeQuestion(
+                    "Are you sure want to quit?",
+                    "Are you sure want to quit 2?",
+                    "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
+    if (fRet) {
+        return;
+
+    } //-if (fRet)*/
+
+    fprintf(stdout, "init.cpp : PrepareShutdown () : Function has been called. \n");
+
+
+
     fRequestShutdown = true; // Needed when we shutdown the wallet
     fRestartRequested = true; // Needed when we restart the wallet
     LogPrintf("%s: In progress...\n", __func__);
@@ -316,6 +345,19 @@ void PrepareShutdown()
 */
 void Shutdown()
 {
+    /*bool fRet = uiInterface.ThreadSafeQuestion(
+                    "Are you sure want to quit?",
+                    "Are you sure want to quit 2?",
+                    "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
+    if (fRet) {
+        return;
+
+    } //-if (fRet)*/
+
+    fprintf(stdout, "init.cpp : Shutdown () : Function has been called. \n");
+
+
+
     // Shutdown part 1: prepare shutdown
     if(!fRestartRequested){
         PrepareShutdown();
@@ -336,6 +378,15 @@ void Shutdown()
  */
 void HandleSIGTERM(int)
 {
+    bool fRet = uiInterface.ThreadSafeQuestion(
+                    "inint.cpp : HandleSIGTERM () : Are you sure want to quit?",
+                    "inint.cpp : HandleSIGTERM () : Are you sure want to quit 2?",
+                    "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
+    if (fRet) {
+        return;
+
+    } //-if (fRet)
+
     fRequestShutdown = true;
 }
 
@@ -1018,7 +1069,22 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 #endif
 
     // ********************************************************* Step 2: parameter interactions
+    //HashGenerator_Init ();
+    SwiFFT_setupTables ();
+
     const CChainParams& chainparams = Params();
+
+    /*// Checking that current month since genesis block time equals to month of client build.
+    if ( ! Params().CheckMonthOfClientFromGenesisBlockTime () ) {
+        uiInterface.ThreadSafeMessageBox(_("Client is outdated, please download new version from Binarium site."), "", CClientUIInterface::MSG_ERROR);
+        LogPrintf("Client is outdated, please download new version from Binarium site.\n");
+        // Starting the shutdown sequence and returning false to the caller would be
+        // interpreted as 'entry not found' (as opposed to unable to read data), and
+        // could lead to invalid interpretation. Just exit immediately, as we can't
+        // continue anyway, and all writes should be atomic.
+        abort();
+
+    }*/
 
     // also see: InitParameterInteraction()
 
@@ -1639,23 +1705,32 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         } while(false);
 
         if (!fLoaded && !fRequestShutdown) {
-            // first suggest a reindex
-            if (!fReset) {
-                bool fRet = uiInterface.ThreadSafeQuestion(
-                    strLoadError + ".\n\n" + _("Do you want to rebuild the block database now?"),
-                    strLoadError + ".\nPlease restart with -reindex or -reindex-chainstate to recover.",
-                    "", CClientUIInterface::MSG_ERROR | CClientUIInterface::BTN_ABORT);
-                if (fRet) {
-                    fReindex = true;
-                    fRequestShutdown = false;
+            /*bool fRet = uiInterface.ThreadSafeQuestion(
+                    "Are you sure want to quit?",
+                    "Are you sure want to quit 2?",
+                    "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
+            if (fRet) {*/
+
+                // first suggest a reindex
+                if (!fReset) {
+                    bool fRet = uiInterface.ThreadSafeQuestion(
+                        strLoadError + ".\n\n" + _("Do you want to rebuild the block database now?"),
+                        strLoadError + ".\nPlease restart with -reindex or -reindex-chainstate to recover.",
+                        "", CClientUIInterface::MSG_ERROR | CClientUIInterface::BTN_ABORT);
+                    if (fRet) {
+                        fReindex = true;
+                        fRequestShutdown = false;
+                    } else {
+                        LogPrintf("Aborted block database rebuild. Exiting.\n");
+                        return false;
+                    }
                 } else {
-                    LogPrintf("Aborted block database rebuild. Exiting.\n");
-                    return false;
+                    return InitError(strLoadError);
                 }
-            } else {
-                return InitError(strLoadError);
-            }
-        }
+
+            //} //-if (fRet)
+
+        } //-if
     }
 
     // As LoadBlockIndex can take several minutes, it's possible the user

@@ -331,15 +331,21 @@ void CAddrMan::Attempt_(const CService& addr, int64_t nTime)
 
 CAddrInfo CAddrMan::Select_(bool newOnly)
 {
-    if (size() == 0)
+    if (size() == 0) {
+        //LogPrintf ( "CAddrMan.Select_ () : if (size() == 0) .\n" );
         return CAddrInfo();
+    }
 
-    if (newOnly && nNew == 0)
+    if (newOnly && nNew == 0) {
+        //LogPrintf ( "CAddrMan.Select_ () : if (newOnly && nNew == 0) .\n" );
         return CAddrInfo();
+    }
 
     // Use a 50% chance for choosing between tried and new table entries.
     if (!newOnly &&
        (nTried > 0 && (nNew == 0 || RandomInt(2) == 0))) { 
+        //LogPrintf ( "CAddrMan.Select_ () : if.\n" );
+
         // use a tried node
         double fChanceFactor = 1.0;
         while (1) {
@@ -357,6 +363,8 @@ CAddrInfo CAddrMan::Select_(bool newOnly)
             fChanceFactor *= 1.2;
         }
     } else {
+        //LogPrintf ( "CAddrMan.Select_ () : else.\n" );
+
         // use a new node
         double fChanceFactor = 1.0;
         while (1) {
