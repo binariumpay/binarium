@@ -162,6 +162,9 @@ OptionsDialog::~OptionsDialog()
 
 void OptionsDialog::setModel(OptionsModel *model)
 {
+    QSettings settings;
+    QString sDataDir;
+
     this->model = model;
 
     if(model)
@@ -175,7 +178,7 @@ void OptionsDialog::setModel(OptionsModel *model)
             strLabel = tr("none");
         ui->overriddenByCommandLineLabel->setText(strLabel);
 
-        ui -> edDataDir -> setText ( model -> sDataDir );
+        //ui -> edDataDir -> setText ( model -> sDataDir );
 
         mapper->setModel(model);
         setMapper();
@@ -183,7 +186,7 @@ void OptionsDialog::setModel(OptionsModel *model)
 
         updateDefaultProxyNets();
 
-        ui -> edDataDir -> setText ( model -> sDataDir );
+        //ui -> edDataDir -> setText ( model -> sDataDir );
 
     }
 
@@ -209,8 +212,16 @@ void OptionsDialog::setModel(OptionsModel *model)
     connect(ui -> edDataDir, SIGNAL(editingFinished()), this, SLOT(edDataDir_editingFinished()));
     connect(ui -> edDataDir, SIGNAL(textEdited(const QString &)), this, SLOT(edDataDir_textEdited(const QString &)));
 
-    QByteArray array = model -> sDataDir.toUtf8();
-    fprintf(stdout, "OptionsDialog.setModel () : sDataDir = %s.\n", array.data ());  // strUsage.c_str()    
+    //settings.setValue("strDataDir", "/media/rodion/Data1/ZoneDriverTesting/Binarium/Data/Linux/");
+
+    if (settings.contains("strDataDir"))
+        sDataDir = settings.value("strDataDir", "").toString();    
+
+    //QByteArray array = model -> sDataDir.toUtf8();
+    QByteArray array = sDataDir.toUtf8();
+    fprintf(stdout, "OptionsDialog.setModel () : sDataDir = %s.\n", array.data ());  // strUsage.c_str()
+
+    ui -> edDataDir -> setText ( sDataDir );
 
 }
 

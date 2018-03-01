@@ -472,219 +472,178 @@ static void MutateTxSign(CMutableTransaction& tx, const string& flagStr)
 
         // ... and merge in other signatures:
         BOOST_FOREACH(const CTransaction& txv, txVariants) {
-            txin.scriptSig = CombineSignatures(prevPubKey, mergedTx, i, txin.scriptSig, txv.vin[i].scriptSig);
-        }
-        if (!VerifyScript(txin.scriptSig, prevPubKey, STANDARD_SCRIPT_VERIFY_FLAGS, MutableTransactionSignatureChecker(&mergedTx, i)))
-            fComplete = false;
-    }
+            txin.scriptt script via GetScriptForDestination()
+    CScript scriptPubKey = GetScriptForDestination(addr.Get());
 
-    if (fComplete) {
-        // do nothing... for now
-        // perhaps store this for later optional JSON output
-    }
-
-    tx = mergedTx;
+    // construct TxOut, append to transaction output list
+    CTxOut txout(value, scriptPubKey);
+    tx.vout.push_back(txout);
 }
 
-class Secp256k1Init
+static void MutateTxAddOutData(CMutableTransaction& tx, const string& strInput)
 {
-    ECCVerifyHandle globalVerifyHandle;
+    CAmount value = 0;
 
-public:
-    Secp256k1Init() {
-        ECC_Start();
+    // separate [VALUE:]DATA in string
+    size_t pos = strInput.find(':');
+
+    if (pos==0)
+        throw runtime_error("TX output value not specified");
+
+    if (pos != string::npos) {
+        // extract and validate VALUE
+        string strValue = strInput.substr(0, pos);
+        if (!ParseMoney(strValue, value))
+            throw runtime_error("invalid TX output value");
     }
-    ~Secp256k1Init() {
-        ECC_Stop();
+
+    // extract and validate DATA
+    string strData = strInput.substr(pos + 1, string::npos);
+
+    if (!IsHex(strData))
+        throw runtime_error("invalid TX output data");
+
+    std::vector<unsigned char> data = ParseHex(strData);
+
+    CTxOut txout(value, CScript() << OP_RETURN << data);
+    tx.vout.push_back(txout);
+}
+
+static void MutateTxAddOutScript(CMutableTransaction& tx, const string& strInput)
+{
+    // separate VALUE:SCRIPT in string
+    size_t pos = strInput.find(':');
+    if ((pos == string::npos) ||
+        (pos == 0))
+        throw runtime_error("TX output missing separator");
+
+    // extract and validate VALUE
+    string strValue = strInput.substr(0, pos);
+    CAmount value;
+    if (!ParseMoney(strValue, value))
+        throw runtime_error("invalid TX output value");
+
+    // extract and validate script
+    string strScript = strInput.substr(pos + 1, string::npos);
+    CScript scriptPubKey = ParseScript(strScript); // throws on err
+
+    // construct TxOut, append to transaction output list
+    CTxOut txout(value, scriptPubKey);
+    tx.vout.push_back(txout);
+}
+
+static void MutateTxDelInput(CMutableTransaction& tx, const string& strInIdx)
+{
+    // parse requested deletion index
+    int inIdx = atoi(strInIdx);
+    if (inIdx < 0 || inIdx >= (int)tx.vin.size()) {
+        string strErr = "Invalid TX input index '" + strInIdx + "'";
+        throw runtime_error(strErr.c_str());
     }
+
+    // delete input from transaction
+    tx.vin.erase(tx.vin.begin() + inIdx);
+}
+
+static void MutateTxDelOutput(CMutableTransaction& tx, const string& strOutIdx)
+{
+    // parse requested deletion index
+    int outIdx = atoi(strOutIdx);
+    if (outIdx < 0 || outIdx >= (int)tx.vout.size()) {
+        string strErr = "Invalid TX output index '" + strOutIdx + "'";
+        throw runtime_error(strErr.c_str());
+    }
+
+    // delete output from transaction
+    tx.vout.erase(tx.vout.begin() + outIdx);
+}
+
+static const unsigned int N_SIGHASH_OPTS = 6;
+static const struct {
+    const char *flagStr;
+    int flags;
+} sighashOptions[N_SIGHASH_OPTS] = {
+    {"ALL", SIGHASH_ALL},
+    {"NONE", SIGHASH_NONE},
+    {"SINGLE", SIGHASH_SINGLE},
+    {"ALL|ANYONECANPAY", SIGHASH_ALL|SIGHASH_ANYONECANPAY},
+    {"NONE|ANYONECANPAY", SIGHASH_NONE|SIGHASH_ANYONECANPAY},
+    {"SINGLE|ANYONECANPAY", SIGHASH_SINGLE|SIGHASH_ANYONECANPAY},
 };
 
-static void MutateTx(CMutableTransaction& tx, const string& command,
-                     const string& commandVal)
+static bool findSighashFlags(int& flags, const string& flagStr)
 {
-    boost::scoped_ptr<Secp256k1Init> ecc;
+    flags = 0;
 
-    if (command == "nversion")
-        MutateTxVersion(tx, commandVal);
-    else if (command == "locktime")
-        MutateTxLocktime(tx, commandVal);
-
-    else if (command == "delin")
-        MutateTxDelInput(tx, commandVal);
-    else if (command == "in")
-        MutateTxAddInput(tx, commandVal);
-
-    else if (command == "delout")
-        MutateTxDelOutput(tx, commandVal);
-    else if (command == "outaddr")
-        MutateTxAddOutAddr(tx, commandVal);
-    else if (command == "outdata")
-        MutateTxAddOutData(tx, commandVal);
-    else if (command == "outscript")
-        MutateTxAddOutScript(tx, commandVal);
-
-    else if (command == "sign") {
-        if (!ecc) { ecc.reset(new Secp256k1Init()); }
-        MutateTxSign(tx, commandVal);
-    }
-
-    else if (command == "load")
-        RegisterLoad(commandVal);
-
-    else if (command == "set")
-        RegisterSet(commandVal);
-
-    else
-        throw runtime_error("unknown command");
-}
-
-static void OutputTxJSON(const CTransaction& tx)
-{
-    UniValue entry(UniValue::VOBJ);
-    TxToUniv(tx, uint256(), entry);
-
-    string jsonOutput = entry.write(4);
-    fprintf(stdout, "%s\n", jsonOutput.c_str());
-}
-
-static void OutputTxHash(const CTransaction& tx)
-{
-    string strHexHash = tx.GetHash().GetHex(); // the hex-encoded transaction hash (aka the transaction id)
-
-    fprintf(stdout, "%s\n", strHexHash.c_str());
-}
-
-static void OutputTxHex(const CTransaction& tx)
-{
-    string strHex = EncodeHexTx(tx);
-
-    fprintf(stdout, "%s\n", strHex.c_str());
-}
-
-static void OutputTx(const CTransaction& tx)
-{
-    if (GetBoolArg("-json", false))
-        OutputTxJSON(tx);
-    else if (GetBoolArg("-txid", false))
-        OutputTxHash(tx);
-    else
-        OutputTxHex(tx);
-}
-
-static string readStdin()
-{
-    char buf[4096];
-    string ret;
-
-    while (!feof(stdin)) {
-        size_t bread = fread(buf, 1, sizeof(buf), stdin);
-        ret.append(buf, bread);
-        if (bread < sizeof(buf))
-            break;
-    }
-
-    if (ferror(stdin))
-        throw runtime_error("error reading stdin");
-
-    boost::algorithm::trim_right(ret);
-
-    return ret;
-}
-
-static int CommandLineRawTx(int argc, char* argv[])
-{
-    string strPrint;
-    int nRet = 0;
-    try {
-        // Skip switches; Permit common stdin convention "-"
-        while (argc > 1 && IsSwitchChar(argv[1][0]) &&
-               (argv[1][1] != 0)) {
-            argc--;
-            argv++;
+    for (unsigned int i = 0; i < N_SIGHASH_OPTS; i++) {
+        if (flagStr == sighashOptions[i].flagStr) {
+            flags = sighashOptions[i].flags;
+            return true;
         }
-
-        CTransaction txDecodeTmp;
-        int startArg;
-
-        if (!fCreateBlank) {
-            // require at least one param
-            if (argc < 2)
-                throw runtime_error("too few parameters");
-
-            // param: hex-encoded binarium transaction
-            string strHexTx(argv[1]);
-            if (strHexTx == "-")                 // "-" implies standard input
-                strHexTx = readStdin();
-
-            if (!DecodeHexTx(txDecodeTmp, strHexTx))
-                throw runtime_error("invalid transaction encoding");
-
-            startArg = 2;
-        } else
-            startArg = 1;
-
-        CMutableTransaction tx(txDecodeTmp);
-
-        for (int i = startArg; i < argc; i++) {
-            string arg = argv[i];
-            string key, value;
-            size_t eqpos = arg.find('=');
-            if (eqpos == string::npos)
-                key = arg;
-            else {
-                key = arg.substr(0, eqpos);
-                value = arg.substr(eqpos + 1);
-            }
-
-            MutateTx(tx, key, value);
-        }
-
-        OutputTx(tx);
     }
 
-    catch (const boost::thread_interrupted&) {
-        throw;
-    }
-    catch (const std::exception& e) {
-        strPrint = string("error: ") + e.what();
-        nRet = EXIT_FAILURE;
-    }
-    catch (...) {
-        PrintExceptionContinue(NULL, "CommandLineRawTx()");
-        throw;
-    }
-
-    if (strPrint != "") {
-        fprintf((nRet == 0 ? stdout : stderr), "%s\n", strPrint.c_str());
-    }
-    return nRet;
+    return false;
 }
 
-int main(int argc, char* argv[])
+uint256 ParseHashUO(map<string,UniValue>& o, string strKey)
 {
-    SetupEnvironment();
-
-    try {
-        int ret = AppInitRawTx(argc, argv);
-        if (ret != CONTINUE_EXECUTION)
-            return ret;
-    }
-    catch (const std::exception& e) {
-        PrintExceptionContinue(&e, "AppInitRawTx()");
-        return EXIT_FAILURE;
-    } catch (...) {
-        PrintExceptionContinue(NULL, "AppInitRawTx()");
-        return EXIT_FAILURE;
-    }
-
-    int ret = EXIT_FAILURE;
-    try {
-        ret = CommandLineRawTx(argc, argv);
-    }
-    catch (const std::exception& e) {
-        PrintExceptionContinue(&e, "CommandLineRawTx()");
-    } catch (...) {
-        PrintExceptionContinue(NULL, "CommandLineRawTx()");
-    }
-    return ret;
+    if (!o.count(strKey))
+        return uint256();
+    return ParseHashUV(o[strKey], strKey);
 }
+
+vector<unsigned char> ParseHexUO(map<string,UniValue>& o, string strKey)
+{
+    if (!o.count(strKey)) {
+        vector<unsigned char> emptyVec;
+        return emptyVec;
+    }
+    return ParseHexUV(o[strKey], strKey);
+}
+
+static void MutateTxSign(CMutableTransaction& tx, const string& flagStr)
+{
+    int nHashType = SIGHASH_ALL;
+
+    if (flagStr.size() > 0)
+        if (!findSighashFlags(nHashType, flagStr))
+            throw runtime_error("unknown sighash flag/sign option");
+
+    vector<CTransaction> txVariants;
+    txVariants.push_back(tx);
+
+    // mergedTx will end up with all the signatures; it
+    // starts as a clone of the raw tx:
+    CMutableTransaction mergedTx(txVariants[0]);
+    bool fComplete = true;
+    CCoinsView viewDummy;
+    CCoinsViewCache view(&viewDummy);
+
+    if (!registers.count("privatekeys"))
+        throw runtime_error("privatekeys register variable must be set.");
+    bool fGivenKeys = false;
+    CBasicKeyStore tempKeystore;
+    UniValue keysObj = registers["privatekeys"];
+    fGivenKeys = true;
+
+    for (unsigned int kidx = 0; kidx < keysObj.size(); kidx++) {
+        if (!keysObj[kidx].isStr())
+            throw runtime_error("privatekey not a string");
+        CBitcoinSecret vchSecret;
+        bool fGood = vchSecret.SetString(keysObj[kidx].getValStr());
+        if (!fGood)
+            throw runtime_error("privatekey not valid");
+
+        CKey key = vchSecret.GetKey();
+        tempKeystore.AddKey(key);
+    }
+
+    // Add previous txouts given in the RPC call:
+    if (!registers.count("prevtxs"))
+        throw runtime_error("prevtxs register variable must be set.");
+    UniValue prevtxsObj = registers["prevtxs"];
+    {
+        for (unsigned int previdx = 0; previdx < prevtxsObj.size(); previdx++) {
+            UniValue prevOut = prevtxsObj[previdx];
+            if (!prevOut.isObject())
+   

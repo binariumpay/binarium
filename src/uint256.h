@@ -171,6 +171,7 @@ public:
 
     void XOROperator ( const uint512 & _uint512B );
     void XOROperator ( const uint256 & _uint256B, uint32_t _iOffset );
+    void XOROperator ( const unsigned char * _pData );
 
     uint256 trim256() const
     {

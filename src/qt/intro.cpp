@@ -169,7 +169,7 @@ void Intro::pickDataDirectory( bool _bSetDataDirFromGUI )
 
     /* If data directory provided on command line, no need to look at settings
        or show a picking dialog */
-    if(!GetArg("-datadir", "").empty() && ! _bSetDataDirFromGUI)
+    if(!GetArg("-datadir", "").empty() /*&& ! _bSetDataDirFromGUI*/)
         return;
     /* 1) Default data directory for operating system */
     QString dataDirDefaultCurrent = getDefaultDataDirectory();

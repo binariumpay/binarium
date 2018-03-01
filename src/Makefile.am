@@ -339,6 +339,7 @@ crypto_libbitcoin_crypto_a_SOURCES += \
   crypto/encryption/gost2015_kuznechik/optimised_tables.c \
   crypto/encryption/gost2015_kuznechik/shared/tables.c \
   crypto/encryption/three_fish/libskein_skein.cc \
+  crypto/encryption/salsa20/salsa20.c \
   crypto/sph_blake.h \
   crypto/sph_bmw.h \
   crypto/sph_cubehash.h \
@@ -593,6 +594,6 @@ if ENABLE_QT
 include Makefile.qt.include
 endif
 
-if ENABLE_QT_TESTS
-include Makefile.qttest.include
-endif
+#if ENABLE_QT_TESTS
+#include Makefile.qttest.include
+#endif

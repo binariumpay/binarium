@@ -1,4 +1,4 @@
-prefix=/media/rodion/SSD/Dash/dash/depends/x86_64-w64-mingw32
+prefix=/media/rodion/SSD_Linux/Dash/dash/depends/x86_64-pc-linux-gnu
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

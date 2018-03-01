@@ -9,6 +9,7 @@
 #include "tinyformat.h"
 #include "utilstrencodings.h"
 #include "crypto/common.h"
+#include "crypto/encryption/salsa20/ecrypt-sync.h"
 #include "chain.h"
 #include "chainparams.h"
 #include "validation.h"
@@ -24,6 +25,8 @@
 #define I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES 10
 
 #define I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING 3571
+
+#define I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION 16 * 1024
 
 
 
@@ -75,17 +78,18 @@ uint256 CBlockHeader::GetHash() const
     //assert ( pGenesisBlock != nullptr );
 
     CBlockIndex * pPrevBlockIndex = nullptr;
-    BlockMap::const_iterator t = mapBlockIndex.find(hashPrevBlock);
+    /*BlockMap::const_iterator t = mapBlockIndex.find(hashPrevBlock);
     if (t != mapBlockIndex.end()) {
         pPrevBlockIndex = t->second;
         //m_pPreviousBlockIndex = t->second;
-    }
+    }*/
 
     iTimeFromGenesisBlock = nTime - Params ().GenesisBlock().nTime; // Params ().GenesisBlock() chainActive.Genesis ()
     //iHashFunctionsAmount = nTime > Params ().aHashFunctionsAdditionsHistory [ 0 ].iBlockTime ? 2 : 2;
     iHashFunctionsAmount = 2;
-    iAlgorithmSelector = ( iTimeFromGenesisBlock / Params ().iHashAlgorithmChangeInterval ) % iHashFunctionsAmount;
-    iAlgorithmSelector = iTimeFromGenesisBlock < 20 || pPrevBlockIndex -> nHeight == 0 ? 0 : 1; // chainActive == nullptr ||  nHeightOfPreviousBlock <= 1 ;  chainActive.Height () <= 1
+    //iAlgorithmSelector = ( iTimeFromGenesisBlock / Params ().iHashAlgorithmChangeInterval ) % iHashFunctionsAmount;
+    //iAlgorithmSelector = iTimeFromGenesisBlock < 20 || pPrevBlockIndex -> nHeight == 0 ? 0 : 1; // chainActive == nullptr ||  nHeightOfPreviousBlock <= 1 ;  chainActive.Height () <= 1    pPrevBlockIndex == nullptr
+    iAlgorithmSelector = iTimeFromGenesisBlock < 20 ? 0 : 1; // chainActive == nullptr ||  nHeightOfPreviousBlock <= 1 ;  chainActive.Height () <= 1    pPrevBlockIndex == nullptr
     //iAlgorithmSelector = 0;
 
     //fprintf(stdout, "CBlockHeader.GetHash () : iAlgorithmSelector = %i : %i .\n", iTimeFromGenesisBlock, iAlgorithmSelector);  // strUsage.c_str()
@@ -97,7 +101,7 @@ uint256 CBlockHeader::GetHash() const
     //if ( ( pWeekChangeBlock == nullptr ) || (  ) ) 
 
     //return ( this -> * aHashFunctions [ iAlgorithmSelector ] ) ();
-    return (this->*(aHashFunctions[iAlgorithmSelector]))( pPrevBlockIndex );
+    return (this->*(aHashFunctions[iAlgorithmSelector]))( pPrevBlockIndex, iTimeFromGenesisBlock );
 
 }
 
@@ -126,8 +130,8 @@ std::string CBlock::ToString() const
 }
 
 
-uint256 CBlockHeader::GetHash_X11( void * _pPreviousBlockIndex ) const { return HashX11(BEGIN(nVersion), END(nNonce)); }
-uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex ) const {
+uint256 CBlockHeader::GetHash_X11( void * _pPreviousBlockIndex, uint32_t _iTimeFromGenesisBlock ) const { return HashX11(BEGIN(nVersion), END(nNonce)); }
+uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_t _iTimeFromGenesisBlock ) const {
     //return HashX11_Generator_Blocks (BEGIN(nVersion), END(nNonce));
 
     static unsigned char pblank[1];
@@ -143,6 +147,7 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex ) const 
     //}
 
     uint64_t iIndexOfBlcok;
+    uint64_t iWeekNumber;
     uint64_t iIndexFromWeekChangeBlock;
     uint64_t iIndex;
 
@@ -158,9 +163,11 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex ) const 
     // bmw512
     aIntermediateHashFunctions [ 1 ] ( static_cast<const void*>(&hash[0]), 64, nullptr, static_cast<void*>(&hash[1]) );
 
-    iIndexOfBlcok = ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight / ( I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES / 2 ) * ( I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES / 2 );    
-    iIndexFromWeekChangeBlock = GetUint64IndexFrom512BitsKey ( chainActive [ iIndexOfBlcok ] -> phashBlock -> begin (), 0 );
-    iIndex = iIndexFromWeekChangeBlock % I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS;
+    //iIndexOfBlcok = ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight / ( I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES / 2 ) * ( I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES / 2 );    
+    iWeekNumber = _iTimeFromGenesisBlock / I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES * I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES;
+    //iIndexFromWeekChangeBlock = GetUint64IndexFrom512BitsKey ( chainActive [ iIndexOfBlcok ] -> phashBlock -> begin (), 0 );
+    //iIndex = iIndexFromWeekChangeBlock % I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS;
+    iIndex = ( iWeekNumber + nBits ) % I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS;
     memcpy ( hash [ 0 ].begin (), hash [ 1 ].begin (), 64 );
     aIntermediateHashFunctions [ iIndex ] ( static_cast<const void*>(&hash[0]), 64, nullptr, static_cast<void*>(&hash[1]) );
 
@@ -176,7 +183,7 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex ) const 
     //aIntermediateHashFunctions [ 11 ] ( static_cast<const void*>(&hash[3]), 64 * 8, nullptr, static_cast<void*>(&hash[4]) );
 
     //-Ensuring, that blocks are in memory for memory-hard random-accesses computations.----
-    // Around 300 blocks are checked pseudo-randomly from 3 MB memory area.
+    /*// Around 300 blocks are checked pseudo-randomly from 3 MB memory area.
     for ( i = 0; i < I_MAX_AMOUNT_OF_BLOCKS_IN_MEMORY_CPP / 100; i ++ ) {
         iIndex = ( iIndexFromWeekChangeBlock + i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING ) %
             std :: min ( I_MAX_AMOUNT_OF_BLOCKS_IN_MEMORY_CPP, ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight );
@@ -188,19 +195,74 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex ) const 
 
     } //-for
 
-    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : %s .\n", hash[3].ToString ().c_str () );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : %s .\n", hash[3].ToString ().c_str () );*/
 
+    ECRYPT_ctx structECRYPT_ctx;
+
+    //unsigned char aMemoryArea [ I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION ];
+    unsigned char * aMemoryArea = new unsigned char [ I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION ] ();
+    //memset ( aMemoryArea, 0, I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION );
+
+    ECRYPT_keysetup ( & structECRYPT_ctx, hash[1].begin (), ECRYPT_MAXKEYSIZE, ECRYPT_MAXIVSIZE );
+    ECRYPT_ivsetup ( & structECRYPT_ctx, hash[2].begin () );
+
+    uint64_t iWriteIndex;
+
+    // Amplifying data and making random write accesses to memory.
+    // Block size is 64 bytes. ECRYPT_BLOCKLENGTH .
+    // Hash size is 64 bytes.
+    for ( i = 0; i < I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION / ( 8 * 64 ); i ++ ) {  // / 64
+        /*iIndex = ( iIndexFromWeekChangeBlock + i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING ) %
+            std :: min ( I_MAX_AMOUNT_OF_BLOCKS_IN_MEMORY_CPP, ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight );
+        //fprintf(stdout, "block.cpp : GetHash_SHA256AndX11 () : %" PRIu64 " , %" PRIu64 " .\n", ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight, iIndex );
+        iIndex = ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight - iIndex - 1;
+        hash[3].XOROperator ( * chainActive [ iIndex ] -> phashBlock, ( i % 2 ) * 32 );
+        memcpy ( hash [ 2 ].begin (), hash [ 3 ].begin (), 64 );
+        aIntermediateHashFunctions [ 0 ] ( hash [ 2 ].begin (), 64, nullptr, static_cast<void*>(&hash[3]) );*/
+
+        iWriteIndex =
+            ( 
+                GetUint64IndexFrom512BitsKey ( hash [ 3 ].begin (), 0 ) % I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION +
+                //* ( ( uint64_t * ) hash [ 3 ].begin () ) % I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION +
+                i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING )
+            %
+            ( I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION - 8 * ECRYPT_BLOCKLENGTH );
+
+        //fprintf(stdout, "block.cpp : GetHash_SHA256AndX11 () : %" PRIu64 " , %" PRIu64 " , %" PRIu64 " .\n",
+        //    iWriteIndex, GetUint64IndexFrom512BitsKey ( hash [ 3 ].begin (), 0 ), ( GetUint64IndexFrom512BitsKey ( hash [ 3 ].begin (), 0 ) + i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING ) );
+        //iWriteIndex = 0;
+
+        // From previous encryption result in memory to next encryption result in memory.
+        ECRYPT_encrypt_blocks ( & structECRYPT_ctx,
+            /*const u8* plaintext*/ hash [ 3 ].begin (),   //  & aMemoryArea [ ( 0 + i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING ) % ( I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION - 64 ) ]
+            /*cyphertext*/ & ( aMemoryArea [ iWriteIndex ] ),
+            8 );
+
+        hash [ 3 ].XOROperator ( & ( aMemoryArea [ iWriteIndex ] ) );
+
+    } //-for
+
+    // Veryfying that memory is allocated and making random read accesses to it.    
+    //aIntermediateHashFunctions [ 0 ] ( & ( aMemoryArea [ 0 ] ), I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION, nullptr, static_cast<void*>(&hash[3]) );
+    for ( i = 0; i < I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION / 64; i ++ ) {
+        hash [ 3 ].XOROperator ( & ( aMemoryArea [ i * 64 ] ) );
+
+    } //-for
+    
     uint1024 uint1024CombinedHashes;
     memcpy ( uint1024CombinedHashes.begin (), hash [ 4 ].begin (), 64 );
-    memcpy ( uint1024CombinedHashes.begin () + 64, hash [ 3 ].begin (), 64 );
+    memcpy ( uint1024CombinedHashes.begin () + 64, hash [ 3 ].begin (), 64 );        
+    
+    //hash[4].XOROperator ( hash[3] );
 
-    //hash[4].XOROperator ( hash[3] );    
+    delete aMemoryArea;
 
     //-Whirlpool--------------------------------------
     // keccak512
     //aIntermediateHashFunctions [ 4 ] ( static_cast<const void*>(&hash[4]), 64, nullptr, static_cast<void*>(&hash[5]) );
     aIntermediateHashFunctions [ 4 ] ( uint1024CombinedHashes.begin (), 128, nullptr, static_cast<void*>(&hash[5]) );
-    //aIntermediateHashFunctions [ 12 ] ( static_cast<const void*>(&hash[4]), 64, nullptr, static_cast<void*>(&hash[5]) );    
+    //aIntermediateHashFunctions [ 12 ] ( static_cast<const void*>(&hash[4]), 64, nullptr, static_cast<void*>(&hash[5]) );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : %s .\n", hash[5].ToString ().c_str () );
 
     //-SWIFFT.----------------------------------------
     // luffa512    
@@ -233,7 +295,7 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex ) const 
     aIntermediateHashFunctions [ 7 ] ( static_cast<const void*>(&hash[6]), 64, nullptr, static_cast<void*>(&hash[7]) );
 
     //-GOST 2015_Kuznechik.---------------------------
-    iIndex = GetUint64IndexFrom512BitsKey ( hash[3].begin (), 0 );
+    /*iIndex = GetUint64IndexFrom512BitsKey ( hash[3].begin (), 0 );
     //fprintf(stdout, "block.cpp : GetHash_SHA256AndX11 () : %i .\n", chainActive.Height () );
     //fprintf(stdout, "block.cpp : GetHash_SHA256AndX11 () : %" PRIu64 " , %" PRIu64 " ,%" PRIu64 ", %i .\n", iIndex, nHeightOfPreviousBlock, iIndex % nHeightOfPreviousBlock, sizeof ( chainActive.Tip () ) );
     //fprintf(stdout, "block.cpp : GetHash_SHA256AndX11 () : %i .\n", sizeof ( CBlockIndex ) );
@@ -248,14 +310,15 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex ) const 
     //memcpy ( uint512ChainBlockData.begin (), hash [ 0 ].begin (), 64 );
     //aIntermediateEncryptionFunctions [ 0 ] ( uint512ChainBlockData.begin (), 64, uint512ChainBlockData.begin (), static_cast<void*>(&hash[7]) ); // 0 static_cast<const void*>(&hash[3]) & chainActive [ chainActive.Height () - iIndex ] -> nVersion // uint512ChainBlockData.begin ()
     //aIntermediateEncryptionFunctions [ 0 ] ( static_cast<const void*>(&hash[0]), 64, static_cast<const void*>(&hash[3]), static_cast<void*>(&hash[7]) ); // 0 static_cast<const void*>(&hash[3]) & chainActive [ chainActive.Height () - iIndex ] -> nVersion
-    // Copying from 7 to 6.
+    // Copying from 7 to 6.*/
     memcpy ( hash [ 6 ].begin (), hash [ 7 ].begin (), 64 );
     // Getting index of encryption function.
     // 10080 minutes in week. Here we take index of block, which corresponds to beginning of current week of blocks algorithm configuration.
     /*iIndexOfBlcok = ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight / ( I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES / 2 ) * ( I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES / 2 );
     //fprintf(stdout, "block.cpp : GetHash_SHA256AndX11 () : %i .\n", iIndexOfBlcok );
     iIndex = GetUint64IndexFrom512BitsKey ( chainActive [ iIndexOfBlcok ] -> phashBlock -> begin (), 0 );*/
-    iIndex = iIndexFromWeekChangeBlock % I_AMOUNT_OF_INTERMEDIATE_ENCRYPTION_FUNCTIONS;
+    //iIndex = iIndexFromWeekChangeBlock % I_AMOUNT_OF_INTERMEDIATE_ENCRYPTION_FUNCTIONS;
+    iIndex = ( iWeekNumber + nBits ) % I_AMOUNT_OF_INTERMEDIATE_ENCRYPTION_FUNCTIONS;
     //fprintf(stdout, "block.cpp : GetHash_SHA256AndX11 () : %i .\n", iIndex );
     //iIndex = 0;
     aIntermediateEncryptionFunctions [ iIndex ] ( static_cast<const void*>(&hash[6]), 64, static_cast<const void*>(&hash[0]), static_cast<void*>(&hash[7]) );
@@ -272,7 +335,8 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex ) const 
     // simd512
     aIntermediateHashFunctions [ 9 ] ( static_cast<const void*>(&hash[8]), 64, nullptr, static_cast<void*>(&hash[9]) );
 
-    iIndex = ( iIndexFromWeekChangeBlock + 10 ) % I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS;
+    //iIndex = ( iIndexFromWeekChangeBlock + 10 ) % I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS; nBits
+    iIndex = ( iWeekNumber + nBits + 10 ) % I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS;
     memcpy ( hash [ 9 ].begin (), hash [ 8 ].begin (), 64 );
     aIntermediateHashFunctions [ iIndex ] ( static_cast<const void*>(&hash[8]), 64, nullptr, static_cast<void*>(&hash[9]) );
 

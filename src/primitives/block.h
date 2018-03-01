@@ -18,6 +18,8 @@
 
 #define I_MAX_AMOUNT_OF_BLOCKS_IN_MEMORY 1000
 
+//#define I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION 16 * 1024
+
 
 
 //typedef uint256 ( * TPHashFunction ) ();
@@ -52,7 +54,9 @@ public:
     uint32_t nNonce;
     //uint64_t nHeightOfPreviousBlock;
 
-    uint256 ( CBlockHeader::* aHashFunctions [ I_AMOUNT_OF_HASH_FUNCTIONS ] ) ( void * ) const;
+    //unsigned char aMemoryArea [ I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION ];
+
+    uint256 ( CBlockHeader::* aHashFunctions [ I_AMOUNT_OF_HASH_FUNCTIONS ] ) ( void *, uint32_t ) const;
     //void * m_pPreviousBlockIndex = nullptr;
 
     CBlockHeader()
@@ -97,8 +101,8 @@ public:
     uint256 GetHash() const;
     uint256 GetGenesisInitializationHash() const;
 
-    uint256 GetHash_X11( void * _pPreviousBlockIndex ) const;
-    uint256 GetHash_SHA256AndX11 ( void * _pPreviousBlockIndex ) const;
+    uint256 GetHash_X11( void * _pPreviousBlockIndex, uint32_t _iTimeFromGenesisBlock ) const;
+    uint256 GetHash_SHA256AndX11 ( void * _pPreviousBlockIndex, uint32_t _iTimeFromGenesisBlock ) const;
 
     int64_t GetBlockTime() const
     {

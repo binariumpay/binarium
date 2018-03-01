@@ -928,138 +928,202 @@ void run_scalar_tests(void) {
               0xff, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
-            {{0x00, 0x00, 0x00, 0xc0, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0x03, 0x00, 0x80, 0x00, 0x00, 0x80,
-              0xff, 0xff, 0xff, 0x00, 0x00, 0x80, 0xff, 0x7f},
-             {0xff, 0xcf, 0xff, 0xff, 0x01, 0x00, 0x00, 0x00,
-              0x00, 0xc0, 0xff, 0xcf, 0xff, 0xff, 0xff, 0xff,
-              0xbf, 0xff, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x80, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00}},
-            {{0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0xff, 0xff,
-              0xff, 0xff, 0x00, 0xfc, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0x00, 0x80, 0x00, 0x00, 0x80,
-              0xff, 0x01, 0xfc, 0xff, 0x01, 0x00, 0xfe, 0xff},
-             {0xff, 0xff, 0xff, 0x03, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03, 0x00}},
-            {{0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0xe0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0x00, 0xf8, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0x7f, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x80},
-             {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0xf8, 0xff, 0x01, 0x00, 0xf0, 0xff, 0xff,
-              0xe0, 0xff, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
-            {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0xf8, 0xff, 0x00},
-             {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00,
-              0xfc, 0xff, 0xff, 0x3f, 0xf0, 0xff, 0xff, 0x3f,
-              0x00, 0x00, 0xf8, 0x07, 0x00, 0x00, 0x00, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0x0f, 0x7e, 0x00, 0x00}},
-            {{0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x80,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0x1f, 0x00, 0x00, 0xfe, 0x07, 0x00},
-             {0x00, 0x00, 0x00, 0xf0, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xfb, 0xff, 0x07, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x60}},
-            {{0xff, 0x01, 0x00, 0xff, 0xff, 0xff, 0x0f, 0x00,
-              0x80, 0x7f, 0xfe, 0xff, 0xff, 0xff, 0xff, 0x03,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x80, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-             {0xff, 0xff, 0x1f, 0x00, 0xf0, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0x3f, 0x00, 0x00, 0x00, 0x00}},
-            {{0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-             {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf1, 0xff,
+           56k1_scalar r1, r2;
+        secp256k1_scalar_add(&r1, &s1, &s2);
+        secp256k1_scalar_add(&r1, &r1, &s);
+        secp256k1_scalar_add(&r2, &s2, &s);
+        secp256k1_scalar_add(&r2, &s1, &r2);
+        CHECK(secp256k1_scalar_eq(&r1, &r2));
+    }
+
+    {
+        /* Test associativity of mul. */
+        secp256k1_scalar r1, r2;
+        secp256k1_scalar_mul(&r1, &s1, &s2);
+        secp256k1_scalar_mul(&r1, &r1, &s);
+        secp256k1_scalar_mul(&r2, &s2, &s);
+        secp256k1_scalar_mul(&r2, &s1, &r2);
+        CHECK(secp256k1_scalar_eq(&r1, &r2));
+    }
+
+    {
+        /* Test distributitivity of mul over add. */
+        secp256k1_scalar r1, r2, t;
+        secp256k1_scalar_add(&r1, &s1, &s2);
+        secp256k1_scalar_mul(&r1, &r1, &s);
+        secp256k1_scalar_mul(&r2, &s1, &s);
+        secp256k1_scalar_mul(&t, &s2, &s);
+        secp256k1_scalar_add(&r2, &r2, &t);
+        CHECK(secp256k1_scalar_eq(&r1, &r2));
+    }
+
+    {
+        /* Test square. */
+        secp256k1_scalar r1, r2;
+        secp256k1_scalar_sqr(&r1, &s1);
+        secp256k1_scalar_mul(&r2, &s1, &s1);
+        CHECK(secp256k1_scalar_eq(&r1, &r2));
+    }
+
+    {
+        /* Test multiplicative identity. */
+        secp256k1_scalar r1, v1;
+        secp256k1_scalar_set_int(&v1,1);
+        secp256k1_scalar_mul(&r1, &s1, &v1);
+        CHECK(secp256k1_scalar_eq(&r1, &s1));
+    }
+
+    {
+        /* Test additive identity. */
+        secp256k1_scalar r1, v0;
+        secp256k1_scalar_set_int(&v0,0);
+        secp256k1_scalar_add(&r1, &s1, &v0);
+        CHECK(secp256k1_scalar_eq(&r1, &s1));
+    }
+
+    {
+        /* Test zero product property. */
+        secp256k1_scalar r1, v0;
+        secp256k1_scalar_set_int(&v0,0);
+        secp256k1_scalar_mul(&r1, &s1, &v0);
+        CHECK(secp256k1_scalar_eq(&r1, &v0));
+    }
+
+}
+
+void run_scalar_tests(void) {
+    int i;
+    for (i = 0; i < 128 * count; i++) {
+        scalar_test();
+    }
+
+    {
+        /* (-1)+1 should be zero. */
+        secp256k1_scalar s, o;
+        secp256k1_scalar_set_int(&s, 1);
+        CHECK(secp256k1_scalar_is_one(&s));
+        secp256k1_scalar_negate(&o, &s);
+        secp256k1_scalar_add(&o, &o, &s);
+        CHECK(secp256k1_scalar_is_zero(&o));
+        secp256k1_scalar_negate(&o, &o);
+        CHECK(secp256k1_scalar_is_zero(&o));
+    }
+
+#ifndef USE_NUM_NONE
+    {
+        /* A scalar with value of the curve order should be 0. */
+        secp256k1_num order;
+        secp256k1_scalar zero;
+        unsigned char bin[32];
+        int overflow = 0;
+        secp256k1_scalar_order_get_num(&order);
+        secp256k1_num_get_bin(bin, 32, &order);
+        secp256k1_scalar_set_b32(&zero, bin, &overflow);
+        CHECK(overflow == 1);
+        CHECK(secp256k1_scalar_is_zero(&zero));
+    }
+#endif
+
+    {
+        /* Does check_overflow check catch all ones? */
+        static const secp256k1_scalar overflowed = SECP256K1_SCALAR_CONST(
+            0xFFFFFFFFUL, 0xFFFFFFFFUL, 0xFFFFFFFFUL, 0xFFFFFFFFUL,
+            0xFFFFFFFFUL, 0xFFFFFFFFUL, 0xFFFFFFFFUL, 0xFFFFFFFFUL
+        );
+        CHECK(secp256k1_scalar_check_overflow(&overflowed));
+    }
+
+    {
+        /* Static test vectors.
+         * These were reduced from ~10^12 random vectors based on comparison-decision
+         *  and edge-case coverage on 32-bit and 64-bit implementations.
+         * The responses were generated with Sage 5.9.
+         */
+        secp256k1_scalar x;
+        secp256k1_scalar y;
+        secp256k1_scalar z;
+        secp256k1_scalar zz;
+        secp256k1_scalar one;
+        secp256k1_scalar r1;
+        secp256k1_scalar r2;
+#if defined(USE_SCALAR_INV_NUM)
+        secp256k1_scalar zzv;
+#endif
+        int overflow;
+        unsigned char chal[32][2][32] = {
+            {{0xff, 0xff, 0x03, 0x07, 0x00, 0x00, 0x00, 0x00,
               0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03,
-              0x00, 0x00, 0x00, 0xe0, 0xff, 0xff, 0xff, 0xff}},
-            {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00,
-              0x7e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0xc0, 0xff, 0xff, 0xcf, 0xff, 0x1f, 0x00, 0x00,
-              0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80},
-             {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0xe0, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0x3f, 0x00, 0x7e,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
-            {{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0xfc, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7c, 0x00},
-             {0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80,
-              0xff, 0xff, 0x7f, 0x00, 0x80, 0x00, 0x00, 0x00,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00,
-              0x00, 0x00, 0xe0, 0xff, 0xff, 0xff, 0xff, 0xff}},
-            {{0xff, 0xff, 0xff, 0xff, 0xff, 0x1f, 0x00, 0x80,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00,
-              0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00},
-             {0xf0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0x3f, 0x00, 0x00, 0x80,
-              0xff, 0x01, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff,
-              0xff, 0x7f, 0xf8, 0xff, 0xff, 0x1f, 0x00, 0xfe}},
-            {{0xff, 0xff, 0xff, 0x3f, 0xf8, 0xff, 0xff, 0xff,
-              0xff, 0x03, 0xfe, 0x01, 0x00, 0x00, 0x00, 0x00,
-              0xf0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x07},
-             {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00,
-              0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80,
-              0xff, 0xff, 0xff, 0xff, 0x01, 0x80, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00}},
-            {{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+              0x00, 0x00, 0x00, 0x00, 0x00, 0xf8, 0xff, 0xff,
+              0xff, 0xff, 0x03, 0x00, 0xc0, 0xff, 0xff, 0xff},
+             {0xff, 0xff, 0xff, 0xff, 0xff, 0x0f, 0x00, 0x00,
+              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf8,
+              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+              0xff, 0x03, 0x00, 0x00, 0x00, 0x00, 0xe0, 0xff}},
+            {{0xef, 0xff, 0x1f, 0x00, 0x00, 0x00, 0x00, 0x00,
+              0xfe, 0xff, 0xff, 0xff, 0xff, 0xff, 0x3f, 0x00,
               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-             {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe,
-              0xba, 0xae, 0xdc, 0xe6, 0xaf, 0x48, 0xa0, 0x3b,
-              0xbf, 0xd2, 0x5e, 0x8c, 0xd0, 0x36, 0x41, 0x40}},
-            {{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01},
-             {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
-            {{0x7f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-             {0x7f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+             {0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00,
+              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe0,
+              0xff, 0xff, 0xff, 0xff, 0xfc, 0xff, 0xff, 0xff,
+              0xff, 0xff, 0xff, 0xff, 0x7f, 0x00, 0x80, 0xff}},
+            {{0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00,
+              0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00,
+              0x80, 0x00, 0x00, 0x80, 0xff, 0x3f, 0x00, 0x00,
+              0x00, 0x00, 0x00, 0xf8, 0xff, 0xff, 0xff, 0x00},
+             {0x00, 0x00, 0xfc, 0xff, 0xff, 0xff, 0xff, 0x80,
+              0xff, 0xff, 0xff, 0xff, 0xff, 0x0f, 0x00, 0xe0,
+              0xff, 0xff, 0xff, 0xff, 0xff, 0x7f, 0x00, 0x00,
+              0x00, 0x00, 0x00, 0x00, 0x7f, 0xff, 0xff, 0xff}},
+            {{0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00,
+              0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x80,
+              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00,
+              0x00, 0x1e, 0xf8, 0xff, 0xff, 0xff, 0xfd, 0xff},
+             {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1f,
+              0x00, 0x00, 0x00, 0xf8, 0xff, 0x03, 0x00, 0xe0,
+              0xff, 0x0f, 0x00, 0x00, 0x00, 0x00, 0xf0, 0xff,
+              0xf3, 0xff, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00}},
+            {{0x80, 0x00, 0x00, 0x80, 0xff, 0xff, 0xff, 0x00,
+              0x00, 0x1c, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff,
+              0xff, 0xff, 0xff, 0xe0, 0xff, 0xff, 0xff, 0x00,
+              0x00, 0x00, 0x00, 0x00, 0xe0, 0xff, 0xff, 0xff},
+             {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03, 0x00,
+              0xf8, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+              0xff, 0x1f, 0x00, 0x00, 0x80, 0xff, 0xff, 0x3f,
+              0x00, 0xfe, 0xff, 0xff, 0xff, 0xdf, 0xff, 0xff}},
+            {{0xff, 0xff, 0xff, 0xff, 0x00, 0x0f, 0xfc, 0x9f,
+              0xff, 0xff, 0xff, 0x00, 0x80, 0x00, 0x00, 0x80,
+              0xff, 0x0f, 0xfc, 0xff, 0x7f, 0x00, 0x00, 0x00,
+              0x00, 0xf8, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00},
+             {0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80,
+              0x00, 0x00, 0xf8, 0xff, 0x0f, 0xc0, 0xff, 0xff,
+              0xff, 0x1f, 0x00, 0x00, 0x00, 0xc0, 0xff, 0xff,
+              0xff, 0xff, 0xff, 0x07, 0x80, 0xff, 0xff, 0xff}},
+            {{0xff, 0xff, 0xff, 0xff, 0xff, 0x3f, 0x00, 0x00,
+              0x80, 0x00, 0x00, 0x80, 0xff, 0xff, 0xff, 0xff,
+              0xf7, 0xff, 0xff, 0xef, 0xff, 0xff, 0xff, 0x00,
+              0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0xf0},
+             {0x00, 0x00, 0x00, 0x00, 0xf8, 0xff, 0xff, 0xff,
+              0xff, 0xff, 0xff, 0xff, 0x01, 0x00, 0x00, 0x00,
+              0x00, 0x00, 0x80, 0xff, 0xff, 0xff, 0xff, 0xff,
+              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
+            {{0x00, 0xf8, 0xff, 0x03, 0xff, 0xff, 0xff, 0x00,
+              0x00, 0xfe, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00,
+              0x80, 0x00, 0x00, 0x80, 0xff, 0xff, 0xff, 0xff,
+              0xff, 0xff, 0x03, 0xc0, 0xff, 0x0f, 0xfc, 0xff},
+             {0xff, 0xff, 0xff, 0xff, 0xff, 0xe0, 0xff, 0xff,
+              0xff, 0x01, 0x00, 0x00, 0x00, 0x3f, 0x00, 0xc0,
               0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
               0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
-            {{0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0xc0,
+            {{0x8f, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+              0x00, 0x00, 0xf8, 0xff, 0xff, 0xff, 0xff, 0xff,
+              0xff, 0x7f, 0x00, 0x00, 0x80, 0x00, 0x00, 0x80,
+              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00},
+             {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
               0xff, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0xf0, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f},
-             {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01, 0x00,
-              0xf0, 0xff, 0xff, 0xff, 0xff, 0x07, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0xfe, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0x01, 0xff, 0xff, 0xff}},
-            {{0x7f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-             {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02}},
-            {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe,
-              0xba, 0xae, 0xdc, 0xe6, 0xaf, 0x48, 0xa0, 0x3b,
-              0xbf, 0xd2, 0x5e, 0x8c, 0xd0, 0x36, 0x41, 0x40},
+              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+           x8c, 0xd0, 0x36, 0x41, 0x40},
              {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -2192,249 +2256,228 @@ void test_point_times_order(const secp256k1_gej *point) {
     CHECK(secp256k1_ge_is_valid_var(&res3) == 0);
     CHECK(secp256k1_eckey_pubkey_serialize(&res3, pub, &psize, 0) == 0);
     psize = 65;
-    CHECK(secp256k1_eckey_pubkey_serialize(&res3, pub, &psize, 1) == 0);
-    /* check zero/one edge cases */
-    secp256k1_ecmult(&ctx->ecmult_ctx, &res1, point, &zero, &zero);
-    secp256k1_ge_set_gej(&res3, &res1);
-    CHECK(secp256k1_ge_is_infinity(&res3));
-    secp256k1_ecmult(&ctx->ecmult_ctx, &res1, point, &one, &zero);
-    secp256k1_ge_set_gej(&res3, &res1);
-    ge_equals_gej(&res3, point);
-    secp256k1_ecmult(&ctx->ecmult_ctx, &res1, point, &zero, &one);
-    secp256k1_ge_set_gej(&res3, &res1);
-    ge_equals_ge(&res3, &secp256k1_ge_const_g);
+    CHECK(secp256k1_eckey_pubkey_serialize(&res3, pub,   */
+    secp256k1_gej aj = SECP256K1_GEJ_CONST(
+        0x8d24cd95, 0x0a355af1, 0x3c543505, 0x44238d30,
+        0x0643d79f, 0x05a59614, 0x2f8ec030, 0xd58977cb,
+        0x001e337a, 0x38093dcd, 0x6c0f386d, 0x0b1293a8,
+        0x4d72c879, 0xd7681924, 0x44e6d2f3, 0x9190117d
+    );
+    secp256k1_gej bj = SECP256K1_GEJ_CONST(
+        0xc7b74206, 0x1f788cd9, 0xabd0937d, 0x164a0d86,
+        0x95f6ff75, 0xf19a4ce9, 0xd013bd7b, 0xbf92d2a7,
+        0xffe1cc85, 0xc7f6c232, 0x93f0c792, 0xf4ed6c57,
+        0xb28d3786, 0x2897e6db, 0xbb192d0b, 0x6e6feab2
+    );
+    secp256k1_gej sumj = SECP256K1_GEJ_CONST(
+        0x671a63c0, 0x3efdad4c, 0x389a7798, 0x24356027,
+        0xb3d69010, 0x278625c3, 0x5c86d390, 0x184a8f7a,
+        0x5f6409c2, 0x2ce01f2b, 0x511fd375, 0x25071d08,
+        0xda651801, 0x70e95caf, 0x8f0d893c, 0xbed8fbbe
+    );
+    secp256k1_ge b;
+    secp256k1_gej resj;
+    secp256k1_ge res;
+    secp256k1_ge_set_gej(&b, &bj);
+
+    secp256k1_gej_add_var(&resj, &aj, &bj, NULL);
+    secp256k1_ge_set_gej(&res, &resj);
+    ge_equals_gej(&res, &sumj);
+
+    secp256k1_gej_add_ge(&resj, &aj, &b);
+    secp256k1_ge_set_gej(&res, &resj);
+    ge_equals_gej(&res, &sumj);
+
+    secp256k1_gej_add_ge_var(&resj, &aj, &b, NULL);
+    secp256k1_ge_set_gej(&res, &resj);
+    ge_equals_gej(&res, &sumj);
 }
 
-void run_point_times_order(void) {
+void run_ge(void) {
     int i;
-    secp256k1_fe x = SECP256K1_FE_CONST(0, 0, 0, 0, 0, 0, 0, 2);
-    static const secp256k1_fe xr = SECP256K1_FE_CONST(
-        0x7603CB59, 0xB0EF6C63, 0xFE608479, 0x2A0C378C,
-        0xDB3233A8, 0x0F8A9A09, 0xA877DEAD, 0x31B38C45
-    );
-    for (i = 0; i < 500; i++) {
-        secp256k1_ge p;
-        if (secp256k1_ge_set_xo_var(&p, &x, 1)) {
-            secp256k1_gej j;
-            CHECK(secp256k1_ge_is_valid_var(&p));
-            secp256k1_gej_set_ge(&j, &p);
-            CHECK(secp256k1_gej_is_valid_var(&j));
-            test_point_times_order(&j);
-        }
-        secp256k1_fe_sqr(&x, &x);
+    for (i = 0; i < count * 32; i++) {
+        test_ge();
     }
-    secp256k1_fe_normalize_var(&x);
-    CHECK(secp256k1_fe_equal_var(&x, &xr));
+    test_add_neg_y_diff_x();
 }
 
-void ecmult_const_random_mult(void) {
+void test_ec_combine(void) {
+    secp256k1_scalar sum = SECP256K1_SCALAR_CONST(0, 0, 0, 0, 0, 0, 0, 0);
+    secp256k1_pubkey data[6];
+    const secp256k1_pubkey* d[6];
+    secp256k1_pubkey sd;
+    secp256k1_pubkey sd2;
+    secp256k1_gej Qj;
+    secp256k1_ge Q;
+    int i;
+    for (i = 1; i <= 6; i++) {
+        secp256k1_scalar s;
+        random_scalar_order_test(&s);
+        secp256k1_scalar_add(&sum, &sum, &s);
+        secp256k1_ecmult_gen(&ctx->ecmult_gen_ctx, &Qj, &s);
+        secp256k1_ge_set_gej(&Q, &Qj);
+        secp256k1_pubkey_save(&data[i - 1], &Q);
+        d[i - 1] = &data[i - 1];
+        secp256k1_ecmult_gen(&ctx->ecmult_gen_ctx, &Qj, &sum);
+        secp256k1_ge_set_gej(&Q, &Qj);
+        secp256k1_pubkey_save(&sd, &Q);
+        CHECK(secp256k1_ec_pubkey_combine(ctx, &sd2, d, i) == 1);
+        CHECK(memcmp(&sd, &sd2, sizeof(sd)) == 0);
+    }
+}
+
+void run_ec_combine(void) {
+    int i;
+    for (i = 0; i < count * 8; i++) {
+         test_ec_combine();
+    }
+}
+
+void test_group_decompress(const secp256k1_fe* x) {
+    /* The input itself, normalized. */
+    secp256k1_fe fex = *x;
+    secp256k1_fe tmp;
+    /* Results of set_xquad_var, set_xo_var(..., 0), set_xo_var(..., 1). */
+    secp256k1_ge ge_quad, ge_even, ge_odd;
+    /* Return values of the above calls. */
+    int res_quad, res_even, res_odd;
+
+    secp256k1_fe_normalize_var(&fex);
+
+    res_quad = secp256k1_ge_set_xquad_var(&ge_quad, &fex);
+    res_even = secp256k1_ge_set_xo_var(&ge_even, &fex, 0);
+    res_odd = secp256k1_ge_set_xo_var(&ge_odd, &fex, 1);
+
+    CHECK(res_quad == res_even);
+    CHECK(res_quad == res_odd);
+
+    if (res_quad) {
+        secp256k1_fe_normalize_var(&ge_quad.x);
+        secp256k1_fe_normalize_var(&ge_odd.x);
+        secp256k1_fe_normalize_var(&ge_even.x);
+        secp256k1_fe_normalize_var(&ge_quad.y);
+        secp256k1_fe_normalize_var(&ge_odd.y);
+        secp256k1_fe_normalize_var(&ge_even.y);
+
+        /* No infinity allowed. */
+        CHECK(!ge_quad.infinity);
+        CHECK(!ge_even.infinity);
+        CHECK(!ge_odd.infinity);
+
+        /* Check that the x coordinates check out. */
+        CHECK(secp256k1_fe_equal_var(&ge_quad.x, x));
+        CHECK(secp256k1_fe_equal_var(&ge_even.x, x));
+        CHECK(secp256k1_fe_equal_var(&ge_odd.x, x));
+
+        /* Check that the Y coordinate result in ge_quad is a square. */
+        CHECK(secp256k1_fe_sqrt_var(&tmp, &ge_quad.y));
+        secp256k1_fe_sqr(&tmp, &tmp);
+        CHECK(secp256k1_fe_equal_var(&tmp, &ge_quad.y));
+
+        /* Check odd/even Y in ge_odd, ge_even. */
+        CHECK(secp256k1_fe_is_odd(&ge_odd.y));
+        CHECK(!secp256k1_fe_is_odd(&ge_even.y));
+    }
+}
+
+void run_group_decompress(void) {
+    int i;
+    for (i = 0; i < count * 4; i++) {
+        secp256k1_fe fe;
+        random_fe_test(&fe);
+        test_group_decompress(&fe);
+    }
+}
+
+/***** ECMULT TESTS *****/
+
+void run_ecmult_chain(void) {
     /* random starting point A (on the curve) */
-    secp256k1_ge a = SECP256K1_GE_CONST(
-        0x6d986544, 0x57ff52b8, 0xcf1b8126, 0x5b802a5b,
-        0xa97f9263, 0xb1e88044, 0x93351325, 0x91bc450a,
-        0x535c59f7, 0x325e5d2b, 0xc391fbe8, 0x3c12787c,
-        0x337e4a98, 0xe82a9011, 0x0123ba37, 0xdd769c7d
+    secp256k1_gej a = SECP256K1_GEJ_CONST(
+        0x8b30bbe9, 0xae2a9906, 0x96b22f67, 0x0709dff3,
+        0x727fd8bc, 0x04d3362c, 0x6c7bf458, 0xe2846004,
+        0xa357ae91, 0x5c4a6528, 0x1309edf2, 0x0504740f,
+        0x0eb33439, 0x90216b4f, 0x81063cb6, 0x5f2f7e0f
     );
-    /* random initial factor xn */
+    /* two random initial factors xn and gn */
     secp256k1_scalar xn = SECP256K1_SCALAR_CONST(
-        0x649d4f77, 0xc4242df7, 0x7f2079c9, 0x14530327,
-        0xa31b876a, 0xd2d8ce2a, 0x2236d5c6, 0xd7b2029b
+        0x84cc5452, 0xf7fde1ed, 0xb4d38a8c, 0xe9b1b84c,
+        0xcef31f14, 0x6e569be9, 0x705d357a, 0x42985407
     );
-    /* expected xn * A (from sage) */
-    secp256k1_ge expected_b = SECP256K1_GE_CONST(
-        0x23773684, 0x4d209dc7, 0x098a786f, 0x20d06fcd,
-        0x070a38bf, 0xc11ac651, 0x03004319, 0x1e2a8786,
-        0xed8c3b8e, 0xc06dd57b, 0xd06ea66e, 0x45492b0f,
-        0xb84e4e1b, 0xfb77e21f, 0x96baae2a, 0x63dec956
+    secp256k1_scalar gn = SECP256K1_SCALAR_CONST(
+        0xa1e58d22, 0x553dcd42, 0xb2398062, 0x5d4c57a9,
+        0x6e9323d4, 0x2b3152e5, 0xca2c3990, 0xedc7c9de
     );
-    secp256k1_gej b;
-    secp256k1_ecmult_const(&b, &a, &xn);
+    /* two small multipliers to be applied to xn and gn in every iteration: */
+    static const secp256k1_scalar xf = SECP256K1_SCALAR_CONST(0, 0, 0, 0, 0, 0, 0, 0x1337);
+    static const secp256k1_scalar gf = SECP256K1_SCALAR_CONST(0, 0, 0, 0, 0, 0, 0, 0x7113);
+    /* accumulators with the resulting coefficients to A and G */
+    secp256k1_scalar ae = SECP256K1_SCALAR_CONST(0, 0, 0, 0, 0, 0, 0, 1);
+    secp256k1_scalar ge = SECP256K1_SCALAR_CONST(0, 0, 0, 0, 0, 0, 0, 0);
+    /* actual points */
+    secp256k1_gej x;
+    secp256k1_gej x2;
+    int i;
 
-    CHECK(secp256k1_ge_is_valid_var(&a));
-    ge_equals_gej(&expected_b, &b);
+    /* the point being computed */
+    x = a;
+    for (i = 0; i < 200*count; i++) {
+        /* in each iteration, compute X = xn*X + gn*G; */
+        secp256k1_ecmult(&ctx->ecmult_ctx, &x, &x, &xn, &gn);
+        /* also compute ae and ge: the actual accumulated factors for A and G */
+        /* if X was (ae*A+ge*G), xn*X + gn*G results in (xn*ae*A + (xn*ge+gn)*G) */
+        secp256k1_scalar_mul(&ae, &ae, &xn);
+        secp256k1_scalar_mul(&ge, &ge, &xn);
+        secp256k1_scalar_add(&ge, &ge, &gn);
+        /* modify xn and gn */
+        secp256k1_scalar_mul(&xn, &xn, &xf);
+        secp256k1_scalar_mul(&gn, &gn, &gf);
+
+        /* verify */
+        if (i == 19999) {
+            /* expected result after 19999 iterations */
+            secp256k1_gej rp = SECP256K1_GEJ_CONST(
+                0xD6E96687, 0xF9B10D09, 0x2A6F3543, 0x9D86CEBE,
+                0xA4535D0D, 0x409F5358, 0x6440BD74, 0xB933E830,
+                0xB95CBCA2, 0xC77DA786, 0x539BE8FD, 0x53354D2D,
+                0x3B4F566A, 0xE6580454, 0x07ED6015, 0xEE1B2A88
+            );
+
+            secp256k1_gej_neg(&rp, &rp);
+            secp256k1_gej_add_var(&rp, &rp, &x, NULL);
+            CHECK(secp256k1_gej_is_infinity(&rp));
+        }
+    }
+    /* redo the computation, but directly with the resulting ae and ge coefficients: */
+    secp256k1_ecmult(&ctx->ecmult_ctx, &x2, &a, &ae, &ge);
+    secp256k1_gej_neg(&x2, &x2);
+    secp256k1_gej_add_var(&x2, &x2, &x, NULL);
+    CHECK(secp256k1_gej_is_infinity(&x2));
 }
 
-void ecmult_const_commutativity(void) {
-    secp256k1_scalar a;
-    secp256k1_scalar b;
-    secp256k1_gej res1;
-    secp256k1_gej res2;
-    secp256k1_ge mid1;
-    secp256k1_ge mid2;
-    random_scalar_order_test(&a);
-    random_scalar_order_test(&b);
-
-    secp256k1_ecmult_const(&res1, &secp256k1_ge_const_g, &a);
-    secp256k1_ecmult_const(&res2, &secp256k1_ge_const_g, &b);
-    secp256k1_ge_set_gej(&mid1, &res1);
-    secp256k1_ge_set_gej(&mid2, &res2);
-    secp256k1_ecmult_const(&res1, &mid1, &b);
-    secp256k1_ecmult_const(&res2, &mid2, &a);
-    secp256k1_ge_set_gej(&mid1, &res1);
-    secp256k1_ge_set_gej(&mid2, &res2);
-    ge_equals_ge(&mid1, &mid2);
-}
-
-void ecmult_const_mult_zero_one(void) {
+void test_point_times_order(const secp256k1_gej *point) {
+    /* X * (point + G) + (order-X) * (pointer + G) = 0 */
+    secp256k1_scalar x;
+    secp256k1_scalar nx;
     secp256k1_scalar zero = SECP256K1_SCALAR_CONST(0, 0, 0, 0, 0, 0, 0, 0);
     secp256k1_scalar one = SECP256K1_SCALAR_CONST(0, 0, 0, 0, 0, 0, 0, 1);
-    secp256k1_scalar negone;
-    secp256k1_gej res1;
-    secp256k1_ge res2;
-    secp256k1_ge point;
-    secp256k1_scalar_negate(&negone, &one);
-
-    random_group_element_test(&point);
-    secp256k1_ecmult_const(&res1, &point, &zero);
-    secp256k1_ge_set_gej(&res2, &res1);
-    CHECK(secp256k1_ge_is_infinity(&res2));
-    secp256k1_ecmult_const(&res1, &point, &one);
-    secp256k1_ge_set_gej(&res2, &res1);
-    ge_equals_ge(&res2, &point);
-    secp256k1_ecmult_const(&res1, &point, &negone);
-    secp256k1_gej_neg(&res1, &res1);
-    secp256k1_ge_set_gej(&res2, &res1);
-    ge_equals_ge(&res2, &point);
-}
-
-void ecmult_const_chain_multiply(void) {
-    /* Check known result (randomly generated test problem from sage) */
-    const secp256k1_scalar scalar = SECP256K1_SCALAR_CONST(
-        0x4968d524, 0x2abf9b7a, 0x466abbcf, 0x34b11b6d,
-        0xcd83d307, 0x827bed62, 0x05fad0ce, 0x18fae63b
-    );
-    const secp256k1_gej expected_point = SECP256K1_GEJ_CONST(
-        0x5494c15d, 0x32099706, 0xc2395f94, 0x348745fd,
-        0x757ce30e, 0x4e8c90fb, 0xa2bad184, 0xf883c69f,
-        0x5d195d20, 0xe191bf7f, 0x1be3e55f, 0x56a80196,
-        0x6071ad01, 0xf1462f66, 0xc997fa94, 0xdb858435
-    );
-    secp256k1_gej point;
-    secp256k1_ge res;
-    int i;
-
-    secp256k1_gej_set_ge(&point, &secp256k1_ge_const_g);
-    for (i = 0; i < 100; ++i) {
-        secp256k1_ge tmp;
-        secp256k1_ge_set_gej(&tmp, &point);
-        secp256k1_ecmult_const(&point, &tmp, &scalar);
-    }
-    secp256k1_ge_set_gej(&res, &point);
-    ge_equals_gej(&res, &expected_point);
-}
-
-void run_ecmult_const_tests(void) {
-    ecmult_const_mult_zero_one();
-    ecmult_const_random_mult();
-    ecmult_const_commutativity();
-    ecmult_const_chain_multiply();
-}
-
-void test_wnaf(const secp256k1_scalar *number, int w) {
-    secp256k1_scalar x, two, t;
-    int wnaf[256];
-    int zeroes = -1;
-    int i;
-    int bits;
-    secp256k1_scalar_set_int(&x, 0);
-    secp256k1_scalar_set_int(&two, 2);
-    bits = secp256k1_ecmult_wnaf(wnaf, 256, number, w);
-    CHECK(bits <= 256);
-    for (i = bits-1; i >= 0; i--) {
-        int v = wnaf[i];
-        secp256k1_scalar_mul(&x, &x, &two);
-        if (v) {
-            CHECK(zeroes == -1 || zeroes >= w-1); /* check that distance between non-zero elements is at least w-1 */
-            zeroes=0;
-            CHECK((v & 1) == 1); /* check non-zero elements are odd */
-            CHECK(v <= (1 << (w-1)) - 1); /* check range below */
-            CHECK(v >= -(1 << (w-1)) - 1); /* check range above */
-        } else {
-            CHECK(zeroes != -1); /* check that no unnecessary zero padding exists */
-            zeroes++;
-        }
-        if (v >= 0) {
-            secp256k1_scalar_set_int(&t, v);
-        } else {
-            secp256k1_scalar_set_int(&t, -v);
-            secp256k1_scalar_negate(&t, &t);
-        }
-        secp256k1_scalar_add(&x, &x, &t);
-    }
-    CHECK(secp256k1_scalar_eq(&x, number)); /* check that wnaf represents number */
-}
-
-void test_constant_wnaf_negate(const secp256k1_scalar *number) {
-    secp256k1_scalar neg1 = *number;
-    secp256k1_scalar neg2 = *number;
-    int sign1 = 1;
-    int sign2 = 1;
-
-    if (!secp256k1_scalar_get_bits(&neg1, 0, 1)) {
-        secp256k1_scalar_negate(&neg1, &neg1);
-        sign1 = -1;
-    }
-    sign2 = secp256k1_scalar_cond_negate(&neg2, secp256k1_scalar_is_even(&neg2));
-    CHECK(sign1 == sign2);
-    CHECK(secp256k1_scalar_eq(&neg1, &neg2));
-}
-
-void test_constant_wnaf(const secp256k1_scalar *number, int w) {
-    secp256k1_scalar x, shift;
-    int wnaf[256] = {0};
-    int i;
-#ifdef USE_ENDOMORPHISM
-    int skew;
-#endif
-    secp256k1_scalar num = *number;
-
-    secp256k1_scalar_set_int(&x, 0);
-    secp256k1_scalar_set_int(&shift, 1 << w);
-    /* With USE_ENDOMORPHISM on we only consider 128-bit numbers */
-#ifdef USE_ENDOMORPHISM
-    for (i = 0; i < 16; ++i) {
-        secp256k1_scalar_shr_int(&num, 8);
-    }
-    skew = secp256k1_wnaf_const(wnaf, num, w);
-#else
-    secp256k1_wnaf_const(wnaf, num, w);
-#endif
-
-    for (i = WNAF_SIZE(w); i >= 0; --i) {
-        secp256k1_scalar t;
-        int v = wnaf[i];
-        CHECK(v != 0); /* check nonzero */
-        CHECK(v & 1);  /* check parity */
-        CHECK(v > -(1 << w)); /* check range above */
-        CHECK(v < (1 << w));  /* check range below */
-
-        secp256k1_scalar_mul(&x, &x, &shift);
-        if (v >= 0) {
-            secp256k1_scalar_set_int(&t, v);
-        } else {
-            secp256k1_scalar_set_int(&t, -v);
-            secp256k1_scalar_negate(&t, &t);
-        }
-        secp256k1_scalar_add(&x, &x, &t);
-    }
-#ifdef USE_ENDOMORPHISM
-    /* Skew num because when encoding 128-bit numbers as odd we use an offset */
-    secp256k1_scalar_cadd_bit(&num, skew == 2, 1);
-#endif
-    CHECK(secp256k1_scalar_eq(&x, &num));
-}
-
-void run_wnaf(void) {
-    int i;
-    secp256k1_scalar n = {{0}};
-
-    /* Sanity check: 1 and 2 are the smallest odd and even numbers and should
-     *               have easier-to-diagnose failure modes  */
-    n.d[0] = 1;
-    test_constant_wnaf(&n, 4);
-    n.d[0] = 2;
-    test_constant_wnaf(&n, 4);
-    /* Random tests */
+    secp256k1_gej res1, res2;
+    secp256k1_ge res3;
+    unsigned char pub[65];
+    size_t psize = 65;
+    random_scalar_order_test(&x);
+    secp256k1_scalar_negate(&nx, &x);
+    secp256k1_ecmult(&ctx->ecmult_ctx, &res1, point, &x, &x); /* calc res1 = x * point + x * G; */
+    secp256k1_ecmult(&ctx->ecmult_ctx, &res2, point, &nx, &nx); /* calc res2 = (order - x) * point + (order - x) * G; */
+    secp256k1_gej_add_var(&res1, &res1, &res2, NULL);
+    CHECK(secp256k1_gej_is_infinity(&res1));
+    CHECK(secp256k1_gej_is_valid_var(&res1) == 0);
+    secp256k1_ge_set_gej(&res3, &res1);
+    CHECK(secp256k1_ge_is_infinity(&res3));
+    CHECK(secp256k1_ge_is_valid_var(&res3) == 0);
+    CHECK(secp256k1_eckey_pubkey_serialize(&res3, pub, &psize, 0) == 0);
+    psize = 65;
+    CHECK(secp256k1_eckey_pubkey_serialize(&res3, pub, tests */
     for (i = 0; i < count; i++) {
         random_scalar_order(&n);
         test_wnaf(&n, 4+(i%10));
@@ -3930,6 +3973,192 @@ void test_ecdsa_edge_cases(void) {
         secp256k1_scalar_set_int(&ss, 1);
         secp256k1_scalar_set_int(&msg, 1);
         secp256k1_scalar_set_b32(&sr, csr, NULL);
+        (add != 0) {
+                *certainly_not_der = 1;
+            }
+        }
+        if (tlenlen == 0) {
+            /* Short length notation */
+            sig[(*len)++] = tlen;
+        } else {
+            /* Long length notation */
+            sig[(*len)++] = 128 + tlenlen;
+            assign_big_endian(sig + *len, tlenlen, tlen);
+            *len += tlenlen;
+        }
+        tlen += tlenlen;
+    }
+    tlen += 2;
+    CHECK(tlen + glen <= 1119);
+
+    for (n = 0; n < 2; n++) {
+        /* Write the integer header. */
+        sig[(*len)++] = 0x02;
+        if (nlenlen[n] == 0) {
+            /* Short length notation */
+            sig[(*len)++] = nlen[n] + nzlen[n];
+        } else {
+            /* Long length notation. */
+            sig[(*len)++] = 128 + nlenlen[n];
+            assign_big_endian(sig + *len, nlenlen[n], nlen[n] + nzlen[n]);
+            *len += nlenlen[n];
+        }
+        /* Write zero padding */
+        while (nzlen[n] > 0) {
+            sig[(*len)++] = 0x00;
+            nzlen[n]--;
+        }
+        if (nlen[n] == 32 && !nlow[n]) {
+            /* Special extra 16 0xFF bytes in "high" 32-byte numbers */
+            int i;
+            for (i = 0; i < 16; i++) {
+                sig[(*len)++] = 0xFF;
+            }
+            nlen[n] -= 16;
+        }
+        /* Write first byte of number */
+        if (nlen[n] > 0) {
+            sig[(*len)++] = nhbyte[n];
+            nlen[n]--;
+        }
+        /* Generate remaining random bytes of number */
+        secp256k1_rand_bytes_test(sig + *len, nlen[n]);
+        *len += nlen[n];
+        nlen[n] = 0;
+    }
+
+    /* Generate random garbage inside tuple. */
+    secp256k1_rand_bytes_test(sig + *len, elen);
+    *len += elen;
+
+    /* Generate end-of-contents bytes. */
+    if (indet) {
+        sig[(*len)++] = 0;
+        sig[(*len)++] = 0;
+        tlen += 2;
+    }
+    CHECK(tlen + glen <= 1121);
+
+    /* Generate random garbage outside tuple. */
+    secp256k1_rand_bytes_test(sig + *len, glen);
+    *len += glen;
+    tlen += glen;
+    CHECK(tlen <= 1121);
+    CHECK(tlen == *len);
+}
+
+void run_ecdsa_der_parse(void) {
+    int i,j;
+    for (i = 0; i < 200 * count; i++) {
+        unsigned char buffer[2048];
+        size_t buflen = 0;
+        int certainly_der = 0;
+        int certainly_not_der = 0;
+        random_ber_signature(buffer, &buflen, &certainly_der, &certainly_not_der);
+        for (j = 0; j < 16; j++) {
+            int ret = 0;
+            if (j > 0) {
+                damage_array(buffer, &buflen);
+                /* We don't know anything anymore about the DERness of the result */
+                certainly_der = 0;
+                certainly_not_der = 0;
+            }
+            ret = test_ecdsa_der_parse(buffer, buflen, certainly_der, certainly_not_der);
+            if (ret != 0) {
+                size_t k;
+                fprintf(stderr, "Failure %x on ", ret);
+                for (k = 0; k < buflen; k++) {
+                    fprintf(stderr, "%02x ", buffer[k]);
+                }
+                fprintf(stderr, "\n");
+            }
+            CHECK(ret == 0);
+        }
+    }
+}
+
+/* Tests several edge cases. */
+void test_ecdsa_edge_cases(void) {
+    int t;
+    secp256k1_ecdsa_signature sig;
+
+    /* Test the case where ECDSA recomputes a point that is infinity. */
+    {
+        secp256k1_gej keyj;
+        secp256k1_ge key;
+        secp256k1_scalar msg;
+        secp256k1_scalar sr, ss;
+        secp256k1_scalar_set_int(&ss, 1);
+        secp256k1_scalar_negate(&ss, &ss);
+        secp256k1_scalar_inverse(&ss, &ss);
+        secp256k1_scalar_set_int(&sr, 1);
+        secp256k1_ecmult_gen(&ctx->ecmult_gen_ctx, &keyj, &sr);
+        secp256k1_ge_set_gej(&key, &keyj);
+        msg = ss;
+        CHECK(secp256k1_ecdsa_sig_verify(&ctx->ecmult_ctx, &sr, &ss, &key, &msg) == 0);
+    }
+
+    /* Verify signature with r of zero fails. */
+    {
+        const unsigned char pubkey_mods_zero[33] = {
+            0x02, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+            0xfe, 0xba, 0xae, 0xdc, 0xe6, 0xaf, 0x48, 0xa0,
+            0x3b, 0xbf, 0xd2, 0x5e, 0x8c, 0xd0, 0x36, 0x41,
+            0x41
+        };
+        secp256k1_ge key;
+        secp256k1_scalar msg;
+        secp256k1_scalar sr, ss;
+        secp256k1_scalar_set_int(&ss, 1);
+        secp256k1_scalar_set_int(&msg, 0);
+        secp256k1_scalar_set_int(&sr, 0);
+        CHECK(secp256k1_eckey_pubkey_parse(&key, pubkey_mods_zero, 33));
+        CHECK(secp256k1_ecdsa_sig_verify(&ctx->ecmult_ctx, &sr, &ss, &key, &msg) == 0);
+    }
+
+    /* Verify signature with s of zero fails. */
+    {
+        const unsigned char pubkey[33] = {
+            0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x01
+        };
+        secp256k1_ge key;
+        secp256k1_scalar msg;
+        secp256k1_scalar sr, ss;
+        secp256k1_scalar_set_int(&ss, 0);
+        secp256k1_scalar_set_int(&msg, 0);
+        secp256k1_scalar_set_int(&sr, 1);
+        CHECK(secp256k1_eckey_pubkey_parse(&key, pubkey, 33));
+        CHECK(secp256k1_ecdsa_sig_verify(&ctx->ecmult_ctx, &sr, &ss, &key, &msg) == 0);
+    }
+
+    /* Verify signature with message 0 passes. */
+    {
+        const unsigned char pubkey[33] = {
+            0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x02
+        };
+        const unsigned char pubkey2[33] = {
+            0x02, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+            0xfe, 0xba, 0xae, 0xdc, 0xe6, 0xaf, 0x48, 0xa0,
+            0x3b, 0xbf, 0xd2, 0x5e, 0x8c, 0xd0, 0x36, 0x41,
+            0x43
+        };
+        secp256k1_ge key;
+        secp256k1_ge key2;
+        secp256k1_scalar msg;
+        secp256k1_scalar sr, ss;
+        secp256k1_scalar_set_int(&ss, 2);
+        secp256k1_scalar_set_int(&msg, 0);
+        secp256k1_scalar_set_int(&sr, 2);
         CHECK(secp256k1_eckey_pubkey_parse(&key, pubkey, 33));
         CHECK(secp256k1_eckey_pubkey_parse(&key2, pubkey2, 33));
         CHECK(secp256k1_ecdsa_sig_verify(&ctx->ecmult_ctx, &sr, &ss, &key, &msg) == 1);
@@ -3937,164 +4166,41 @@ void test_ecdsa_edge_cases(void) {
         secp256k1_scalar_negate(&ss, &ss);
         CHECK(secp256k1_ecdsa_sig_verify(&ctx->ecmult_ctx, &sr, &ss, &key, &msg) == 1);
         CHECK(secp256k1_ecdsa_sig_verify(&ctx->ecmult_ctx, &sr, &ss, &key2, &msg) == 1);
-        secp256k1_scalar_set_int(&ss, 2);
-        secp256k1_scalar_inverse_var(&ss, &ss);
+        secp256k1_scalar_set_int(&ss, 1);
         CHECK(secp256k1_ecdsa_sig_verify(&ctx->ecmult_ctx, &sr, &ss, &key, &msg) == 0);
         CHECK(secp256k1_ecdsa_sig_verify(&ctx->ecmult_ctx, &sr, &ss, &key2, &msg) == 0);
     }
 
-    /* Verify signature with message -1 passes. */
+    /* Verify signature with message 1 passes. */
     {
         const unsigned char pubkey[33] = {
-            0x03, 0xaf, 0x97, 0xff, 0x7d, 0x3a, 0xf6, 0xa0,
-            0x02, 0x94, 0xbd, 0x9f, 0x4b, 0x2e, 0xd7, 0x52,
-            0x28, 0xdb, 0x49, 0x2a, 0x65, 0xcb, 0x1e, 0x27,
-            0x57, 0x9c, 0xba, 0x74, 0x20, 0xd5, 0x1d, 0x20,
-            0xf1
+            0x02, 0x14, 0x4e, 0x5a, 0x58, 0xef, 0x5b, 0x22,
+            0x6f, 0xd2, 0xe2, 0x07, 0x6a, 0x77, 0xcf, 0x05,
+            0xb4, 0x1d, 0xe7, 0x4a, 0x30, 0x98, 0x27, 0x8c,
+            0x93, 0xe6, 0xe6, 0x3c, 0x0b, 0xc4, 0x73, 0x76,
+            0x25
+        };
+        const unsigned char pubkey2[33] = {
+            0x02, 0x8a, 0xd5, 0x37, 0xed, 0x73, 0xd9, 0x40,
+            0x1d, 0xa0, 0x33, 0xd2, 0xdc, 0xf0, 0xaf, 0xae,
+            0x34, 0xcf, 0x5f, 0x96, 0x4c, 0x73, 0x28, 0x0f,
+            0x92, 0xc0, 0xf6, 0x9d, 0xd9, 0xb2, 0x09, 0x10,
+            0x62
         };
         const unsigned char csr[32] = {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
             0x45, 0x51, 0x23, 0x19, 0x50, 0xb7, 0x5f, 0xc4,
-            0x40, 0x2d, 0xa1, 0x72, 0x2f, 0xc9, 0xba, 0xee
+            0x40, 0x2d, 0xa1, 0x72, 0x2f, 0xc9, 0xba, 0xeb
         };
         secp256k1_ge key;
+        secp256k1_ge key2;
         secp256k1_scalar msg;
         secp256k1_scalar sr, ss;
         secp256k1_scalar_set_int(&ss, 1);
         secp256k1_scalar_set_int(&msg, 1);
-        secp256k1_scalar_negate(&msg, &msg);
         secp256k1_scalar_set_b32(&sr, csr, NULL);
-        CHECK(secp256k1_eckey_pubkey_parse(&key, pubkey, 33));
-        CHECK(secp256k1_ecdsa_sig_verify(&ctx->ecmult_ctx, &sr, &ss, &key, &msg) == 1);
-        secp256k1_scalar_negate(&ss, &ss);
-        CHECK(secp256k1_ecdsa_sig_verify(&ctx->ecmult_ctx, &sr, &ss, &key, &msg) == 1);
-        secp256k1_scalar_set_int(&ss, 3);
-        secp256k1_scalar_inverse_var(&ss, &ss);
-        CHECK(secp256k1_ecdsa_sig_verify(&ctx->ecmult_ctx, &sr, &ss, &key, &msg) == 0);
-    }
-
-    /* Signature where s would be zero. */
-    {
-        secp256k1_pubkey pubkey;
-        size_t siglen;
-        int32_t ecount;
-        unsigned char signature[72];
-        static const unsigned char nonce[32] = {
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
-        };
-        static const unsigned char nonce2[32] = {
-            0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
-            0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFE,
-            0xBA,0xAE,0xDC,0xE6,0xAF,0x48,0xA0,0x3B,
-            0xBF,0xD2,0x5E,0x8C,0xD0,0x36,0x41,0x40
-        };
-        const unsigned char key[32] = {
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
-        };
-        unsigned char msg[32] = {
-            0x86, 0x41, 0x99, 0x81, 0x06, 0x23, 0x44, 0x53,
-            0xaa, 0x5f, 0x9d, 0x6a, 0x31, 0x78, 0xf4, 0xf7,
-            0xb8, 0x12, 0xe0, 0x0b, 0x81, 0x7a, 0x77, 0x62,
-            0x65, 0xdf, 0xdd, 0x31, 0xb9, 0x3e, 0x29, 0xa9,
-        };
-        ecount = 0;
-        secp256k1_context_set_illegal_callback(ctx, counting_illegal_callback_fn, &ecount);
-        CHECK(secp256k1_ecdsa_sign(ctx, &sig, msg, key, precomputed_nonce_function, nonce) == 0);
-        CHECK(secp256k1_ecdsa_sign(ctx, &sig, msg, key, precomputed_nonce_function, nonce2) == 0);
-        msg[31] = 0xaa;
-        CHECK(secp256k1_ecdsa_sign(ctx, &sig, msg, key, precomputed_nonce_function, nonce) == 1);
-        CHECK(ecount == 0);
-        CHECK(secp256k1_ecdsa_sign(ctx, NULL, msg, key, precomputed_nonce_function, nonce2) == 0);
-        CHECK(ecount == 1);
-        CHECK(secp256k1_ecdsa_sign(ctx, &sig, NULL, key, precomputed_nonce_function, nonce2) == 0);
-        CHECK(ecount == 2);
-        CHECK(secp256k1_ecdsa_sign(ctx, &sig, msg, NULL, precomputed_nonce_function, nonce2) == 0);
-        CHECK(ecount == 3);
-        CHECK(secp256k1_ecdsa_sign(ctx, &sig, msg, key, precomputed_nonce_function, nonce2) == 1);
-        CHECK(secp256k1_ec_pubkey_create(ctx, &pubkey, key) == 1);
-        CHECK(secp256k1_ecdsa_verify(ctx, NULL, msg, &pubkey) == 0);
-        CHECK(ecount == 4);
-        CHECK(secp256k1_ecdsa_verify(ctx, &sig, NULL, &pubkey) == 0);
-        CHECK(ecount == 5);
-        CHECK(secp256k1_ecdsa_verify(ctx, &sig, msg, NULL) == 0);
-        CHECK(ecount == 6);
-        CHECK(secp256k1_ecdsa_verify(ctx, &sig, msg, &pubkey) == 1);
-        CHECK(ecount == 6);
-        CHECK(secp256k1_ec_pubkey_create(ctx, &pubkey, NULL) == 0);
-        CHECK(ecount == 7);
-        /* That pubkeyload fails via an ARGCHECK is a little odd but makes sense because pubkeys are an opaque data type. */
-        CHECK(secp256k1_ecdsa_verify(ctx, &sig, msg, &pubkey) == 0);
-        CHECK(ecount == 8);
-        siglen = 72;
-        CHECK(secp256k1_ecdsa_signature_serialize_der(ctx, NULL, &siglen, &sig) == 0);
-        CHECK(ecount == 9);
-        CHECK(secp256k1_ecdsa_signature_serialize_der(ctx, signature, NULL, &sig) == 0);
-        CHECK(ecount == 10);
-        CHECK(secp256k1_ecdsa_signature_serialize_der(ctx, signature, &siglen, NULL) == 0);
-        CHECK(ecount == 11);
-        CHECK(secp256k1_ecdsa_signature_serialize_der(ctx, signature, &siglen, &sig) == 1);
-        CHECK(ecount == 11);
-        CHECK(secp256k1_ecdsa_signature_parse_der(ctx, NULL, signature, siglen) == 0);
-        CHECK(ecount == 12);
-        CHECK(secp256k1_ecdsa_signature_parse_der(ctx, &sig, NULL, siglen) == 0);
-        CHECK(ecount == 13);
-        CHECK(secp256k1_ecdsa_signature_parse_der(ctx, &sig, signature, siglen) == 1);
-        CHECK(ecount == 13);
-        siglen = 10;
-        /* Too little room for a signature does not fail via ARGCHECK. */
-        CHECK(secp256k1_ecdsa_signature_serialize_der(ctx, signature, &siglen, &sig) == 0);
-        CHECK(ecount == 13);
-        ecount = 0;
-        CHECK(secp256k1_ecdsa_signature_normalize(ctx, NULL, NULL) == 0);
-        CHECK(ecount == 1);
-        CHECK(secp256k1_ecdsa_signature_serialize_compact(ctx, NULL, &sig) == 0);
-        CHECK(ecount == 2);
-        CHECK(secp256k1_ecdsa_signature_serialize_compact(ctx, signature, NULL) == 0);
-        CHECK(ecount == 3);
-        CHECK(secp256k1_ecdsa_signature_serialize_compact(ctx, signature, &sig) == 1);
-        CHECK(ecount == 3);
-        CHECK(secp256k1_ecdsa_signature_parse_compact(ctx, NULL, signature) == 0);
-        CHECK(ecount == 4);
-        CHECK(secp256k1_ecdsa_signature_parse_compact(ctx, &sig, NULL) == 0);
-        CHECK(ecount == 5);
-        CHECK(secp256k1_ecdsa_signature_parse_compact(ctx, &sig, signature) == 1);
-        CHECK(ecount == 5);
-        memset(signature, 255, 64);
-        CHECK(secp256k1_ecdsa_signature_parse_compact(ctx, &sig, signature) == 0);
-        CHECK(ecount == 5);
-        secp256k1_context_set_illegal_callback(ctx, NULL, NULL);
-    }
-
-    /* Nonce function corner cases. */
-    for (t = 0; t < 2; t++) {
-        static const unsigned char zero[32] = {0x00};
-        int i;
-        unsigned char key[32];
-        unsigned char msg[32];
-        secp256k1_ecdsa_signature sig2;
-        secp256k1_scalar sr[512], ss;
-        const unsigned char *extra;
-        extra = t == 0 ? NULL : zero;
-        memset(msg, 0, 32);
-        msg[31] = 1;
-        /* High key results in signature failure. */
-        memset(key, 0xFF, 32);
-        CHECK(secp256k1_ecdsa_sign(ctx, &sig, msg, key, NULL, extra) == 0);
-        CHECK(is_empty_signature(&sig));
-        /* Zero key results in signature failure. */
-        memset(key, 0, 32);
-        CHECK(secp256k1_ecdsa_sign(ctx, &sig, msg, key, NULL, extra) == 0);
-        CHECK(is_empty_signature(&sig));
-        /* Nonce function failure results in signature failure. */
-        key[31] = 1;
-        CHECK(secp256k1_ecdsa_sign(ctx, &sig, msg, key, nonce_function_test_fail, extra) == 0);
+        _sign(ctx, &sig, msg, key, nonce_function_test_fail, extra) == 0);
         CHECK(is_empty_signature(&sig));
         /* The retry loop successfully makes its way to the first good value. */
         CHECK(secp256k1_ecdsa_sign(ctx, &sig, msg, key, nonce_function_test_retry, extra) == 1);

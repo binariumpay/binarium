@@ -120,3 +120,17 @@ void uint512 :: XOROperator ( const uint256 & _uint256B, uint32_t _iOffset ) {
     } //-for
 
 }
+
+void uint512 :: XOROperator ( const unsigned char * _pData ) {
+    uint32_t i;
+
+    for ( i = 0; i < 512 / 8 / 8; i ++ ) { // 8 bits in byte and 8 bytes in uint64_t.
+        //fprintf(stdout, "uint512.XOROperator () : %i .\n", i * 8 );
+
+        * ( ( uint64_t * ) ( begin () + i * 8 ) ) = 
+            * ( ( uint64_t * ) ( begin () + i * 8 ) ) ^
+            * ( ( uint64_t * ) ( _pData + i * 8 ) );        
+
+    } //-for
+    
+}

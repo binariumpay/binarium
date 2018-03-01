@@ -68,6 +68,7 @@
 
 //#include "hash.h"
 #include "crypto/hashing/swifft/swifft.h"
+#include "crypto/encryption/salsa20/ecrypt-sync.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -1071,6 +1072,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     // ********************************************************* Step 2: parameter interactions
     //HashGenerator_Init ();
     SwiFFT_setupTables ();
+    ECRYPT_init () ;
 
     const CChainParams& chainparams = Params();
 
