@@ -188,6 +188,8 @@ public:
     uint1024(const base_blob<1024>& b) : base_blob<1024>(b) {}
     explicit uint1024(const std::vector<unsigned char>& vch) : base_blob<1024>(vch) {}
 
+    void XOROperator ( const uint32_t _iDestinationOffset, const unsigned char * _pData );
+
     uint256 trim256() const
     {
         uint256 result;

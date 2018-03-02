@@ -22,11 +22,12 @@
 #define I_MAX_AMOUNT_OF_BLOCKS_IN_MEMORY_CPP 3 * 1024 * 1024 / ( 136 + 16 )
 
 //#define I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES 10080
-#define I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES 10
+#define I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_SECONDS 600
 
 #define I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING 3571
 
-#define I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION 16 * 1024
+#define I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION 32 * 1024
+#define I_MEMORY_BLOCK_SIZE_TO_ENCRYPTION_COMPUTATIONS_RATIO 1
 
 
 
@@ -137,6 +138,7 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     static unsigned char pblank[1];
 
     uint512 hash[11];
+    uint512 uint512AdditionalHash;
 
     uint512 uint512ChainBlockData;
     //uint512ChainBlockData.SetNull ();
@@ -145,6 +147,8 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     //if (t != mapBlockIndex.end()) {
     //    pPrevBlockIndex = t->second;
     //}
+
+    uint1024 uint1024CombinedHashes;
 
     uint64_t iIndexOfBlcok;
     uint64_t iWeekNumber;
@@ -161,25 +165,33 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     //aIntermediateHashFunctions [ 0 ] ( & nVersion, ( ( unsigned char * ) & nHeightOfPreviousBlock - ( unsigned char * ) & nVersion ) /* sizeof(pbegin[0])*/ + sizeof ( nHeightOfPreviousBlock ), nullptr, hash[0].begin () );    
 
     // bmw512
-    aIntermediateHashFunctions [ 1 ] ( static_cast<const void*>(&hash[0]), 64, nullptr, static_cast<void*>(&hash[1]) );
+    //aIntermediateHashFunctions [ 1 ] ( static_cast<const void*>(&hash[0]), 64, nullptr, static_cast<void*>(&hash[1]) );
+    aIntermediateHashFunctions [ 1 ] ( static_cast<const void*>(&hash[0]), 64, nullptr, uint512AdditionalHash.begin () );
 
     //iIndexOfBlcok = ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight / ( I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES / 2 ) * ( I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES / 2 );    
-    iWeekNumber = _iTimeFromGenesisBlock / I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES * I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES;
+    iWeekNumber = _iTimeFromGenesisBlock / I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_SECONDS * I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_SECONDS;
     //iIndexFromWeekChangeBlock = GetUint64IndexFrom512BitsKey ( chainActive [ iIndexOfBlcok ] -> phashBlock -> begin (), 0 );
     //iIndex = iIndexFromWeekChangeBlock % I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS;
     iIndex = ( iWeekNumber + nBits ) % I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS;
-    memcpy ( hash [ 0 ].begin (), hash [ 1 ].begin (), 64 );
-    aIntermediateHashFunctions [ iIndex ] ( static_cast<const void*>(&hash[0]), 64, nullptr, static_cast<void*>(&hash[1]) );
+    //memcpy ( hash [ 0 ].begin (), hash [ 1 ].begin (), 64 );
+    //aIntermediateHashFunctions [ iIndex ] ( static_cast<const void*>(&hash[0]), 64, nullptr, static_cast<void*>(&hash[1]) );
+    aIntermediateHashFunctions [ iIndex ] ( uint512AdditionalHash.begin (), 64, nullptr, static_cast<void*>(&hash[1]) );
 
     // groestl512
     aIntermediateHashFunctions [ 2 ] ( static_cast<const void*>(&hash[1]), 64, nullptr, static_cast<void*>(&hash[2]) );
 
     // skein512
     aIntermediateHashFunctions [ 5 ] ( static_cast<const void*>(&hash[2]), 64, nullptr, static_cast<void*>(&hash[3]) );
+    //aIntermediateHashFunctions [ 5 ] ( static_cast<const void*>(&hash[2]), 64, nullptr, uint1024CombinedHashes.begin () + 64 );
 
     //-Streebog.--------------------------------------
-    // jh512
+    // jh512    
+
     aIntermediateHashFunctions [ 3 ] ( static_cast<const void*>(&hash[3]), 64, nullptr, static_cast<void*>(&hash[4]) );
+    //aIntermediateHashFunctions [ 3 ] ( static_cast<const void*>(&hash[3]), 64, nullptr, uint1024CombinedHashes.begin () );
+    //aIntermediateHashFunctions [ 3 ] ( uint1024CombinedHashes.begin () + 64, 64, nullptr, static_cast<void*>(&hash[4]) );
+    //aIntermediateHashFunctions [ 3 ] ( uint1024CombinedHashes.begin () + 64, 64, nullptr, uint1024CombinedHashes.begin () );
+
     //aIntermediateHashFunctions [ 11 ] ( static_cast<const void*>(&hash[3]), 64 * 8, nullptr, static_cast<void*>(&hash[4]) );
 
     //-Ensuring, that blocks are in memory for memory-hard random-accesses computations.----
@@ -199,9 +211,9 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
 
     ECRYPT_ctx structECRYPT_ctx;
 
-    //unsigned char aMemoryArea [ I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION ];
-    unsigned char * aMemoryArea = new unsigned char [ I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION ] ();
-    //memset ( aMemoryArea, 0, I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION );
+    unsigned char aMemoryArea [ I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION ];
+    //unsigned char * aMemoryArea = new unsigned char [ I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION ] ();
+    memset ( aMemoryArea, 0, I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION );
 
     ECRYPT_keysetup ( & structECRYPT_ctx, hash[1].begin (), ECRYPT_MAXKEYSIZE, ECRYPT_MAXIVSIZE );
     ECRYPT_ivsetup ( & structECRYPT_ctx, hash[2].begin () );
@@ -211,7 +223,7 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     // Amplifying data and making random write accesses to memory.
     // Block size is 64 bytes. ECRYPT_BLOCKLENGTH .
     // Hash size is 64 bytes.
-    for ( i = 0; i < I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION / ( 8 * 64 ); i ++ ) {  // / 64
+    for ( i = 0; i < I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION / ( 8 * 64 ); i ++ ) {  // / 64 // I_MEMORY_BLOCK_SIZE_TO_ENCRYPTION_COMPUTATIONS_RATIO
         /*iIndex = ( iIndexFromWeekChangeBlock + i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING ) %
             std :: min ( I_MAX_AMOUNT_OF_BLOCKS_IN_MEMORY_CPP, ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight );
         //fprintf(stdout, "block.cpp : GetHash_SHA256AndX11 () : %" PRIu64 " , %" PRIu64 " .\n", ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight, iIndex );
@@ -223,6 +235,7 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
         iWriteIndex =
             ( 
                 GetUint64IndexFrom512BitsKey ( hash [ 3 ].begin (), 0 ) % I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION +
+                //GetUint64IndexFrom512BitsKey ( uint1024CombinedHashes.begin () + 64, 0 ) % I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION +
                 //* ( ( uint64_t * ) hash [ 3 ].begin () ) % I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION +
                 i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING )
             %
@@ -235,10 +248,12 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
         // From previous encryption result in memory to next encryption result in memory.
         ECRYPT_encrypt_blocks ( & structECRYPT_ctx,
             /*const u8* plaintext*/ hash [ 3 ].begin (),   //  & aMemoryArea [ ( 0 + i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING ) % ( I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION - 64 ) ]
+            //uint1024CombinedHashes.begin () + 64,
             /*cyphertext*/ & ( aMemoryArea [ iWriteIndex ] ),
             8 );
 
         hash [ 3 ].XOROperator ( & ( aMemoryArea [ iWriteIndex ] ) );
+        //uint1024CombinedHashes.XOROperator ( 64, & ( aMemoryArea [ iWriteIndex ] ) );
 
     } //-for
 
@@ -246,16 +261,17 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     //aIntermediateHashFunctions [ 0 ] ( & ( aMemoryArea [ 0 ] ), I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION, nullptr, static_cast<void*>(&hash[3]) );
     for ( i = 0; i < I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION / 64; i ++ ) {
         hash [ 3 ].XOROperator ( & ( aMemoryArea [ i * 64 ] ) );
+        //uint1024CombinedHashes.XOROperator ( 64, & ( aMemoryArea [ i * 64 ] ) );
 
     } //-for
     
-    uint1024 uint1024CombinedHashes;
+    //uint1024 uint1024CombinedHashes;
     memcpy ( uint1024CombinedHashes.begin (), hash [ 4 ].begin (), 64 );
-    memcpy ( uint1024CombinedHashes.begin () + 64, hash [ 3 ].begin (), 64 );        
+    memcpy ( uint1024CombinedHashes.begin () + 64, hash [ 3 ].begin (), 64 );
     
     //hash[4].XOROperator ( hash[3] );
 
-    delete aMemoryArea;
+    //delete aMemoryArea;
 
     //-Whirlpool--------------------------------------
     // keccak512
@@ -265,7 +281,7 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : %s .\n", hash[5].ToString ().c_str () );
 
     //-SWIFFT.----------------------------------------
-    // luffa512    
+    // luffa512
     aIntermediateHashFunctions [ 6 ] ( static_cast<const void*>(&hash[5]), 64, nullptr, static_cast<void*>(&hash[6]) );
 
     /*char pSwiFFTKey [ 1025 ];
@@ -333,12 +349,14 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     //aIntermediateEncryptionFunctions [ 1 ] ( static_cast<const void*>(&hash[7]), 64, static_cast<const void*>(&hash[4]), static_cast<void*>(&hash[8]) );
 
     // simd512
-    aIntermediateHashFunctions [ 9 ] ( static_cast<const void*>(&hash[8]), 64, nullptr, static_cast<void*>(&hash[9]) );
+    //aIntermediateHashFunctions [ 9 ] ( static_cast<const void*>(&hash[8]), 64, nullptr, static_cast<void*>(&hash[9]) );
+    aIntermediateHashFunctions [ 9 ] ( static_cast<const void*>(&hash[8]), 64, nullptr, uint512AdditionalHash.begin () );
 
     //iIndex = ( iIndexFromWeekChangeBlock + 10 ) % I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS; nBits
     iIndex = ( iWeekNumber + nBits + 10 ) % I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS;
-    memcpy ( hash [ 9 ].begin (), hash [ 8 ].begin (), 64 );
-    aIntermediateHashFunctions [ iIndex ] ( static_cast<const void*>(&hash[8]), 64, nullptr, static_cast<void*>(&hash[9]) );
+    //memcpy ( hash [ 8 ].begin (), hash [ 9 ].begin (), 64 );
+    //aIntermediateHashFunctions [ iIndex ] ( static_cast<const void*>(&hash[8]), 64, nullptr, static_cast<void*>(&hash[9]) );
+    aIntermediateHashFunctions [ iIndex ] ( uint512AdditionalHash.begin (), 64, nullptr, static_cast<void*>(&hash[9]) );
 
     //---Camellia.-----------------------------------    
     //memcpy ( hash [ 8 ].begin (), hash [ 9 ].begin (), 64 );    
