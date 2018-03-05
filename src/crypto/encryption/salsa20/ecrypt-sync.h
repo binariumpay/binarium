@@ -258,6 +258,8 @@ void ECRYPT_keystream_blocks(
 
 #endif
 
+void ECRYPT_PrintContext ( const ECRYPT_ctx * _structContext );
+
 /*
  * If your cipher can be implemented in different ways, you can use
  * the ECRYPT_VARIANT parameter to allow the user to choose between

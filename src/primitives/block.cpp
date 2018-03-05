@@ -40,9 +40,9 @@ CBlockIndex * pWeekChangeBlock = nullptr;
 
 
 //---Utility functions.---------------------------------------------------
-inline uint64_t GetUint64IndexFrom512BitsKey ( const void * _pKey, int pos ) {
-    const uint8_t* ptr = ( const uint8_t * ) _pKey + pos * 8;
-    return ((uint64_t)ptr[0]) | \
+inline uint64_t GetUint64IndexFrom512BitsKey ( const unsigned char * _pKey, int pos ) {
+    //const uint8_t* ptr = ( const uint8_t * ) _pKey + pos * 8;
+    //return ((uint64_t)ptr[0]) | \
            ((uint64_t)ptr[1]) << 8 | \
            ((uint64_t)ptr[2]) << 16 | \
            ((uint64_t)ptr[3]) << 24 | \
@@ -50,6 +50,11 @@ inline uint64_t GetUint64IndexFrom512BitsKey ( const void * _pKey, int pos ) {
            ((uint64_t)ptr[5]) << 40 | \
            ((uint64_t)ptr[6]) << 48 | \
            ((uint64_t)ptr[7]) << 56;
+
+    uint64_t * pAdress = ( uint64_t * ) ( _pKey + pos );
+    return pAdress [ 0 ] ^ pAdress [ 1 ] ^ pAdress [ 2 ] ^ pAdress [ 3 ] ^
+           pAdress [ 4 ] ^ pAdress [ 5 ] ^ pAdress [ 6 ] ^ pAdress [ 7 ];
+
 }
 
 uint512 GetBlockData ( uint64_t _iIndex, uint64_t _iHeightOfBlockchain ) {
@@ -63,6 +68,19 @@ uint512 GetBlockData ( uint64_t _iIndex, uint64_t _iHeightOfBlockchain ) {
     memcpy ( uint512Result.begin () + 48, chainActive [ _iHeightOfBlockchain - _iIndex - 1 ] -> phashBlock -> begin (), 64 - 48 );
 
     return uint512Result;
+
+}
+
+void PrintMemoryArea ( uint64_t * _pMemoryArea, uint64_t _iAmount ) {
+    int i;
+
+    fprintf ( stdout, "block.cpp  : PrintMemoryArea () : " );
+    for ( i = 0; i < _iAmount; i ++ ) {
+        fprintf ( stdout, "%" PRIu64 " ", _pMemoryArea [ i ] );
+
+    } //-for
+
+    fprintf ( stdout, ".\n" );
 
 }
 
@@ -181,16 +199,21 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     aIntermediateHashFunctions [ 2 ] ( static_cast<const void*>(&hash[1]), 64, nullptr, static_cast<void*>(&hash[2]) );
 
     // skein512
-    aIntermediateHashFunctions [ 5 ] ( static_cast<const void*>(&hash[2]), 64, nullptr, static_cast<void*>(&hash[3]) );
-    //aIntermediateHashFunctions [ 5 ] ( static_cast<const void*>(&hash[2]), 64, nullptr, uint1024CombinedHashes.begin () + 64 );
+    //aIntermediateHashFunctions [ 5 ] ( static_cast<const void*>(&hash[2]), 64, nullptr, static_cast<void*>(&hash[3]) );
+    aIntermediateHashFunctions [ 5 ] ( static_cast<const void*>(&hash[2]), 64, nullptr, uint1024CombinedHashes.begin () + 64 );
 
     //-Streebog.--------------------------------------
     // jh512    
 
-    aIntermediateHashFunctions [ 3 ] ( static_cast<const void*>(&hash[3]), 64, nullptr, static_cast<void*>(&hash[4]) );
+    //aIntermediateHashFunctions [ 3 ] ( static_cast<const void*>(&hash[3]), 64, nullptr, static_cast<void*>(&hash[4]) );
     //aIntermediateHashFunctions [ 3 ] ( static_cast<const void*>(&hash[3]), 64, nullptr, uint1024CombinedHashes.begin () );
+    //memcpy ( hash[4].begin (), uint1024CombinedHashes.begin (), 64 );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : %s .\n", uint1024CombinedHashes.ToString ().c_str () );
+    //* ( ( uint64_t * ) hash[4].begin () ) = 100;
+    //aIntermediateHashFunctions [ 3 ] ( static_cast<const void*>(&hash[3]), 64, nullptr, static_cast<void*> ( & uint1024CombinedHashes ) );
     //aIntermediateHashFunctions [ 3 ] ( uint1024CombinedHashes.begin () + 64, 64, nullptr, static_cast<void*>(&hash[4]) );
-    //aIntermediateHashFunctions [ 3 ] ( uint1024CombinedHashes.begin () + 64, 64, nullptr, uint1024CombinedHashes.begin () );
+    aIntermediateHashFunctions [ 3 ] ( uint1024CombinedHashes.begin () + 64, 64, nullptr, uint1024CombinedHashes.begin () );
+    //memcpy ( hash[3].begin (), uint1024CombinedHashes.begin () + 64, 64 );
 
     //aIntermediateHashFunctions [ 11 ] ( static_cast<const void*>(&hash[3]), 64 * 8, nullptr, static_cast<void*>(&hash[4]) );
 
@@ -219,23 +242,27 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     ECRYPT_ivsetup ( & structECRYPT_ctx, hash[2].begin () );
 
     uint64_t iWriteIndex;
+    
+    //ECRYPT_PrintContext ( & structECRYPT_ctx );
 
     // Amplifying data and making random write accesses to memory.
     // Block size is 64 bytes. ECRYPT_BLOCKLENGTH .
     // Hash size is 64 bytes.
-    for ( i = 0; i < I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION / ( 8 * 64 ); i ++ ) {  // / 64 // I_MEMORY_BLOCK_SIZE_TO_ENCRYPTION_COMPUTATIONS_RATIO
-        /*iIndex = ( iIndexFromWeekChangeBlock + i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING ) %
-            std :: min ( I_MAX_AMOUNT_OF_BLOCKS_IN_MEMORY_CPP, ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight );
-        //fprintf(stdout, "block.cpp : GetHash_SHA256AndX11 () : %" PRIu64 " , %" PRIu64 " .\n", ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight, iIndex );
-        iIndex = ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight - iIndex - 1;
-        hash[3].XOROperator ( * chainActive [ iIndex ] -> phashBlock, ( i % 2 ) * 32 );
-        memcpy ( hash [ 2 ].begin (), hash [ 3 ].begin (), 64 );
-        aIntermediateHashFunctions [ 0 ] ( hash [ 2 ].begin (), 64, nullptr, static_cast<void*>(&hash[3]) );*/
+    for ( i = 0; i < I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION / ( 64 ) / 2; i ++ ) {  // / 64 // I_MEMORY_BLOCK_SIZE_TO_ENCRYPTION_COMPUTATIONS_RATIO  // 8 * 
+        //iIndex = ( iIndexFromWeekChangeBlock + i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING ) %
+        //    std :: min ( I_MAX_AMOUNT_OF_BLOCKS_IN_MEMORY_CPP, ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight );
+        ////fprintf(stdout, "block.cpp : GetHash_SHA256AndX11 () : %" PRIu64 " , %" PRIu64 " .\n", ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight, iIndex );
+        //iIndex = ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight - iIndex - 1;
+        //hash[3].XOROperator ( * chainActive [ iIndex ] -> phashBlock, ( i % 2 ) * 32 );
+        //memcpy ( hash [ 2 ].begin (), hash [ 3 ].begin (), 64 );
+        //aIntermediateHashFunctions [ 0 ] ( hash [ 2 ].begin (), 64, nullptr, static_cast<void*>(&hash[3]) );
 
         iWriteIndex =
-            ( 
-                GetUint64IndexFrom512BitsKey ( hash [ 3 ].begin (), 0 ) % I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION +
-                //GetUint64IndexFrom512BitsKey ( uint1024CombinedHashes.begin () + 64, 0 ) % I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION +
+            (
+                //  % I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION here is to prevent integer overflow
+                // on subsequent addition operation.
+                //GetUint64IndexFrom512BitsKey ( hash [ 3 ].begin (), 0 ) % I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION +
+                GetUint64IndexFrom512BitsKey ( uint1024CombinedHashes.begin () + 64, 0 ) % I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION +
                 //* ( ( uint64_t * ) hash [ 3 ].begin () ) % I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION +
                 i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING )
             %
@@ -247,31 +274,44 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
 
         // From previous encryption result in memory to next encryption result in memory.
         ECRYPT_encrypt_blocks ( & structECRYPT_ctx,
-            /*const u8* plaintext*/ hash [ 3 ].begin (),   //  & aMemoryArea [ ( 0 + i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING ) % ( I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION - 64 ) ]
-            //uint1024CombinedHashes.begin () + 64,
-            /*cyphertext*/ & ( aMemoryArea [ iWriteIndex ] ),
-            8 );
+            //hash [ 3 ].begin (), // const u8* plaintext  //  & aMemoryArea [ ( 0 + i * I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING ) % ( I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION - 64 ) ]
+            uint1024CombinedHashes.begin () + 64,
+            & ( aMemoryArea [ iWriteIndex ] ), // cyphertext ff
+            1 );  // 8
 
-        hash [ 3 ].XOROperator ( & ( aMemoryArea [ iWriteIndex ] ) );
-        //uint1024CombinedHashes.XOROperator ( 64, & ( aMemoryArea [ iWriteIndex ] ) );
+        //hash [ 3 ].XOROperator ( & ( aMemoryArea [ iWriteIndex ] ) );
+        uint1024CombinedHashes.XOROperator ( 64, & ( aMemoryArea [ iWriteIndex ] ) );
 
     } //-for
+    
+    //PrintMemoryArea ( ( uint64_t * ) & ( aMemoryArea [ 0 ] ), 128 );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : hash [ 3 ] : %s .\n", hash[3].ToString ().c_str () );
 
     // Veryfying that memory is allocated and making random read accesses to it.    
     //aIntermediateHashFunctions [ 0 ] ( & ( aMemoryArea [ 0 ] ), I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION, nullptr, static_cast<void*>(&hash[3]) );
+    //memcpy ( uint1024CombinedHashes.begin () + 64, hash[3].begin (), 64 );
+    //memcpy ( hash[3].begin (), uint1024CombinedHashes.begin () + 64, 64 );
+    //memcpy ( uint1024CombinedHashes.begin () + 64, hash[3].begin (), 64 );
     for ( i = 0; i < I_AMOUNT_OF_BYTES_FOR_MEMORY_HARD_FUNCTION / 64; i ++ ) {
-        hash [ 3 ].XOROperator ( & ( aMemoryArea [ i * 64 ] ) );
-        //uint1024CombinedHashes.XOROperator ( 64, & ( aMemoryArea [ i * 64 ] ) );
+    //for ( i = 0; i < 4; i ++ ) {
+        //hash [ 3 ].XOROperator ( & ( aMemoryArea [ i * 64 ] ) );
+        //hash [ 3 ].XOROperator ( hash [ 0 ].begin () );
+        uint1024CombinedHashes.XOROperator ( 64, & ( aMemoryArea [ i * 64 ] ) );
 
     } //-for
+
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : hash [ 3 ] : %s .\n", hash[3].ToString ().c_str () );
     
     //uint1024 uint1024CombinedHashes;
-    memcpy ( uint1024CombinedHashes.begin (), hash [ 4 ].begin (), 64 );
-    memcpy ( uint1024CombinedHashes.begin () + 64, hash [ 3 ].begin (), 64 );
+    //memcpy ( uint1024CombinedHashes.begin (), hash [ 4 ].begin (), 64 );
+    //memcpy ( uint1024CombinedHashes.begin () + 64, hash [ 3 ].begin (), 64 );
     
-    //hash[4].XOROperator ( hash[3] );
+    //hash[4].XOROperator ( hash[3] );    
 
     //delete aMemoryArea;
+
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : %s .\n", uint1024CombinedHashes.ToString ().c_str () );
+    //assert ( false );
 
     //-Whirlpool--------------------------------------
     // keccak512

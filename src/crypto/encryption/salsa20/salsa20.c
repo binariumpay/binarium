@@ -6,6 +6,10 @@ Public domain.
 
 #include "ecrypt-sync.h"
 
+#include <stdio.h>
+
+
+
 #define ROTATE(v,c) (ROTL32(v,c))
 #define XOR(v,w) ((v) ^ (w))
 #define PLUS(v,w) (U32V((v) + (w)))
@@ -216,4 +220,20 @@ void ECRYPT_keystream_bytes(ECRYPT_ctx *x,u8 *stream,u32 bytes)
   u32 i;
   for (i = 0;i < bytes;++i) stream[i] = 0;
   ECRYPT_encrypt_bytes(x,stream,stream,bytes);
+}
+
+
+
+void ECRYPT_PrintContext ( const ECRYPT_ctx * _structContext ) {
+  int i;
+
+  fprintf(stdout, "salsa20.cpp : ECRYPT_PrintContext () : " );
+
+  for ( i = 0; i < 16; i ++ ) {
+    fprintf(stdout, "%i ", _structContext -> input [ i ] );    
+
+  } //-for
+
+  fprintf(stdout, ".\n" );
+
 }

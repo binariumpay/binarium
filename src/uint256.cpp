@@ -98,12 +98,17 @@ template void base_blob<1024>::SetHex(const std::string&);
 void uint512 :: XOROperator ( const uint512 & _uint512B ) {
     uint32_t i;
 
+    uint64_t * pDestinationNumbers = ( uint64_t * ) begin ();
+    uint64_t * pSourceNumbers = ( uint64_t * ) _uint512B.begin ();
+
     for ( i = 0; i < 512 / 8 / 8; i ++ ) { // 8 bits in byte and 8 bytes in uint64_t.
         //fprintf(stdout, "uint512.XOROperator () : %i .\n", i * 8 );
 
-        * ( ( uint64_t * ) ( begin () + i * 8 ) ) = 
+        /** ( ( uint64_t * ) ( begin () + i * 8 ) ) = 
             * ( ( uint64_t * ) ( begin () + i * 8 ) ) ^
-            * ( ( uint64_t * ) ( _uint512B.begin () + i * 8 ) );        
+            * ( ( uint64_t * ) ( _uint512B.begin () + i * 8 ) );*/
+
+        pDestinationNumbers [ i ] = pDestinationNumbers [ i ] ^ pSourceNumbers [ i ];       
 
     } //-for
 
@@ -112,10 +117,15 @@ void uint512 :: XOROperator ( const uint512 & _uint512B ) {
 void uint512 :: XOROperator ( const uint256 & _uint256B, uint32_t _iOffset ) {
     uint32_t i;
 
+    uint64_t * pDestinationNumbers = ( uint64_t * ) ( begin () + _iOffset );
+    uint64_t * pSourceNumbers = ( uint64_t * ) _uint256B.begin ();
+
     for ( i = 0; i < 256 / 8 / 8; i ++ ) {
-        * ( ( uint64_t * ) ( begin () + _iOffset + i * 8 ) ) =
+        /** ( ( uint64_t * ) ( begin () + _iOffset + i * 8 ) ) =
             * ( ( uint64_t * ) ( begin () + _iOffset + i * 8 ) ) ^
-            * ( ( uint64_t * ) ( _uint256B.begin () + i * 8 ) );
+            * ( ( uint64_t * ) ( _uint256B.begin () + i * 8 ) );*/
+
+        pDestinationNumbers [ i ] = pDestinationNumbers [ i ] ^ pSourceNumbers [ i ];
 
     } //-for
 
@@ -124,12 +134,17 @@ void uint512 :: XOROperator ( const uint256 & _uint256B, uint32_t _iOffset ) {
 void uint512 :: XOROperator ( const unsigned char * _pData ) {
     uint32_t i;
 
+    uint64_t * pDestinationNumbers = ( uint64_t * ) begin ();
+    uint64_t * pSourceNumbers = ( uint64_t * ) _pData;
+
     for ( i = 0; i < 512 / 8 / 8; i ++ ) { // 8 bits in byte and 8 bytes in uint64_t.
         //fprintf(stdout, "uint512.XOROperator () : %i .\n", i * 8 );
 
-        * ( ( uint64_t * ) ( begin () + i * 8 ) ) = 
+        /** ( ( uint64_t * ) ( begin () + i * 8 ) ) = 
             * ( ( uint64_t * ) ( begin () + i * 8 ) ) ^
-            * ( ( uint64_t * ) ( _pData + i * 8 ) );        
+            * ( ( uint64_t * ) ( _pData + i * 8 ) );*/
+
+        pDestinationNumbers [ i ] = pDestinationNumbers [ i ] ^ pSourceNumbers [ i ];
 
     } //-for
     
@@ -138,12 +153,17 @@ void uint512 :: XOROperator ( const unsigned char * _pData ) {
 void uint1024 :: XOROperator ( const uint32_t _iDestinationOffsetInBytes, const unsigned char * _pData ) {
     uint32_t i;
 
+    uint64_t * pDestinationNumbers = ( uint64_t * ) ( begin () + _iDestinationOffsetInBytes );
+    uint64_t * pSourceNumbers = ( uint64_t * ) _pData;
+
     for ( i = 0; i < 512 / 8 / 8; i ++ ) { // 8 bits in byte and 8 bytes in uint64_t.
         //fprintf(stdout, "uint512.XOROperator () : %i .\n", i * 8 );
 
-        * ( ( uint64_t * ) ( begin () + _iDestinationOffsetInBytes + i * 8 ) ) = 
+        /** ( ( uint64_t * ) ( begin () + _iDestinationOffsetInBytes + i * 8 ) ) = 
             * ( ( uint64_t * ) ( begin () + _iDestinationOffsetInBytes + i * 8 ) ) ^
-            * ( ( uint64_t * ) ( _pData + i * 8 ) );        
+            * ( ( uint64_t * ) ( _pData + i * 8 ) );*/
+
+        pDestinationNumbers [ i ] = pDestinationNumbers [ i ] ^ pSourceNumbers [ i ];
 
     } //-for
 
