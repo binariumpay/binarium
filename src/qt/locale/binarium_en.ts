@@ -820,6 +820,16 @@
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;locked&lt;/b&gt;</source>
         <translation>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;locked&lt;/b&gt;</translation>
     </message>
+
+    <message>    
+        <source>BitcoinGUI.closeEvent () : Are you sure want to quit?</source>
+        <translation>Are you sure want to quit?</translation>
+    </message>
+    <message>    
+        <source>BitcoinGUI.closeEvent () : Are you sure want to quit 2?</source>
+        <translation>Are you sure want to quit?</translation>
+    </message>
+
 </context>
 <context>
     <name>ClientModel</name>
@@ -1648,6 +1658,13 @@
         <source>Size of &amp;database cache</source>
         <translation>Size of &amp;database cache</translation>
     </message>
+
+    <message>
+        <location line="+20"/>
+        <source>Data directory</source>
+        <translation>Data directory</translation>
+    </message>
+
     <message>
         <location line="+16"/>
         <source>MB</source>

@@ -647,6 +647,16 @@
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;locked&lt;/b&gt;</source>
         <translation>Кошелёк &lt;b&gt;зашифрован&lt;/b&gt; и в настоящее время &lt;b&gt;заблокирован&lt;/b&gt;</translation>
     </message>
+
+    <message>    
+        <source>BitcoinGUI.closeEvent () : Are you sure want to quit?</source>
+        <translation>Вы действительно хотите выйти?</translation>
+    </message>
+    <message>    
+        <source>BitcoinGUI.closeEvent () : Are you sure want to quit 2?</source>
+        <translation>Вы действительно хотите выйти?</translation>
+    </message>
+
 </context>
 <context>
     <name>ClientModel</name>
@@ -1304,6 +1314,12 @@
         <source>Size of &amp;database cache</source>
         <translation>Размер кэша &amp;БД</translation>
     </message>
+
+    <message>        
+        <source>Data directory</source>
+        <translation>Директория данных</translation>
+    </message>
+
     <message>
         <source>MB</source>
         <translation>МБ</translation>

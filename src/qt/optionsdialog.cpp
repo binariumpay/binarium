@@ -223,6 +223,10 @@ void OptionsDialog::setModel(OptionsModel *model)
 
     ui -> edDataDir -> setText ( sDataDir );
 
+    //fprintf(stdout, "OptionsDialog.setModel () : Data directory = %s.\n", _( "Data directory" ).c_str () );
+    //fprintf(stdout, "OptionsDialog.setModel () : Options = %s.\n", _( "Options" ).c_str () );
+    //ui -> lbDataDirectory -> setText ( QString::fromStdString( _( "Data directory" ) ) );
+
 }
 
 void OptionsDialog::setMapper()

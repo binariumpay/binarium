@@ -22,7 +22,7 @@
 #define I_MAX_AMOUNT_OF_BLOCKS_IN_MEMORY_CPP 3 * 1024 * 1024 / ( 136 + 16 )
 
 //#define I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES 10080
-#define I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_SECONDS 600
+#define I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_SECONDS 604800    // 600
 
 #define I_PRIME_NUMBER_FOR_MEMORY_HARD_HASHING 3571
 
@@ -108,7 +108,7 @@ uint256 CBlockHeader::GetHash() const
     iHashFunctionsAmount = 2;
     //iAlgorithmSelector = ( iTimeFromGenesisBlock / Params ().iHashAlgorithmChangeInterval ) % iHashFunctionsAmount;
     //iAlgorithmSelector = iTimeFromGenesisBlock < 20 || pPrevBlockIndex -> nHeight == 0 ? 0 : 1; // chainActive == nullptr ||  nHeightOfPreviousBlock <= 1 ;  chainActive.Height () <= 1    pPrevBlockIndex == nullptr
-    iAlgorithmSelector = iTimeFromGenesisBlock < 20 ? 0 : 1; // chainActive == nullptr ||  nHeightOfPreviousBlock <= 1 ;  chainActive.Height () <= 1    pPrevBlockIndex == nullptr
+    iAlgorithmSelector = iTimeFromGenesisBlock < 3528000 ? 0 : 1; // chainActive == nullptr ||  nHeightOfPreviousBlock <= 1 ;  chainActive.Height () <= 1    pPrevBlockIndex == nullptr  // 20
     //iAlgorithmSelector = 0;
 
     //fprintf(stdout, "CBlockHeader.GetHash () : iAlgorithmSelector = %i : %i .\n", iTimeFromGenesisBlock, iAlgorithmSelector);  // strUsage.c_str()

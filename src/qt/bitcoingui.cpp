@@ -1228,9 +1228,12 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
 {
     fprintf(stdout, "BitcoinGUI.closeEvent () : Application close event has came.\n");
 
+    QByteArray QByteArray_AreYouSure = QApplication::translate("BitcoinGUI", "BitcoinGUI.closeEvent () : Are you sure want to quit?", 0).toUtf8();
+    QByteArray QByteArray_AreYouSure_2 = QApplication::translate("BitcoinGUI", "BitcoinGUI.closeEvent () : Are you sure want to quit? 2", 0).toUtf8();
+
     bool fRet = uiInterface.ThreadSafeQuestion(
-                    "BitcoinGUI.closeEvent () : Are you sure want to quit?",
-                    "BitcoinGUI.closeEvent () : Are you sure want to quit 2?",
+                    QByteArray_AreYouSure.data (),
+                    QByteArray_AreYouSure_2.data (),
                     "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
     if (!fRet) {
         event -> ignore();
