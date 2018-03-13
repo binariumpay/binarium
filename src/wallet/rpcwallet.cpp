@@ -1211,23 +1211,114 @@ struct tallyitem
     }
 };
 
-UniValue ListReceived(const UniValue& params, bool fByAccounts)
+UniValue ListReceived(const UniValue& params, bool fByAccounts, bool _bOnlyForGivenAddress = false)
 {
-    // Minimum confirmations
-    int nMinDepth = 1;
-    if (params.size() > 0)
-        nMinDepth = params[0].get_int();
-    bool fAddLockConf = (params.size() > 1 && params[1].get_bool());
+    UniValue ret(UniValue::VARR);
 
-    // Whether to include empty accounts
-    bool fIncludeEmpty = false;
-    if (params.size() > 2)
-        fIncludeEmpty = params[2].get_bool();
 
-    isminefilter filter = ISMINE_SPENDABLE;
-    if(params.size() > 3)
-        if(params[3].get_bool())
-            filter = filter | ISMINE_WATCH_ONLY;
+
+    if ( _bOnlyForGivenAddress ) {
+        string sAddress = params[0].get_str ();
+
+        // Minimum confirmations
+        int nMinDepth = 1;
+        if (params.size() > 1)
+            nMinDepth = params[1].get_int();
+        bool fAddLockConf = (params.size() > 2 && params[2].get_bool());
+
+        // Whether to include empty accounts
+        bool fIncludeEmpty = false;
+        if (params.size() > 3)
+            fIncludeEmpty = params[3].get_bool();
+
+        isminefilter filter = ISMINE_SPENDABLE;
+        if(params.size() > 4)
+            if(params[4].get_bool())
+                filter = filter | ISMINE_WATCH_ONLY;
+
+
+
+        for (map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin(); it != pwalletMain->mapWallet.end(); ++it)
+        {
+        const CWalletTx& wtx = (*it).second;
+
+        if (wtx.IsCoinBase() || !CheckFinalTx(wtx))
+            continue;
+
+        int nDepth = wtx.GetDepthInMainChain(fAddLockConf);
+        if (nDepth < nMinDepth)
+            continue;
+
+        tallyitem item;
+        BOOST_FOREACH(const CTxOut& txout, wtx.vout)
+        {
+            CTxDestination address;
+            if (!ExtractDestination(txout.scriptPubKey, address))
+                continue;
+
+            isminefilter mine = IsMine(*pwalletMain, address);
+            if(!(mine & filter))
+                continue;
+            
+            //item.nAmount += txout.nValue;
+            //item.nConf = min(item.nConf, nDepth);
+            //item.txids.push_back(wtx.GetHash());
+            //if (mine & ISMINE_WATCH_ONLY)
+            //    item.fIsWatchonly = true;        
+
+            if ( ( CBitcoinAddress ( address ).ToString () == sAddress ) &&
+                 ( pwalletMain->mapAddressBook.count ( address ) )
+                 //( pwalletMain->mapAddressBook [ address ] != nullptr )
+               ) {
+                CAddressBookData pAddressBookData = pwalletMain->mapAddressBook [ address ];
+
+            UniValue obj(UniValue::VOBJ);
+            if(mine & ISMINE_WATCH_ONLY)
+                obj.push_back(Pair("involvesWatchonly", true));
+            obj.push_back(Pair("address",       CBitcoinAddress ( address ).ToString()));
+            obj.push_back(Pair("account",       pAddressBookData.name));
+            obj.push_back(Pair("amount",        ValueFromAmount(txout.nValue)));
+            obj.push_back ( Pair ( "confirmations", nDepth ) ); // min(item.nConf, nDepth)
+            //obj.push_back ( Pair ( "transaction", txout.ToString () ) );
+            if (!fByAccounts)
+                obj.push_back(Pair("label", pAddressBookData.name));
+            //UniValue transactions(UniValue::VARR);
+            //if (it != mapTally.end())
+            //{
+            //    BOOST_FOREACH(const uint256& item_hash, item.txids)
+            //    {
+            //        transactions.push_back(item_hash.GetHex());
+            //    }
+            //}
+            obj.push_back(Pair("hash", wtx.GetHash().GetHex ()));
+            ret.push_back(obj);
+
+            } //-if  
+
+        } //-BOOST_FOREACH      
+
+        } //-for
+
+
+
+    } else {
+        // Minimum confirmations
+        int nMinDepth = 1;
+        if (params.size() > 0)
+            nMinDepth = params[0].get_int();
+        bool fAddLockConf = (params.size() > 1 && params[1].get_bool());
+
+        // Whether to include empty accounts
+        bool fIncludeEmpty = false;
+        if (params.size() > 2)
+            fIncludeEmpty = params[2].get_bool();
+
+        isminefilter filter = ISMINE_SPENDABLE;
+        if(params.size() > 3)
+            if(params[3].get_bool())
+                filter = filter | ISMINE_WATCH_ONLY;    
+
+
 
     // Tally
     map<CBitcoinAddress, tallyitem> mapTally;
@@ -1262,7 +1353,7 @@ UniValue ListReceived(const UniValue& params, bool fByAccounts)
     }
 
     // Reply
-    UniValue ret(UniValue::VARR);
+    //UniValue ret(UniValue::VARR);
     map<string, tallyitem> mapAccountTally;
     BOOST_FOREACH(const PAIRTYPE(CBitcoinAddress, CAddressBookData)& item, pwalletMain->mapAddressBook)
     {
@@ -1333,6 +1424,12 @@ UniValue ListReceived(const UniValue& params, bool fByAccounts)
         }
     }
 
+
+
+    } //-else [ for if ( _bOnlyForGivenAddress ) ]
+
+
+
     return ret;
 }
 
@@ -1375,6 +1472,48 @@ UniValue listreceivedbyaddress(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     return ListReceived(params, false);
+}
+
+UniValue listreceivedonlybyaddress(const UniValue& params, bool fHelp)
+{
+    if (!EnsureWalletIsAvailable(fHelp))
+        return NullUniValue;
+
+    if (fHelp || ( params.size() < 1 ) || ( params.size() > 5 ) )
+        throw runtime_error(
+            "listreceivedonlybyaddress ( address minconf addlockconf includeempty includeWatchonly)\n"
+            "\nList balances by receiving address.\n"
+            "\nArguments:\n"
+            "1. address          (string, required) Address to show transactions for.\n"
+            "2. minconf          (numeric, optional, default=1) The minimum number of confirmations before payments are included.\n"
+            "3. addlockconf      (bool, optional, default=false) Whether to add " + std::to_string(nInstantSendDepth) + " confirmations to transactions locked via InstantSend.\n"
+            "4. includeempty     (bool, optional, default=false) Whether to include addresses that haven't received any payments.\n"
+            "5. includeWatchonly (bool, optional, default=false) Whether to include watchonly addresses (see 'importaddress').\n"
+
+            "\nResult:\n"
+            "[\n"
+            "  {\n"
+            "    \"involvesWatchonly\" : true,        (bool) Only returned if imported addresses were involved in transaction\n"
+            "    \"address\" : \"receivingaddress\",    (string) The receiving address\n"
+            "    \"account\" : \"accountname\",         (string) DEPRECATED. The account of the receiving address. The default account is \"\".\n"
+            "    \"amount\" : x.xxx,                  (numeric) The total amount in " + CURRENCY_UNIT + " received by the address\n"
+            "    \"confirmations\" : n                (numeric) The number of confirmations of the most recent transaction included.\n"
+            "                                                 If 'addlockconf' is true, the minimum number of confirmations is calculated\n"
+            "                                                 including additional " + std::to_string(nInstantSendDepth) + " confirmations for transactions locked via InstantSend\n"
+            "    \"label\" : \"label\"                  (string) A comment for the address/transaction, if any\n"
+            "  }\n"
+            "  ,...\n"
+            "]\n"
+
+            "\nExamples:\n"
+            + HelpExampleCli("listreceivedonlybyaddress", "\"XqxHJLCvkUDQCJcvKLjL35FxYiYwNc6PCC\"")
+            + HelpExampleCli("listreceivedonlybyaddress", "\"XqxHJLCvkUDQCJcvKLjL35FxYiYwNc6PCC\" 6 false true")
+            + HelpExampleRpc("listreceivedonlybyaddress", "\"XqxHJLCvkUDQCJcvKLjL35FxYiYwNc6PCC\", 6, false, true, true")
+        );
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
+    return ListReceived(params, false, true);
 }
 
 UniValue listreceivedbyaccount(const UniValue& params, bool fHelp)

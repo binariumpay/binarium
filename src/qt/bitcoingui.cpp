@@ -797,9 +797,11 @@ void BitcoinGUI::showDebugWindow()
 }
 
 void BitcoinGUI::slotCheckApplicationQuit () {
+    bool bShowCloseConfirmation = true;
+
     fprintf(stdout, "BitcoinGUI.slotCheckApplicationQuit () : Application slot has been called.\n");
 
-    bool fRet = uiInterface.ThreadSafeQuestion(
+    /*bool fRet = uiInterface.ThreadSafeQuestion(
                     "BitcoinGUI.slotCheckApplicationQuit () : Are you sure want to quit?",
                     "BitcoinGUI.slotCheckApplicationQuit () : Are you sure want to quit 2?",
                     "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
@@ -807,7 +809,37 @@ void BitcoinGUI::slotCheckApplicationQuit () {
         qApp -> quit ();
         rpcConsole -> hide ();
 
-    } //-if (fRet)
+    } //-if (fRet)*/
+
+    //#ifndef Q_OS_MAC // Ignored on Mac
+    //if(clientModel && clientModel->getOptionsModel())
+    //{
+    //    bShowCloseConfirmation = ! clientModel->getOptionsModel()->getMinimizeOnClose() || ( windowState () == Qt :: WindowMinimized );
+    //}
+    //#endif
+
+    if ( bShowCloseConfirmation ) {
+        QByteArray QByteArray_AreYouSure = QApplication::translate("BitcoinGUI", "BitcoinGUI.closeEvent () : Are you sure want to quit?", 0).toUtf8();
+        QByteArray QByteArray_AreYouSure_2 = QApplication::translate("BitcoinGUI", "BitcoinGUI.closeEvent () : Are you sure want to quit? 2", 0).toUtf8();
+
+        bool fRet = uiInterface.ThreadSafeQuestion(
+                        QByteArray_AreYouSure.data (),
+                        QByteArray_AreYouSure_2.data (),
+                        "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_CANCEL);        
+        if (fRet) {
+            qApp -> quit ();
+            rpcConsole -> hide ();
+
+            return;
+
+        } //-if (fRet)
+
+        return;
+
+    } //-if
+
+    //qApp -> quit ();
+    //rpcConsole -> hide ();
 
 }
 
@@ -1226,20 +1258,32 @@ void BitcoinGUI::changeEvent(QEvent *e)
 
 void BitcoinGUI::closeEvent(QCloseEvent *event)
 {
+    bool bShowCloseConfirmation = true;
+
     fprintf(stdout, "BitcoinGUI.closeEvent () : Application close event has came.\n");
 
-    QByteArray QByteArray_AreYouSure = QApplication::translate("BitcoinGUI", "BitcoinGUI.closeEvent () : Are you sure want to quit?", 0).toUtf8();
-    QByteArray QByteArray_AreYouSure_2 = QApplication::translate("BitcoinGUI", "BitcoinGUI.closeEvent () : Are you sure want to quit? 2", 0).toUtf8();
+    #ifndef Q_OS_MAC // Ignored on Mac
+    if(clientModel && clientModel->getOptionsModel())
+    {
+        bShowCloseConfirmation = ! clientModel->getOptionsModel()->getMinimizeOnClose();
+    }
+    #endif
 
-    bool fRet = uiInterface.ThreadSafeQuestion(
-                    QByteArray_AreYouSure.data (),
-                    QByteArray_AreYouSure_2.data (),
-                    "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
-    if (!fRet) {
-        event -> ignore();
-        return;
+    if ( bShowCloseConfirmation ) {
+        QByteArray QByteArray_AreYouSure = QApplication::translate("BitcoinGUI", "BitcoinGUI.closeEvent () : Are you sure want to quit?", 0).toUtf8();
+        QByteArray QByteArray_AreYouSure_2 = QApplication::translate("BitcoinGUI", "BitcoinGUI.closeEvent () : Are you sure want to quit? 2", 0).toUtf8();
 
-    } //-if (fRet)
+        bool fRet = uiInterface.ThreadSafeQuestion(
+                        QByteArray_AreYouSure.data (),
+                        QByteArray_AreYouSure_2.data (),
+                        "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_CANCEL);        
+        if (!fRet) {
+            event -> ignore();
+            return;
+
+        } //-if (fRet)
+
+    } //-if
 
 
 
@@ -1255,7 +1299,9 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
         }
     }
 #endif
+
     QMainWindow::closeEvent(event);
+    
 }
 
 void BitcoinGUI::showEvent(QShowEvent *event)
