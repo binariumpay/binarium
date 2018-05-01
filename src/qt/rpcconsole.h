@@ -29,12 +29,13 @@ class QItemSelection;
 QT_END_NAMESPACE
 
 /** Local Bitcoin RPC console. */
-class RPCConsole: public QWidget
+class RPCConsole: public QDialog // QWidget
 {
     Q_OBJECT
 
 public:
-    explicit RPCConsole(const PlatformStyle *platformStyle, QWidget *parent);
+    //explicit RPCConsole(const PlatformStyle *platformStyle, QWidget *parent);
+    explicit RPCConsole(QWidget *parent);
     ~RPCConsole();
 
     void setClientModel(ClientModel *model);
@@ -166,6 +167,9 @@ private:
 
     /** Update UI with latest network info from model. */
     void updateNetworkState();
+
+    //virtual void paintEvent(QPaintEvent *pe) override;
+
 };
 
 #endif // BITCOIN_QT_RPCCONSOLE_H

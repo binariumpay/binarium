@@ -650,7 +650,7 @@ void OverviewPage::togglePrivateSend(){
 }
 
 void OverviewPage::SetupTransactionList(int nNumItems) {
-    ui->listTransactions->setMinimumHeight(nNumItems * (DECORATION_SIZE + 2));
+    //ui->listTransactions->setMinimumHeight(nNumItems * (DECORATION_SIZE + 2));
 
     if(walletModel && walletModel->getOptionsModel()) {
         // Set up transaction list

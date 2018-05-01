@@ -25,6 +25,7 @@
 #include <db_cxx.h>
 #endif
 
+#include <qpainter.h>
 #include <QDir>
 #include <QKeyEvent>
 #include <QMenu>
@@ -250,22 +251,28 @@ void RPCExecutor::request(const QString &command)
     }
 }
 
-RPCConsole::RPCConsole(const PlatformStyle *platformStyle, QWidget *parent) :
-    QWidget(parent),
+//RPCConsole::RPCConsole(const PlatformStyle *platformStyle, QWidget *parent) :
+RPCConsole::RPCConsole(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::RPCConsole)
+    //model(0),
+    //mapper(0)
+
+    /*QWidget(parent), // QWidget
     ui(new Ui::RPCConsole),
     clientModel(0),
     historyPtr(0),
     platformStyle(platformStyle),
     peersTableContextMenu(0),
     banTableContextMenu(0),
-    consoleFontSize(0)
+    consoleFontSize(0)*/
 {
     ui->setupUi(this);
     GUIUtil::restoreWindowGeometry("nRPCConsoleWindow", this->size(), this);
     QString theme = GUIUtil::getThemeName();
-    if (platformStyle->getImagesOnButtons()) {
-        ui->openDebugLogfileButton->setIcon(QIcon(":/icons/" + theme + "/export"));
-    }
+    //if (platformStyle->getImagesOnButtons()) {
+    //    ui->openDebugLogfileButton->setIcon(QIcon(":/icons/" + theme + "/export"));
+    //}
     // Needed on Mac also
     ui->clearButton->setIcon(QIcon(":/icons/" + theme + "/remove"));
     ui->fontBiggerButton->setIcon(QIcon(":/icons/" + theme + "/fontbigger"));
@@ -311,6 +318,9 @@ RPCConsole::RPCConsole(const PlatformStyle *platformStyle, QWidget *parent) :
     QSettings settings;
     consoleFontSize = settings.value(fontSizeSettingsKey, QFontInfo(QFont()).pointSize()).toInt();
     clear();
+
+    //setStyleSheet ( "background-color: #0f5e8d; color : #a3dce6;" );
+
 }
 
 RPCConsole::~RPCConsole()
@@ -1079,3 +1089,13 @@ void RPCConsole::setTabFocus(enum TabTypes tabType)
 {
     ui->tabWidget->setCurrentIndex(tabType);
 }
+
+
+/*void RPCConsole::paintEvent(QPaintEvent *pe)
+{                                                                                                                                        
+    QWidget::paintEvent(pe);
+    QStyleOption o;                                                                                                                                                                  
+    o.initFrom(this);                                                                                                                                                                
+    QPainter p(this);                                                                                                                                                                
+    style()->drawPrimitive ( QStyle::PE_Widget, &o, &p, this);
+};*/
