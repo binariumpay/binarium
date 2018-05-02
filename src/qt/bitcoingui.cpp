@@ -159,6 +159,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
 
     //rpcConsole = new RPCConsole(platformStyle, 0);
     rpcConsole = new RPCConsole(0);
+    //rpcConsole = new RPCConsole();
     helpMessageDialog = new HelpMessageDialog(this, HelpMessageDialog::cmdline);
 #ifdef ENABLE_WALLET
     if(enableWallet)
@@ -291,6 +292,9 @@ void BitcoinGUI::createActions()
     overviewAction->setStatusTip(tr("Show general overview of wallet"));
     overviewAction->setToolTip(overviewAction->statusTip());
     overviewAction->setCheckable(true);
+    overviewAction -> setObjectName ( "tabOverview" );
+    //overviewAction -> setStyleSheet ( "#tabOverview { background-color: #0f5e8d; color : #333333; }" );
+    //( ( QApplication * ) ( QApplication :: instance () ) ) -> setStyleSheet ( "#tabOverview { background-color: #0f5e8d; color : #333333; }" );
 #ifdef Q_OS_MAC
     overviewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
 #else
@@ -302,6 +306,7 @@ void BitcoinGUI::createActions()
     sendCoinsAction->setStatusTip(tr("Send coins to a Binarium address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
+    sendCoinsAction -> setObjectName ( "tabSendCoins" );
 #ifdef Q_OS_MAC
     sendCoinsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
 #else
@@ -317,6 +322,7 @@ void BitcoinGUI::createActions()
     receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and binarium: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
+    receiveCoinsAction -> setObjectName ( "tabReceiveCoins" );
 #ifdef Q_OS_MAC
     receiveCoinsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
 #else
@@ -332,6 +338,7 @@ void BitcoinGUI::createActions()
     historyAction->setStatusTip(tr("Browse transaction history"));
     historyAction->setToolTip(historyAction->statusTip());
     historyAction->setCheckable(true);
+    historyAction -> setObjectName ( "tabHistory" );
 #ifdef Q_OS_MAC
     historyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_4));
 #else
@@ -346,6 +353,7 @@ void BitcoinGUI::createActions()
         masternodeAction->setStatusTip(tr("Browse masternodes"));
         masternodeAction->setToolTip(masternodeAction->statusTip());
         masternodeAction->setCheckable(true);
+        masternodeAction -> setObjectName ( "tabMasternodes" );
 #ifdef Q_OS_MAC
         masternodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
 #else
@@ -918,12 +926,22 @@ void BitcoinGUI::gotoOverviewPage()
 {
     overviewAction->setChecked(true);
     if (walletFrame) walletFrame->gotoOverviewPage();
+
+    if ( sendCoinsAction != nullptr ) sendCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/send"));
+    if ( historyAction != nullptr ) historyAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/history"));
+    if ( masternodeAction != nullptr ) masternodeAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/masternodes"));
+    if ( receiveCoinsAction != nullptr ) receiveCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/receiving_addresses"));
 }
 
 void BitcoinGUI::gotoHistoryPage()
 {
     historyAction->setChecked(true);
     if (walletFrame) walletFrame->gotoHistoryPage();
+    historyAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/history_active"));
+
+    if ( sendCoinsAction != nullptr ) sendCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/send"));
+    if ( masternodeAction != nullptr ) masternodeAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/masternodes"));
+    if ( receiveCoinsAction != nullptr ) receiveCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/receiving_addresses"));
 }
 
 void BitcoinGUI::gotoMasternodePage()
@@ -932,6 +950,11 @@ void BitcoinGUI::gotoMasternodePage()
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeAction->setChecked(true);
         if (walletFrame) walletFrame->gotoMasternodePage();
+        masternodeAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/masternodes_active"));
+
+        if ( historyAction != nullptr ) historyAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/history"));
+        if ( sendCoinsAction != nullptr ) sendCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/send"));
+        if ( receiveCoinsAction != nullptr ) receiveCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/receiving_addresses"));
     }
 }
 
@@ -939,12 +962,22 @@ void BitcoinGUI::gotoReceiveCoinsPage()
 {
     receiveCoinsAction->setChecked(true);
     if (walletFrame) walletFrame->gotoReceiveCoinsPage();
+    receiveCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/receiving_addresses_active"));
+
+    if ( historyAction != nullptr ) historyAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/history"));
+    if ( sendCoinsAction != nullptr ) sendCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/send"));
+    if ( masternodeAction != nullptr ) masternodeAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/masternodes"));
 }
 
 void BitcoinGUI::gotoSendCoinsPage(QString addr)
 {
     sendCoinsAction->setChecked(true);
     if (walletFrame) walletFrame->gotoSendCoinsPage(addr);
+    sendCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/send_active"));
+
+    if ( historyAction != nullptr ) historyAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/history"));
+    if ( masternodeAction != nullptr ) masternodeAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/masternodes"));
+    if ( receiveCoinsAction != nullptr ) receiveCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/receiving_addresses"));
 }
 
 void BitcoinGUI::gotoSignMessageTab(QString addr)

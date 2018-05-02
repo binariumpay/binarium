@@ -86,12 +86,33 @@ color:#06db8a;
 }
 
 QToolBar > QToolButton:checked {
+/*background-image : url(':/icons/light/send_active');
+background-position : 50% 10%;
+background-repeat : no-repeat;*/
+/*icon : url(':/images/light/drkblue_walletFrame_bg');*/
+/*qproperty-icon : url(':/icons/light/send_active');*/
 background-color:#025968;
 color:#06db8a;
 font-weight:bold;
 border:1px solid #025968;
 border-radius: 4px;
 }
+
+/*QToolBar > QToolButton:checked::icon {
+background-image : url(':/icons/light/send_active');
+}*/
+
+/*QToolBar:nth-child(1) {
+image : url(':/images/light/drkblue_walletFrame_bg');
+}*/
+
+/*QToolBar*/ /*QAction*//*#tabOverview*/
+/*QToolBar > QToolButton:nth-of-type(1)*/
+/*QToolBar > QToolButton#tabOverview {*/
+/*qproperty-icon : url(':/images/light/drkblue_walletFrame_bg');*/
+/*color:#000000;
+font-weight:bold;
+}*/
 
 QMessageBox {
 background-color:#F8F6F6;
@@ -460,39 +481,47 @@ border-bottom:1px solid #333;
 }
 
 QDialog .QTabWidget::pane {
-border: 1px solid #d7d7d7;
+border: 1px solid #333;
 }
 
 QDialog .QTabWidget QTabBar::tab {
 background-color:#0f5e8d;
-color:#333;
+color : #78c3ce;
 padding-left:10px;
 padding-right:10px;
 padding-top:5px;
 padding-bottom:5px;
-border-top: 1px solid #d7d7d7;
+/*border-top: 1px solid #333;*/
 }
 
 /*QDialog QLabel {
 color : #444444;
 }*/
 
-QDialog .QTabWidget QTabBar::tab:first {
-border-left: 1px solid #d7d7d7;
+/*QDialog .QTabWidget QTabBar::tab:first {
+border-left: 1px solid #333;
 }
 
 QDialog .QTabWidget QTabBar::tab:last {
-border-right: 1px solid #d7d7d7;
+border-right: 1px solid #333;
+}*/
+
+QDialog .QTabWidget QTabBar::tab:hover {
+color:#06db8a;
+
 }
 
-QDialog .QTabWidget QTabBar::tab:selected, QDialog .QTabWidget QTabBar::tab:hover {
-background-color:#ffffff;
-color:#333;
+QDialog .QTabWidget QTabBar::tab:selected {
+/*background-color:#ffffff;
+color:#333;*/
+background-color:#025968;
+color:#06db8a;
+/*font-weight:bold;*/
 }
 
 QDialog .QTabWidget .QWidget {
-background-color:#fff;
-color:#333;
+/*background-color:#fff;
+color:#333;*/
 }
 
 QDialog .QTabWidget .QWidget QAbstractSpinBox {
@@ -766,18 +795,19 @@ min-height:33px;
 
 /* TOOLS MENU */
 
-QDialog#RPCConsole { /* RPC Console Dialog Box */
+/*QDialog#RPCConsole*/ .RPCConsole { /* RPC Console Dialog Box */
 /*background-color:#F8F6F6;*/
 background-color:#0f5e8d;
 color : #a3dce6;
 }
 
-QWidget#RPCConsole QLabel {
+/*QWidget#RPCConsole QLabel*/
+.RPCConsole QLabel {
 color : #a3dce6;
 }
 
-QDialog#RPCConsole QWidget#tabWidget, QDialog#RPCConsole QWidget#tab_info, QDialog#RPCConsole QWidget#tab_console, QDialog#RPCConsole QWidget#tab_nettraffic,
-	QDialog#RPCConsole QWidget#tab_peers, QDialog#RPCConsole QWidget#tab_repair {
+.RPCConsole QWidget#tabWidget, .RPCConsole QWidget#tab_info, .RPCConsole QWidget#tab_console, .RPCConsole QWidget#tab_nettraffic,
+	.RPCConsole QWidget#tab_peers, .RPCConsole QWidget#tab_repair {
 /*QWidget#tabWidget, QWidget#tabWidget QWidget#tab_info, QWidget#tabWidget QWidget#tab_console, QWidget#tabWidget QWidget#tab_nettraffic,
 	QWidget#tabWidget QWidget#tab_peers, QWidget#tabWidget QWidget#tab_repair*/
 background-color:#0f5e8d;

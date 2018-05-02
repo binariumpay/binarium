@@ -319,7 +319,16 @@ RPCConsole::RPCConsole(QWidget *parent) :
     consoleFontSize = settings.value(fontSizeSettingsKey, QFontInfo(QFont()).pointSize()).toInt();
     clear();
 
-    //setStyleSheet ( "background-color: #0f5e8d; color : #a3dce6;" );
+    setStyleSheet ( "background-color: #0f5e8d; color : #a3dce6;" );
+    // qApp
+    ( ( QApplication * ) ( QApplication :: instance () ) ) -> setStyleSheet ( ".RPCConsole { background-color: #0f5e8d; color : #a3dce6; }\
+.RPCConsole QLabel { color : #a3dce6; }\
+.RPCConsole QButton { background-color:#0088cc; color : #ffffff; }\
+.RPCConsole QWidget#tabWidget, .RPCConsole QWidget#tab_info, .RPCConsole QWidget#tab_console, .RPCConsole QWidget#tab_nettraffic,\
+    .RPCConsole QWidget#tab_peers, .RPCConsole QWidget#tab_repair {\
+background-color:#0f5e8d;\
+color : #a3dce6;\
+}" );
 
 }
 
