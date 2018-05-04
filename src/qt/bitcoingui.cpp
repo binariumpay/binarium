@@ -56,6 +56,8 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
+#include <QFontDatabase>
+
 #if QT_VERSION < 0x050000
 #include <QTextDocument>
 #include <QUrl>
@@ -122,6 +124,11 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
     spinnerFrame(0),
     platformStyle(platformStyle)
 {
+    QFontDatabase :: addApplicationFont ( ":/fonts/PT_Sans-Web-Regular" );
+    QFontDatabase :: addApplicationFont ( ":/fonts/PT_Sans-Web-Bold" );
+    QFontDatabase :: addApplicationFont ( ":/fonts/PT_Sans-Web-Italic" );
+    QFontDatabase :: addApplicationFont ( ":/fonts/PT_Sans-Web-BoldItalic" );
+
     /* Open CSS when configured */
     this->setStyleSheet(GUIUtil::loadStyleSheet());
 
@@ -295,6 +302,7 @@ void BitcoinGUI::createActions()
     overviewAction -> setObjectName ( "tabOverview" );
     //overviewAction -> setStyleSheet ( "#tabOverview { background-color: #0f5e8d; color : #333333; }" );
     //( ( QApplication * ) ( QApplication :: instance () ) ) -> setStyleSheet ( "#tabOverview { background-color: #0f5e8d; color : #333333; }" );
+    //overviewAction -> setProperty ( "class", "css_class_tabOverview");
 #ifdef Q_OS_MAC
     overviewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
 #else
@@ -567,6 +575,7 @@ void BitcoinGUI::createToolBars()
     if(walletFrame)
     {
         QToolBar *toolbar = new QToolBar(tr("Tabs toolbar"));
+        //toolbar->setOrientation(Qt::Vertical);
         toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         toolbar->addAction(overviewAction);
         toolbar->addAction(sendCoinsAction);
@@ -926,6 +935,7 @@ void BitcoinGUI::gotoOverviewPage()
 {
     overviewAction->setChecked(true);
     if (walletFrame) walletFrame->gotoOverviewPage();
+    overviewAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/overview_active"));
 
     if ( sendCoinsAction != nullptr ) sendCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/send"));
     if ( historyAction != nullptr ) historyAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/history"));
@@ -939,6 +949,7 @@ void BitcoinGUI::gotoHistoryPage()
     if (walletFrame) walletFrame->gotoHistoryPage();
     historyAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/history_active"));
 
+    if ( overviewAction != nullptr ) overviewAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/overview"));
     if ( sendCoinsAction != nullptr ) sendCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/send"));
     if ( masternodeAction != nullptr ) masternodeAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/masternodes"));
     if ( receiveCoinsAction != nullptr ) receiveCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/receiving_addresses"));
@@ -952,6 +963,7 @@ void BitcoinGUI::gotoMasternodePage()
         if (walletFrame) walletFrame->gotoMasternodePage();
         masternodeAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/masternodes_active"));
 
+        if ( overviewAction != nullptr ) overviewAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/overview"));
         if ( historyAction != nullptr ) historyAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/history"));
         if ( sendCoinsAction != nullptr ) sendCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/send"));
         if ( receiveCoinsAction != nullptr ) receiveCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/receiving_addresses"));
@@ -964,6 +976,7 @@ void BitcoinGUI::gotoReceiveCoinsPage()
     if (walletFrame) walletFrame->gotoReceiveCoinsPage();
     receiveCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/receiving_addresses_active"));
 
+    if ( overviewAction != nullptr ) overviewAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/overview"));
     if ( historyAction != nullptr ) historyAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/history"));
     if ( sendCoinsAction != nullptr ) sendCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/send"));
     if ( masternodeAction != nullptr ) masternodeAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/masternodes"));
@@ -975,6 +988,7 @@ void BitcoinGUI::gotoSendCoinsPage(QString addr)
     if (walletFrame) walletFrame->gotoSendCoinsPage(addr);
     sendCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/send_active"));
 
+    if ( overviewAction != nullptr ) overviewAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/overview"));
     if ( historyAction != nullptr ) historyAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/history"));
     if ( masternodeAction != nullptr ) masternodeAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/masternodes"));
     if ( receiveCoinsAction != nullptr ) receiveCoinsAction->setIcon(QIcon(":/icons/" + GUIUtil :: getThemeName () + "/receiving_addresses"));
@@ -1415,11 +1429,14 @@ void BitcoinGUI::setHDStatus(int hdEnabled)
 {
     QString theme = GUIUtil::getThemeName();
 
-    labelWalletHDStatusIcon->setPixmap(platformStyle->SingleColorIcon(hdEnabled ? ":/icons/" + theme + "/hd_enabled" : ":/icons/" + theme + "/hd_disabled").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+    //labelWalletHDStatusIcon->setPixmap(platformStyle->SingleColorIcon(hdEnabled ? ":/icons/" + theme + "/hd_enabled" : ":/icons/" + theme + "/hd_disabled").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+    labelWalletHDStatusIcon->setPixmap(QIcon(hdEnabled ? ":/icons/" + theme + "/hd_enabled" : ":/icons/" + theme + "/hd_disabled").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+    //labelWalletHDStatusIcon->setPixmap(QIcon(":/icons/" + theme + "/lock_open").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
     labelWalletHDStatusIcon->setToolTip(hdEnabled ? tr("HD key generation is <b>enabled</b>") : tr("HD key generation is <b>disabled</b>"));
 
     // eventually disable the QLabel to set its opacity to 50%
-    labelWalletHDStatusIcon->setEnabled(hdEnabled);
+    //labelWalletHDStatusIcon->setEnabled(hdEnabled);
+    labelWalletHDStatusIcon->setEnabled(true);
 }
 
 void BitcoinGUI::setEncryptionStatus(int status)

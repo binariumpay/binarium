@@ -98,10 +98,10 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     
     /* Theme selector */
     ui->theme->addItem(QString("BINARIUM-light"), QVariant("light"));
-    ui->theme->addItem(QString("BINARIUM-light-hires"), QVariant("light-hires"));
+    //ui->theme->addItem(QString("BINARIUM-light-hires"), QVariant("light-hires"));
     ui->theme->addItem(QString("BINARIUM-blue"), QVariant("drkblue"));
     ui->theme->addItem(QString("BINARIUM-Crownium"), QVariant("crownium"));
-    ui->theme->addItem(QString("BINARIUM-traditional"), QVariant("trad"));
+    //ui->theme->addItem(QString("BINARIUM-traditional"), QVariant("trad"));
     
     /* Language selector */
     QDir translations(":translations");
