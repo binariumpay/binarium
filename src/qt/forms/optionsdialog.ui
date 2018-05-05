@@ -42,7 +42,7 @@
          <item>
           <widget class="QLabel" name="databaseCacheLabel">
            <property name="text">
-            <string>&amp;Size of database cache</string>
+            <string>S&amp;ize of database cache</string>
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>
@@ -85,7 +85,7 @@
          <item>
           <widget class="QLabel" name="threadsScriptVerifLabel">
            <property name="text">
-            <string>Number of script &amp;verification threads</string>
+            <string>Number of script verification &amp;threads</string>
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>
@@ -873,7 +873,7 @@ https://www.transifex.com/projects/p/binarium/</string>
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="frame">
+    <widget class="QFrame" name="frame_OptionsMessage">
      <layout class="QVBoxLayout" name="verticalLayout_Bottom">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_Bottom">
