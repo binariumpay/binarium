@@ -23,7 +23,7 @@
 #include "crypto/hashing/streebog/stribog.h"
 #include "crypto/hashing/streebog/test_data.h"
 #include "crypto/hashing/whirlpool/whirlpool.h"
-#include "crypto/hashing/swifft/swifft.h"
+//#include "crypto/hashing/swifft/swifft.h"
 
 #include "crypto/encryption/gost2015_kuznechik/libgost15/libgost15.h"
 #include "crypto/encryption/three_fish/libskein_skein.h"

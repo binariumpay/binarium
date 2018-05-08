@@ -64,6 +64,8 @@
         <file alias="about">res/icons/drkblue/about.png</file>
         <file alias="about_qt">res/icons/drkblue/about_qt.png</file>
         <file alias="verify">res/icons/drkblue/verify.png</file>
+        <file alias="open_action">res/icons/drkblue/open_action.png</file>
+        <file alias="information">res/icons/drkblue/information.png</file>
         <file alias="hd_enabled">res/icons/drkblue/hd_enabled.png</file>
         <file alias="hd_disabled">res/icons/drkblue/hd_disabled.png</file>
         <file alias="fontbigger">res/icons/drkblue/fontbigger.png</file>
@@ -125,6 +127,8 @@
         <file alias="about">res/icons/crownium/about.png</file>
         <file alias="about_qt">res/icons/crownium/about_qt.png</file>
         <file alias="verify">res/icons/crownium/verify.png</file>
+        <file alias="open_action">res/icons/crownium/open_action.png</file>
+        <file alias="information">res/icons/crownium/information.png</file>
         <file alias="hd_enabled">res/icons/crownium/hd_enabled.png</file>
         <file alias="hd_disabled">res/icons/crownium/hd_disabled.png</file>
         <file alias="fontbigger">res/icons/crownium/fontbigger.png</file>
@@ -186,6 +190,8 @@
         <file alias="about">res/icons/light/about.png</file>
         <file alias="about_qt">res/icons/light/about_qt.png</file>
         <file alias="verify">res/icons/light/verify.png</file>
+        <file alias="open_action">res/icons/light/open_action.png</file>
+        <file alias="information">res/icons/light/information.png</file>
         <file alias="hd_enabled">res/icons/light/hd_enabled.png</file>
         <file alias="hd_disabled">res/icons/light/hd_disabled.png</file>
         <file alias="fontbigger">res/icons/light/fontbigger.png</file>
@@ -269,8 +275,12 @@
         <file alias="drkblue_qtreeview_selected">res/images/drkblue/drkblue_qtreeview_selected.png</file>
         <file alias="drkblue_walletFrame_bg">res/images/drkblue/drkblue_walletFrame_bg.png</file>
         <file alias="StatusBarBackground">res/images/drkblue/StatusBarBackground.png</file>
+        <file alias="ToolBarBackground">res/images/drkblue/ToolBarBackground.png</file>
         <file alias="splash">res/images/drkblue/splash.png</file>
         <file alias="splash_testnet">res/images/drkblue/splash_testnet.png</file>
+        <file alias="tab_button_1">res/images/drkblue/tab_button_1.png</file>
+        <file alias="tab_button_2">res/images/drkblue/tab_button_2.png</file>
+        <file alias="tab_button_3">res/images/drkblue/tab_button_3.png</file>
     </qresource>
     <qresource prefix="/images/crownium">
         <file alias="about">res/images/crownium/about.png</file>

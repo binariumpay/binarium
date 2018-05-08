@@ -9,7 +9,23 @@ http://binarium.money
 What is Binarium?
 ----------------
 
-Binarium is an experimental new digital currency that enables anonymous, instant
+Binarium cryptocurrency is the first one, which is protected from ASICs. It does so by configurable hashing algorithm (with use of different hashing and encryption functions), which configures itself once per week or blocks generation difficulty change. This makes it costly to implement and own ASICs for each sub-function and reconfigure them in accordance with current algorithm state. And it uses data amplification with Salsa20 fast stream cipher. This also makes hashing function dependent on RAM sizes and random accesses speed. Which, in turn, makes it even more costly to build ASICs for and reduces GPU efficiency in mining, because their VRAM is better suited for piplined transfers of large data volumes, instead of speed of random accesses, and because their cache is shared between cores and part of it is read-only. Also, each thread, calculating hashes for Binarium blocks should have its own copy of memory area for data amplification, because this process and its intermediate data depends on information of block in consideration. With the main anti-ASIC factor is the ability to change hashing functions after Binarium widespread adoption, while keeping its current consensus.
+
+Binarium cryptocurrency is the first one, which supports hashes functions changes and other major network-wide changes without breaking a consensus. It makes so by implementing updates in 4 steps: introduction of unactivated updates into clients; “soft” clients enforcing each other to update the software; “hard” clients enforcing each other for updates; and actual activation of changes in clients, when network reports satisfying level of changes adoption in it. In this model clients send upgraded peers statistics information to main Binarium RPC server, this allows to monitor network state and activate changes, when enough amount of users upgraded to new software versions. This functionality will be implemented after launch of cryptocurrency, when we’ll gather enough feedback on current algorithm and overall Binarium block-chain functioning.
+
+It is based on Dash cryptocurrency and supports master nodes, InstantSend and PrivateSend functions from it.
+
+We plan to make its integration with online games in form of:
+
+- Ingames currency, which player can buy and sell for real money.
+- Created by game developers in-game and near-game quests, which players can complete and receive reward in Binariums.
+- Player to player trade agreements, from which game developers and Binarium developers receive commission.
+- Games, DLCs, ingame items, ingame money and other valuables exchange.
+- Ability to organize tournaments by game developers and gamers themselves with prizes in Binarium, games, DLCs, ingame items and other valuables.
+
+Later on we plan to add smart-contracts, electronic documents management and other functions, which we’ll keep for now in secret. We’ll provide further technical details on functions implementation in the following sections, also you can see it yourself in Binarium source code.
+
+It is an experimental new digital currency that enables anonymous, instant
 payments to anyone, anywhere in the world. Binarium uses peer-to-peer technology
 to operate with no central authority: managing transactions and issuing money
 are carried out collectively by the network. Binarium Core is the name of the open

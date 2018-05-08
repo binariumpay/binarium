@@ -33,14 +33,14 @@
 //#include "crypto/cppcrypto/sm3.h"
 #include "crypto/hashing/streebog/stribog.h"
 #include "crypto/hashing/whirlpool/whirlpool.h"
-#include "crypto/hashing/swifft/swifft.h"
+//#include "crypto/hashing/swifft/swifft.h"
 
 //#include "crypto/cppcrypto/kuznyechik.h"
 //#include "crypto/cppcrypto/threefish.h"
 //#include "crypto/cppcrypto/sm4.h"
 //#include "crypto/cppcrypto/serpent.h"
 //#include "crypto/cppcrypto/aria.h"
-//#include "crypto/cppcrypto/camellia.h"
+//#include "crypto/encryption/camellia/camellia.h"
 
 #include "crypto/encryption/gost2015_kuznechik/libgost15/libgost15.h"
 #include "crypto/encryption/three_fish/libskein_skein.h"
@@ -500,7 +500,7 @@ aHashFunctions [ 0 ] = pFunctionPointer;
 
 #ifndef HASH_GENERATOR
 #define HASH_GENERATOR
-typedef uint512 ( * TCryptographyFunction ) ( const void *, const uint32_t, const void *, void * );
+typedef void ( * TCryptographyFunction ) ( const void *, const uint32_t, const void *, void * ); // uint512
 
 #define I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS 14
 #define I_AMOUNT_OF_INTERMEDIATE_ENCRYPTION_FUNCTIONS 3
@@ -531,7 +531,7 @@ inline uint64_t GetUint64IndexFrom512BitsKey ( const void * _pKey, int pos ) {
 }*/
 
 //---Hashing.-------------------------------------------------------------
-inline uint512 IntermediateHashFunction_Blake ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_Blake ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     sph_blake512_context     ctx_blake;
 
     sph_blake512_init(&ctx_blake);
@@ -539,7 +539,7 @@ inline uint512 IntermediateHashFunction_Blake ( const void * _pData, const uint3
     sph_blake512_close(&ctx_blake, _pResult);
 }
 
-inline uint512 IntermediateHashFunction_BMW ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_BMW ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     sph_bmw512_context       ctx_bmw;
 
     sph_bmw512_init(&ctx_bmw);
@@ -547,7 +547,7 @@ inline uint512 IntermediateHashFunction_BMW ( const void * _pData, const uint32_
     sph_bmw512_close(&ctx_bmw, _pResult);
 }
 
-inline uint512 IntermediateHashFunction_Groestl ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_Groestl ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     sph_groestl512_context   ctx_groestl;
 
     sph_groestl512_init(&ctx_groestl);
@@ -555,7 +555,7 @@ inline uint512 IntermediateHashFunction_Groestl ( const void * _pData, const uin
     sph_groestl512_close(&ctx_groestl, _pResult);
 }
 
-inline uint512 IntermediateHashFunction_JH ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_JH ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     sph_jh512_context        ctx_jh;
 
     sph_jh512_init(&ctx_jh);
@@ -563,7 +563,7 @@ inline uint512 IntermediateHashFunction_JH ( const void * _pData, const uint32_t
     sph_jh512_close(&ctx_jh, _pResult);
 }
 
-inline uint512 IntermediateHashFunction_Keccak ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_Keccak ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     sph_keccak512_context    ctx_keccak;
 
     sph_keccak512_init(&ctx_keccak);
@@ -571,7 +571,7 @@ inline uint512 IntermediateHashFunction_Keccak ( const void * _pData, const uint
     sph_keccak512_close(&ctx_keccak, _pResult);
 }
 
-inline uint512 IntermediateHashFunction_Skein ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_Skein ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     sph_skein512_context     ctx_skein;
 
     sph_skein512_init(&ctx_skein);
@@ -579,7 +579,7 @@ inline uint512 IntermediateHashFunction_Skein ( const void * _pData, const uint3
     sph_skein512_close(&ctx_skein, _pResult);
 }
 
-inline uint512 IntermediateHashFunction_Luffa ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_Luffa ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     sph_luffa512_context     ctx_luffa;
 
     sph_luffa512_init(&ctx_luffa);
@@ -587,7 +587,7 @@ inline uint512 IntermediateHashFunction_Luffa ( const void * _pData, const uint3
     sph_luffa512_close(&ctx_luffa, _pResult);
 }
 
-inline uint512 IntermediateHashFunction_Cubehash ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_Cubehash ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     sph_cubehash512_context  ctx_cubehash;
 
     sph_cubehash512_init(&ctx_cubehash);
@@ -595,7 +595,7 @@ inline uint512 IntermediateHashFunction_Cubehash ( const void * _pData, const ui
     sph_cubehash512_close(&ctx_cubehash, _pResult);
 }
 
-inline uint512 IntermediateHashFunction_Shavite ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_Shavite ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     sph_shavite512_context   ctx_shavite;
 
     sph_shavite512_init(&ctx_shavite);
@@ -603,7 +603,7 @@ inline uint512 IntermediateHashFunction_Shavite ( const void * _pData, const uin
     sph_shavite512_close(&ctx_shavite, _pResult);
 }
 
-inline uint512 IntermediateHashFunction_Simd ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_Simd ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     sph_simd512_context      ctx_simd;
 
     sph_simd512_init(&ctx_simd);
@@ -611,7 +611,7 @@ inline uint512 IntermediateHashFunction_Simd ( const void * _pData, const uint32
     sph_simd512_close(&ctx_simd, _pResult);
 }
 
-inline uint512 IntermediateHashFunction_Echo ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_Echo ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     sph_echo512_context      ctx_echo;
 
     sph_echo512_init(&ctx_echo);
@@ -619,11 +619,11 @@ inline uint512 IntermediateHashFunction_Echo ( const void * _pData, const uint32
     sph_echo512_close(&ctx_echo, _pResult);
 }
 
-inline uint512 IntermediateHashFunction_GOST_2012_Streebog ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_GOST_2012_Streebog ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     hash_512 ( ( const unsigned char * ) _pData, _iDataSize, ( unsigned char * ) _pResult );
 }
 
-inline uint512 IntermediateHashFunction_Whirlpool ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateHashFunction_Whirlpool ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     whirlpool_ctx            structureWhirlpoolContext;
 
     rhash_whirlpool_init ( & structureWhirlpoolContext );
@@ -631,7 +631,7 @@ inline uint512 IntermediateHashFunction_Whirlpool ( const void * _pData, const u
     rhash_whirlpool_final ( & structureWhirlpoolContext, ( unsigned char * ) _pResult);
 }
 
-inline uint512 IntermediateHashFunction_SWIFFT ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+/*inline uint512 IntermediateHashFunction_SWIFFT ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     HashKey key ALIGN;
     HashState state ALIGN;
     SWIFFT_HashData data ALIGN;
@@ -646,10 +646,10 @@ inline uint512 IntermediateHashFunction_SWIFFT ( const void * _pData, const uint
     //SwiFFT_printState ( state );
     //SwiFFT_printKey ( key );
     //SwiFFT_printData ( data );
-}
+}*/
 
 //---Encryption.----------------------------------------------------------------------
-inline uint512 IntermediateEncryptionFunction_GOST_2015_Kuznechik ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateEncryptionFunction_GOST_2015_Kuznechik ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     //uint64_t iIndex = GetUint64IndexFrom512BitsKey ( _pKey, 0 );
     //iIndex = iIndex % chainActive.Height ();
 
@@ -659,14 +659,14 @@ inline uint512 IntermediateEncryptionFunction_GOST_2015_Kuznechik ( const void *
     encryptBlockWithGost15 ( _pData, ( unsigned char * ) _pResult + 48 );     // _pData
 }
 
-inline uint512 IntermediateEncryptionFunction_ThreeFish ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateEncryptionFunction_ThreeFish ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     char T[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         
     // Result, Key, Text.
     libskein_threefish_encrypt( ( char * ) _pResult, ( const char * ) _pKey, T, ( const char * ) _pData, 64, 512);
 }
 
-inline uint512 IntermediateEncryptionFunction_Camellia ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+inline void IntermediateEncryptionFunction_Camellia ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     CAMELLIA_KEY stKey;
     Camellia_set_key ( ( const unsigned char * ) _pKey, 256, & stKey ); // userKey    
     Camellia_encrypt ( ( const unsigned char * ) _pData, ( unsigned char * ) _pResult, & stKey );        // in, out, key 

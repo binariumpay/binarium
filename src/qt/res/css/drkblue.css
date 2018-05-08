@@ -94,9 +94,10 @@ min-width : 100px;
 max-width : 100px;
 min-height : 800px;
 max-height : 800px;*/
-min-height:127px;
-max-height:127px;
-background-color : #0c2550;
+min-height:148px;
+max-height:148px;
+background : url(':/images/drkblue/ToolBarBackground') 0 0 0 0 stretch stretch;
+/*background-color : #0c2550;*/
 /*border:0px solid #000;*/
 padding:0;
 margin:0;
@@ -104,16 +105,18 @@ margin:0;
 }
 
 QToolBar > QToolButton {
-background-color : transparent;
-border : 1px solid #186190;
-min-width:165px;
-max-width:165px;
-min-height:115px;
-max-height:115px;
+/*background-color : transparent;
+border : 1px solid #186190;*/
+min-width:164px;
+max-width:164px;
+min-height:135px;
+max-height:135px; /*115px*/
 /*min-width: 8em;*/
 /*padding: 0em 1em;*/
 /*padding : 10px;*/
 padding-top : 10px;
+border-image : url(':/images/drkblue/tab_button_1') 0px 0px/164px 135px stretch stretch;
+font-family : "PT Sans";
 font-weight : bold;
 color : #128dc2;
 /*qproperty-icon: url()*/
@@ -121,25 +124,26 @@ text-transform: uppercase;
 }
 
 QToolBar > QToolButton:hover {
-background-color : #092e58;
-/*color:#06db8a;*/
-border : 1px solid #3fe4f2;
+/*background-color : #092e58;
+color:#06db8a;
+border : 1px solid #3fe4f2;*/
+border-image : url(':/images/drkblue/tab_button_2') 0px 0px/164px 135px stretch stretch;
 }
 
 QToolBar > QToolButton:checked {
-min-height:112px;
-max-height:112px;
+/*min-height:112px;
+max-height:112px;*/
 /*background-image : url(':/icons/light/send_active');
 background-position : 50% 10%;
 background-repeat : no-repeat;*/
 /*icon : url(':/images/light/drkblue_walletFrame_bg');*/
 /*qproperty-icon : url(':/icons/light/send_active');*/
-background-color:#123865;
-color:#ffffff;
-font-family : "PT Sans";
+/*background-color:#123865;
+color:#ffffff;*/
 /*font-weight:bold;*/
-border-top : 4px solid #3fe4f2;
+/*border-top : 4px solid #3fe4f2;*/
 /*border-radius: 4px;*/
+border-image : url(':/images/drkblue/tab_button_3') 0px 0px/164px 135px stretch stretch;
 }
 
 /*QToolBar > QToolButton:checked::icon {
@@ -283,6 +287,7 @@ background:#eeeeee;
 QComboBox::item:selected {
 border:0px solid transparent;
 background:#195f94;
+color:#ffffff;
 }
 
 QComboBox::indicator {
@@ -545,12 +550,8 @@ background-color:#0d244f;
 font-family : "PT Sans";
 }
 
-QDialog .QTabWidget {
-/*border-bottom:1px solid #333;*/
-font-family : "PT Sans";
-}
-
 QDialog .QTabWidget::pane, .QTabWidget::pane {
+background-color:#0d244f;
 /*border: 1px solid #333;*/
 }
 
@@ -590,8 +591,8 @@ background-color:#123865;
 }
 
 QDialog .QTabWidget .QWidget {
-/*background-color:#fff;
-color:#333;*/
+background-color:#0d244f;
+color:#128dc2;
 }
 
 QDialog .QTabWidget .QWidget QAbstractSpinBox {
@@ -823,10 +824,10 @@ padding-top:1px;
 padding-bottom:1px;
 }
 
-/*QDialog#OptionsDialog QWidget#tabWidget > QWidget {
-background-color:#0f5e8d;
-color : #a3dce6;
-}*/
+QDialog#OptionsDialog QWidget#tabWidget > QWidget {
+background-color:#0d244f;
+color:#128dc2;
+}
 
 QDialog#OptionsDialog QWidget#tabMain, QDialog#OptionsDialog QWidget#tabWallet, QDialog#OptionsDialog QWidget#tabNetwork,
 	QDialog#OptionsDialog QWidget#tabWindow, QDialog#OptionsDialog QWidget#tabDisplay {
@@ -880,8 +881,8 @@ color : #a3dce6;*/
 	.RPCConsole QWidget#tab_peers, .RPCConsole QWidget#tab_repair {
 /*QWidget#tabWidget, QWidget#tabWidget QWidget#tab_info, QWidget#tabWidget QWidget#tab_console, QWidget#tabWidget QWidget#tab_nettraffic,
 	QWidget#tabWidget QWidget#tab_peers, QWidget#tabWidget QWidget#tab_repair*/
-/*background-color:#0f5e8d;
-color : #a3dce6;*/
+background-color:#0d244f;
+color:#128dc2;
 }
 
 QDialog#RPCConsole QWidget#tab_info QLabel#label_11, QDialog#RPCConsole QWidget#tab_info QLabel#label_10 { /* Margin between Network and Block Chain headers */

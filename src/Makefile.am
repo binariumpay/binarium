@@ -1,6 +1,6 @@
 DIST_SUBDIRS = secp256k1 univalue
 
-AM_LDFLAGS = $(PTHREAD_CFLAGS) $(LIBTOOL_LDFLAGS) $(HARDENED_LDFLAGS) -std=c++11
+AM_LDFLAGS = $(PTHREAD_CFLAGS) $(LIBTOOL_LDFLAGS) $(HARDENED_LDFLAGS)
 AM_CXXFLAGS = $(HARDENED_CXXFLAGS) -std=c++11
 AM_CPPFLAGS = $(HARDENED_CPPFLAGS) -std=c++11
 EXTRA_LIBRARIES =
@@ -299,8 +299,10 @@ libbitcoin_wallet_a_SOURCES = \
   $(BITCOIN_CORE_H)
 
 # crypto primitives library
-crypto_libbitcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_CONFIG_INCLUDES) $(PIC_FLAGS)
-crypto_libbitcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(PIC_FLAGS)
+# $(AM_CPPFLAGS)
+crypto_libbitcoin_crypto_a_CPPFLAGS = $(BITCOIN_CONFIG_INCLUDES) $(PIC_FLAGS)
+# $(AM_CXXFLAGS)
+crypto_libbitcoin_crypto_a_CXXFLAGS = $(PIE_FLAGS) $(PIC_FLAGS)
 crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/common.h \
   crypto/hmac_sha256.cpp \
@@ -318,6 +320,9 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/sha512.h
 
 # x11
+#crypto/hashing/swifft/swifft.c
+#crypto/hashing/swifft/setup.c
+#crypto/hashing/swifft/swifft.h
 crypto_libbitcoin_crypto_a_SOURCES += \
   crypto/blake.c \
   crypto/bmw.c \
@@ -333,8 +338,6 @@ crypto_libbitcoin_crypto_a_SOURCES += \
   crypto/hashing/streebog/table/stribog.c \
   crypto/hashing/whirlpool/byte_order.c \
   crypto/hashing/whirlpool/whirlpool.c \
-  crypto/hashing/swifft/swifft.c \
-  crypto/hashing/swifft/setup.c \
   crypto/encryption/gost2015_kuznechik/optimised.c \
   crypto/encryption/gost2015_kuznechik/optimised_tables.c \
   crypto/encryption/gost2015_kuznechik/shared/tables.c \
@@ -354,7 +357,6 @@ crypto_libbitcoin_crypto_a_SOURCES += \
   crypto/sph_types.h \
   crypto/hashing/streebog/stribog.h \
   crypto/hashing/whirlpool/whirlpool.h \
-  crypto/hashing/swifft/swifft.h \
   crypto/encryption/gost2015_kuznechik/libgost15/libgost15.h \
   crypto/encryption/three_fish/libskein_skein.h
 
