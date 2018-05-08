@@ -23,7 +23,7 @@ We plan to make its integration with online games in form of:
 - Games, DLCs, ingame items, ingame money and other valuables exchange.
 - Ability to organize tournaments by game developers and gamers themselves with prizes in Binarium, games, DLCs, ingame items and other valuables.
 
-Later on we plan to add smart-contracts, electronic documents management and other functions, which we’ll keep for now in secret. We’ll provide further technical details on functions implementation in the following sections, also you can see it yourself in Binarium source code.
+Later on we plan to add smart-contracts, electronic documents management and other functions, which we’ll keep for now in secret. You can see yourself all technical details of Binarium functions implementation in Binarium source code.
 
 It is an experimental new digital currency that enables anonymous, instant
 payments to anyone, anywhere in the world. Binarium uses peer-to-peer technology
