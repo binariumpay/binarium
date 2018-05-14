@@ -71,6 +71,9 @@ void OptionsModel::Init(bool resetSettings)
         settings.setValue("fMinimizeOnClose", false);
     fMinimizeOnClose = settings.value("fMinimizeOnClose").toBool();
 
+    if (!settings.contains("bConfirmQuit"))
+        settings.setValue("bConfirmQuit", true);
+
     // Display
     if (!settings.contains("nDisplayUnit"))
         settings.setValue("nDisplayUnit", BitcoinUnits::BINARIUM);
@@ -121,8 +124,15 @@ void OptionsModel::Init(bool resetSettings)
     if (!SoftSetArg("-par", settings.value("nThreadsScriptVerif").toString().toStdString()))
         addOverriddenOption("-par");
 
-    if (settings.contains("strDataDir"))
-    sDataDir = settings.value("strDataDir", "").toString();
+    if (!settings.contains("strDataDir")) {
+        //sDataDir = settings.value("strDataDir", "").toString();
+        settings.setValue ( "strDataDir", "" );
+    }
+
+    if ( ! settings.contains ( "bGenerateBlocks" ) ) {
+        //bGenerateBlocks = settings.value ( "bGenerateBlocks", true ).toBool ();
+        settings.setValue ( "bGenerateBlocks", true );
+    }
 
     /*if (!settings.contains("nDatabaseCache"))
         settings.setValue("nDatabaseCache", (qint64)nDefaultDbCache);
@@ -233,6 +243,8 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return fHideTrayIcon;
         case MinimizeToTray:
             return fMinimizeToTray;
+        case bConfirmQuit :
+            return settings.value("bConfirmQuit");
         case MapPortUPnP:
 #ifdef USE_UPNP
             return settings.value("fUseUPnP");
@@ -272,6 +284,7 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
 
 #ifdef ENABLE_WALLET
         case SpendZeroConfChange:
+            fprintf(stdout, "OptionsModel.data () : bSpendZeroConfChange = %s.\n", settings.value ( "bSpendZeroConfChange" ).toString ().toUtf8 ().data () );
             return settings.value("bSpendZeroConfChange");
         case ShowMasternodesTab:
             return settings.value("fShowMasternodesTab");
@@ -295,6 +308,7 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return settings.value("digits");
 #endif // ENABLE_WALLET
         case Theme:
+            fprintf(stdout, "OptionsModel.data () : theme = %s.\n", settings.value ( "theme" ).toString ().toUtf8 ().data () );
             return settings.value("theme");
         case Language:
             return settings.value("language");
@@ -307,7 +321,15 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
         case ThreadsScriptVerif:
             return settings.value("nThreadsScriptVerif");
         case Listen:
+            fprintf(stdout, "OptionsModel.data () : fListen = %s.\n", settings.value ( "fListen" ).toString ().toUtf8 ().data () );
             return settings.value("fListen");
+        case sDataDir :
+            fprintf(stdout, "OptionsModel.data () : sDataDir = %s.\n", settings.value ( "strDataDir" ).toString ().toUtf8 ().data () );
+            return settings.value ( "strDataDir" );
+        case bGenerateBlocks :
+            fprintf(stdout, "OptionsModel.data () : bGenerateBlocks = %s.\n", settings.value ( "bGenerateBlocks" ).toString ().toUtf8 ().data () );
+            return settings.value ( "bGenerateBlocks" );
+
         default:
             return QVariant();
         }
@@ -343,6 +365,20 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
         case MinimizeOnClose:
             fMinimizeOnClose = value.toBool();
             settings.setValue("fMinimizeOnClose", fMinimizeOnClose);
+            break;
+        case bConfirmQuit:
+            settings.setValue ( "bConfirmQuit", value.toBool () );
+            break;
+
+        case sDataDir :
+            fprintf(stdout, "OptionsModel.setData () : strDataDir = %s.\n", value.toString ().toUtf8 ().data () );
+            settings.setValue ( "strDataDir", value.toString () );
+            setRestartRequired(true);
+            break;
+        case bGenerateBlocks :
+            fprintf(stdout, "OptionsModel.setData () : bGenerateBlocks = %s.\n", value.toString ().toUtf8 ().data () );
+            settings.setValue ( "bGenerateBlocks", value.toBool () );
+            setRestartRequired(true);
             break;
 
         // default proxy
@@ -475,6 +511,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
         case Theme:
             if (settings.value("theme") != value) {
                 settings.setValue("theme", value);
+                fprintf(stdout, "OptionsModel.setData () : theme = %s.\n", settings.value ( "theme" ).toString ().toUtf8 ().data () );
                 setRestartRequired(true);
             }
             break;            

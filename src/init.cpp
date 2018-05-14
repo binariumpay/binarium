@@ -65,6 +65,7 @@
 #endif // ENABLE_WALLET
 #include "privatesend-server.h"
 #include "spork.h"
+#include "utiltime.h"
 
 //#include "hash.h"
 //#include "crypto/hashing/swifft/swifft.h"
@@ -109,6 +110,22 @@ static const bool DEFAULT_STOPAFTERBLOCKIMPORT = false;
 
 std::unique_ptr<CConnman> g_connman;
 std::unique_ptr<PeerLogicValidation> peerLogic;
+bool g_bGenerateBlocks = false;
+
+//#ifdef BITCOIN_UI_INTERFACE_H
+#ifdef BITCOIN_QT_BITCOINGUI_H
+extern void GUI_SetMiningIsEnabled ( bool _bIsEnabled );
+#endif
+
+//bool g_bIsQtInterfaceEnabled = false;
+void Notify_MiningIsEnabled ( bool _bIsEnabled ) {
+//#ifdef BITCOIN_UI_INTERFACE_H
+#ifdef BITCOIN_QT_BITCOINGUI_H
+    GUI_SetMiningIsEnabled ( _bIsEnabled );
+#endif
+}
+
+//bool g_bNotifyIsMiningEnabled = false;
 
 #if ENABLE_ZMQ
 static CZMQNotificationInterface* pzmqNotificationInterface = NULL;
@@ -382,7 +399,7 @@ void HandleSIGTERM(int)
     bool fRet = uiInterface.ThreadSafeQuestion(
                     "inint.cpp : HandleSIGTERM () : Are you sure want to quit?",
                     "inint.cpp : HandleSIGTERM () : Are you sure want to quit 2?",
-                    "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_ABORT);
+                    "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_CANCEL);
     if (fRet) {
         return;
 
@@ -607,7 +624,7 @@ std::string HelpMessage(HelpMessageMode mode)
     if (showDebug)
         strUsage += HelpMessageOpt("-nodebug", "Turn off debugging messages, same as -debug=0");
     strUsage += HelpMessageOpt("-gen", strprintf(_("Generate coins (default: %u)"), DEFAULT_GENERATE));
-    strUsage += HelpMessageOpt("-genproclimit=<n>", strprintf(_("Set the number of threads for coin generation if enabled (-1 = all cores, default: %d)"), DEFAULT_GENERATE_THREADS));
+    strUsage += HelpMessageOpt("-genproclimit=<n>", strprintf(_("Set the number of threads for coin generation if enabled (-1 = all cores, default: %d, max : %d)"), DEFAULT_GENERATE_THREADS, I_MAX_GENERATE_THREADS ));
     strUsage += HelpMessageOpt("-help-debug", _("Show all debugging options (usage: --help -help-debug)"));
     strUsage += HelpMessageOpt("-logips", strprintf(_("Include IP addresses in debug output (default: %u)"), DEFAULT_LOGIPS));
     strUsage += HelpMessageOpt("-logtimestamps", strprintf(_("Prepend debug output with timestamp (default: %u)"), DEFAULT_LOGTIMESTAMPS));
@@ -1718,7 +1735,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
                     bool fRet = uiInterface.ThreadSafeQuestion(
                         strLoadError + ".\n\n" + _("Do you want to rebuild the block database now?"),
                         strLoadError + ".\nPlease restart with -reindex or -reindex-chainstate to recover.",
-                        "", CClientUIInterface::MSG_ERROR | CClientUIInterface::BTN_ABORT);
+                        "", CClientUIInterface::MSG_ERROR | CClientUIInterface::BTN_CANCEL);
                     if (fRet) {
                         fReindex = true;
                         fRequestShutdown = false;
@@ -2151,7 +2168,14 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         return InitError(strNodeError);
 
     // Generate coins in the background
-    GenerateBitcoins(GetBoolArg("-gen", DEFAULT_GENERATE), GetArg("-genproclimit", DEFAULT_GENERATE_THREADS), chainparams, connman);
+    /*QSettings settings;
+    bool bGenerateBlocks = settings.value ( "bGenerateBlocks", true );
+    GenerateBitcoins(GetBoolArg("-gen", DEFAULT_GENERATE && bGenerateBlocks ), GetArg("-genproclimit", DEFAULT_GENERATE_THREADS), chainparams, connman);*/
+    fprintf(stdout, "init.cpp : AppInit2 () : g_bGenerateBlocks = %i.\n", g_bGenerateBlocks );
+    boost :: filesystem :: path full_path ( boost::filesystem::current_path() );
+    fprintf(stdout, "init.cpp : AppInit2 () : full_path = %s ; %i ; %" PRIu64 " ; %i .\n", full_path.string ().c_str (), get_uptime (), GetTimeMicros (), int ( ( get_uptime () + GetTimeMicros () % 100000000 ) % 100000000 ) );
+    int iAmountOfThreads = min ( DEFAULT_GENERATE_THREADS, I_MAX_GENERATE_THREADS );
+    GenerateBitcoins ( GetBoolArg("-gen", DEFAULT_GENERATE ) || g_bGenerateBlocks, GetArg("-genproclimit", iAmountOfThreads ), chainparams, connman );
 
     // ********************************************************* Step 13: finished
 

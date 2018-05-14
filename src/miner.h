@@ -20,6 +20,18 @@ namespace Consensus { struct Params; };
 
 static const bool DEFAULT_GENERATE = false;
 static const int DEFAULT_GENERATE_THREADS = 1;
+static const int I_MAX_GENERATE_THREADS = 64;
+
+struct THashRateCounter {
+    int64_t iAmountOfHashes;
+    int64_t iStartTimeInMicroSeconds;
+    int64_t iCompletionTimeInMicroSeconds;
+    float fHashRate;
+};
+
+///*static*/ bool g_bGenerateBlocks = false;
+//bool i = 1;
+//std :: unique_ptr < bool > g_p_bGenerateBlocks = std :: make_unique < bool > ( g_bGenerateBlocks );
 
 static const bool DEFAULT_PRINTPRIORITY = false;
 

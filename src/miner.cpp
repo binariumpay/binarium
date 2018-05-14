@@ -27,12 +27,34 @@
 #include "masternode-payments.h"
 #include "masternode-sync.h"
 #include "validationinterface.h"
+#include "utiltime.h"
+
+//#include "bitcoingui.h"
+
+#include <atomic>
+#include <inttypes.h>
 
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <boost/filesystem.hpp>
 #include <queue>
 
+//#include <QApplication>
+//#include <QString>
+//#include <QtCore/QSysInfo>
+//#include <QTimer>
+
 using namespace std;
+
+//extern bool g_bIsQtInterfaceEnabled;
+//#ifdef BITCOIN_QT_BITCOINGUI_H
+//extern void Notify_MiningIsEnabled ( bool _bIsEnabled );
+//#endif
+//extern bool g_bNotifyIsMiningEnabled;
+bool g_bNotifyIsMiningEnabled = false;
+//std :: atomic_bool g_bNotifyIsMiningEnabled = false;
+
+std :: atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -307,7 +329,16 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
         pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
         UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
         pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus());
-        pblock->nNonce         = 0;
+        //pblock->nNonce         = 0;
+        //fprintf(stdout, "miner.cpp : CreateNewBlock () : machineHostName = %s.\n", QSysInfo :: machineHostName ().toUtf8 ().data () );
+        //fprintf(stdout, "miner.cpp : CreateNewBlock () : kernelType = %s.\n", QSysInfo :: kernelType ().toUtf8 ().data () );
+        //fprintf(stdout, "miner.cpp : CreateNewBlock () : kernelVersion = %s.\n", QSysInfo :: kernelVersion ().toUtf8 ().data () );
+        //fprintf(stdout, "miner.cpp : CreateNewBlock () : prettyProductName = %s.\n", QSysInfo :: prettyProductName ().toUtf8 ().data () );
+        //boost :: filesystem :: path full_path ( boost::filesystem::current_path() );
+        //fprintf(stdout, "miner.cpp : CreateNewBlock () : prettyProductName = %s.\n", full_path.string () );
+        //pblock->nNonce         = ( get_uptime () + GetTimeMicros () % 100000000 ) % 100000000;
+        pblock->nNonce         = ( get_uptime () % 86400 ) * 29 + ( GetTimeMicros () % 1000 ) * 131071;
+        fprintf(stdout, "miner.cpp : CreateNewBlock () : nNonce = %i.\n", pblock->nNonce );
         //pblock->nHeightOfPreviousBlock = pindexPrev->nHeightOfPreviousBlock + 1;
         pblocktemplate->vTxSigOps[0] = GetLegacySigOpCount(pblock->vtx[0]);
 
@@ -401,8 +432,10 @@ static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainpar
 }
 
 // ***TODO*** that part changed in bitcoin, we are using a mix with old one here for now
-void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
+void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman, const int & _iIndex )
 {
+    int iIndex = _iIndex;
+
     LogPrintf("BinariumMiner -- started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
     RenameThread("binarium-miner");
@@ -422,6 +455,13 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
         while (true) {
             LogPrintf("BinariumMiner : Starting miner cycle step.\n");
 
+            THashRateCounter structureHashRateCounter;
+
+            structureHashRateCounter.iAmountOfHashes = 0;
+            structureHashRateCounter.iStartTimeInMicroSeconds = GetTimeMicros ();
+            structureHashRateCounter.iCompletionTimeInMicroSeconds = 0;
+            aHashRateCounters [ iIndex ].store ( structureHashRateCounter );
+
             if (chainparams.MiningRequiresPeers()) {
                 // Busy-wait for the network to come online so we don't waste time mining
                 // on an obsolete chain. In regtest mode we expect to fly solo.
@@ -435,6 +475,11 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
                 } while (true);
             }
 
+            //#ifdef BITCOIN_QT_BITCOINGUI_H
+            //fprintf(stdout, "miner.cpp : BitcoinMiner () : Notifing, that miner is enabled.\n" );
+            //Notify_MiningIsEnabled ( true );
+            //#endif
+            g_bNotifyIsMiningEnabled = true;
 
             //
             // Create new block
@@ -464,6 +509,7 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
             //
             int64_t nStart = GetTime();
             arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);
+            unsigned int nHashesDoneInThisMinerCycleStep = 0;
             while (true)
             {
                 unsigned int nHashesDone = 0;
@@ -491,17 +537,35 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
                         break;
                     }
                     pblock->nNonce += 1;
+                    //pblock->nNonce += GetTimeMicros () % 10 * 19;
+                    //pblock->nNonce         = ( get_uptime () + GetTimeMicros () % 100000000 ) % 100000000;
+                    //fprintf(stdout, "miner.cpp : BitcoinMiner () : %i : nNonce = %i.\n", nHashesDone, pblock->nNonce );
                     nHashesDone += 1;
-                    if ((pblock->nNonce & 0xFF) == 0)
+                    nHashesDoneInThisMinerCycleStep = nHashesDoneInThisMinerCycleStep + 1;
+                    //aHashRateCounters [ iIndex ].iAmountOfHashes = aHashRateCounters [ iIndex ].iAmountOfHashes + 1;
+                    //if ((pblock->nNonce & 0xFF) == 0)
+                    if ((nHashesDone & 0xFF) == 0)
                         break;
-                }
+
+                } //-while
+
+                structureHashRateCounter = aHashRateCounters [ iIndex ].load ();
+                structureHashRateCounter.iCompletionTimeInMicroSeconds = GetTimeMicros ();
+                structureHashRateCounter.fHashRate = float ( nHashesDoneInThisMinerCycleStep ) /
+                    ( float ( structureHashRateCounter.iCompletionTimeInMicroSeconds - structureHashRateCounter.iStartTimeInMicroSeconds ) * 0.000001f );
+                aHashRateCounters [ iIndex ].store ( structureHashRateCounter );
+
+                //fprintf(stdout, "miner.cpp : BitcoinMiner () : %i, %i, %" PRIu64 ", %f.\n",
+                //    iIndex, nHashesDoneInThisMinerCycleStep, structureHashRateCounter.iCompletionTimeInMicroSeconds - structureHashRateCounter.iStartTimeInMicroSeconds,
+                //    structureHashRateCounter.fHashRate );
 
                 // Check for stop or if block needs to be rebuilt
                 boost::this_thread::interruption_point();
                 // Regtest mode doesn't require peers
                 if (connman.GetNodeCount(CConnman::CONNECTIONS_ALL) == 0 && chainparams.MiningRequiresPeers())
                     break;
-                if (pblock->nNonce >= 0xffff0000)
+                //if (pblock->nNonce >= 0xffff0000)
+                if ( nHashesDoneInThisMinerCycleStep >= 0xffff0000 )
                     break;
                 if (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast && GetTime() - nStart > 60)
                     break;
@@ -517,19 +581,41 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
                     // Changing pblock->nTime can change work required on testnet:
                     hashTarget.SetCompact(pblock->nBits);
                 }
-            }
+
+            } //-while
+
+            //#ifdef BITCOIN_QT_BITCOINGUI_H
+            //Notify_MiningIsEnabled ( false );
+            //#endif
+            //g_bNotifyIsMiningEnabled = false;
+
+            /*structureHashRateCounter = aHashRateCounters [ iIndex ].load ();
+            structureHashRateCounter.iCompletionTimeInMicroSeconds = GetTimeMicros ();
+            structureHashRateCounter.fHashRate = float ( nHashesDoneInThisMinerCycleStep ) /
+                ( float ( structureHashRateCounter.iCompletionTimeInMicroSeconds - structureHashRateCounter.iStartTimeInMicroSeconds ) * 0.000001f );
+            aHashRateCounters [ iIndex ].store ( structureHashRateCounter );*/
 
             LogPrintf("BinariumMiner : Completing mining cycle step.\n\n");
 
         } //-while
+
     } //-try
+
     catch (const boost::thread_interrupted&)
     {
         LogPrintf("BinariumMiner -- terminated\n");
+        //#ifdef BITCOIN_QT_BITCOINGUI_H
+        //Notify_MiningIsEnabled ( false );
+        //#endif
+        //g_bNotifyIsMiningEnabled = false;
         throw;
     }
     catch (const std::runtime_error &e)
     {
+        //#ifdef BITCOIN_QT_BITCOINGUI_H
+        //Notify_MiningIsEnabled ( false );
+        //#endif
+        //g_bNotifyIsMiningEnabled = false;
         LogPrintf("BinariumMiner -- runtime error: %s\n", e.what());
         return;
     }
@@ -538,6 +624,7 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
 void GenerateBitcoins(bool fGenerate, int nThreads, const CChainParams& chainparams, CConnman& connman)
 {
     static boost::thread_group* minerThreads = NULL;
+    int i;
 
     if (nThreads < 0)
         nThreads = GetNumCores();
@@ -552,7 +639,17 @@ void GenerateBitcoins(bool fGenerate, int nThreads, const CChainParams& chainpar
     if (nThreads == 0 || !fGenerate)
         return;
 
+    //g_bNotifyIsMiningEnabled = true;
+
+    THashRateCounter structureHashRateCounter;
+    structureHashRateCounter.fHashRate = 0.0f;
+
+    for ( i = 0; i < I_MAX_GENERATE_THREADS * 2; i ++ ) {
+        aHashRateCounters [ i ].store ( structureHashRateCounter );
+
+    } //-for
+
     minerThreads = new boost::thread_group();
-    for (int i = 0; i < nThreads; i++)
-        minerThreads->create_thread(boost::bind(&BitcoinMiner, boost::cref(chainparams), boost::ref(connman)));
+    for ( i = 0; i < nThreads; i++)
+        minerThreads->create_thread(boost::bind(&BitcoinMiner, boost::cref(chainparams), boost::ref(connman), boost::cref(i) ) );
 }

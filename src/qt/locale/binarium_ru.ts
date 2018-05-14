@@ -656,6 +656,22 @@
         <source>BitcoinGUI.closeEvent () : Are you sure want to quit 2?</source>
         <translation>Вы действительно хотите выйти?</translation>
     </message>
+    <message>    
+        <source>Mining: </source>
+        <translation>Майнинг: </translation>
+    </message>
+    <message>    
+        <source>Mining is enabled.</source>
+        <translation>Майнинг включён.</translation>
+    </message>
+    <message>    
+        <source>Mining is disabled.</source>
+        <translation>Майнинг выключен.</translation>
+    </message>
+    <message>    
+        <source>Measuring hash rate.</source>
+        <translation>Измеряем Hash Rate.</translation>
+    </message>
 
 </context>
 <context>
@@ -1320,6 +1336,11 @@
         <translation>Директория данных</translation>
     </message>
 
+    <message>        
+        <source>Enable mining</source>
+        <translation>Включить майнинг</translation>
+    </message>
+
     <message>
         <source>MB</source>
         <translation>МБ</translation>
@@ -1519,6 +1540,10 @@
     <message>
         <source>M&amp;inimize on close</source>
         <translation>С&amp;ворачивать при закрытии</translation>
+    </message>
+    <message>
+        <source>Confirm quit</source>
+        <translation>Подтверждать выход</translation>
     </message>
     <message>
         <source>&amp;Display</source>

@@ -18,6 +18,7 @@
 #include <QPoint>
 #include <QPushButton>
 #include <QSystemTrayIcon>
+#include <QCheckBox>
 
 class ClientModel;
 class NetworkStyle;
@@ -72,13 +73,19 @@ public:
 #endif // ENABLE_WALLET
     bool enableWallet;
 
+    void Set_cbIsMiningEnabled ( bool _bChecked );
+
 protected:
+    int iTimerId_MiningIndicatorUpdate;
+    int iTimerId_HashRateUpdate;
+
     void changeEvent(QEvent *e);
     void closeEvent(QCloseEvent *event);
     void showEvent(QShowEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
     bool eventFilter(QObject *object, QEvent *event);
+    void timerEvent(QTimerEvent *event);
 
 private:
     ClientModel *clientModel;
@@ -92,6 +99,8 @@ private:
     QLabel *progressBarLabel;
     QProgressBar *progressBar;
     QProgressDialog *progressDialog;
+    QCheckBox * cbIsMiningEnabled;
+    QLabel * labelHashesRate;
 
     QMenuBar *appMenuBar;
     QAction *overviewAction;
@@ -191,6 +200,8 @@ public Q_SLOTS:
        @param[in] ret       pointer to a bool that will be modified to whether Ok was clicked (modal only)
     */
     void message(const QString &title, const QString &message, unsigned int style, bool *ret = NULL);
+
+    void cbIsMiningEnabled_Toggled ( bool _bState = false );
 
 #ifdef ENABLE_WALLET
     /** Set the hd-enabled status as shown in the UI.

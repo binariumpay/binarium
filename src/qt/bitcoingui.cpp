@@ -34,11 +34,14 @@
 #include "util.h"
 #include "masternode-sync.h"
 #include "masternodelist.h"
+#include "miner.h"
 
 #include <iostream>
+//#include <algorithm>
 
 #include <QAction>
 #include <QApplication>
+#include <QSettings>
 #include <QDateTime>
 #include <QDesktopWidget>
 #include <QDragEnterEvent>
@@ -76,6 +79,11 @@ const std::string BitcoinGUI::DEFAULT_UIPLATFORM =
         ;
 
 const QString BitcoinGUI::DEFAULT_WALLET = "~Default";
+
+extern bool g_bGenerateBlocks;
+//extern bool g_bIsQtInterfaceEnabled;
+extern bool g_bNotifyIsMiningEnabled;
+extern std :: atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
 
 BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *networkStyle, QWidget *parent) :
     QMainWindow(parent),
@@ -212,15 +220,29 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
     QHBoxLayout *frameBlocksLayout = new QHBoxLayout(frameBlocks);
     frameBlocksLayout->setContentsMargins(3,0,3,0);
     frameBlocksLayout->setSpacing(3);
+    cbIsMiningEnabled = new QCheckBox;
+    connect(cbIsMiningEnabled, SIGNAL(toggled(bool)), this, SLOT(cbIsMiningEnabled_Toggled()));
+    cbIsMiningEnabled -> setObjectName ( "cbIsMiningEnabled" );
+    cbIsMiningEnabled -> setText ( QApplication::translate("BitcoinGUI", "Mining: ", 0) );
+    cbIsMiningEnabled -> setLayoutDirection ( Qt :: RightToLeft );
+    cbIsMiningEnabled -> setToolTip ( QApplication::translate("BitcoinGUI", "Mining is disabled.", 0) );
+    labelHashesRate = new QLabel ();
+    labelHashesRate -> setText ( "M" );
+    labelHashesRate -> setToolTip ( QApplication::translate("BitcoinGUI", "Measuring hash rate.", 0) );
+    labelHashesRate -> setObjectName ( "labelHashesRate" );
     unitDisplayControl = new UnitDisplayStatusBarControl(platformStyle);
     labelEncryptionIcon = new QLabel();
     labelWalletHDStatusIcon = new QLabel();
     labelConnectionsIcon = new GUIUtil::ClickableLabel();
 
     labelBlocksIcon = new GUIUtil::ClickableLabel();
+
+    frameBlocksLayout->addStretch();
+    frameBlocksLayout->addWidget(cbIsMiningEnabled);
+    frameBlocksLayout->addWidget(labelHashesRate);
     if(enableWallet)
     {
-        frameBlocksLayout->addStretch();
+        //frameBlocksLayout->addStretch();
         frameBlocksLayout->addWidget(unitDisplayControl);
         frameBlocksLayout->addStretch();
         frameBlocksLayout->addWidget(labelEncryptionIcon);
@@ -273,6 +295,22 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
         connect(progressBar, SIGNAL(clicked(QPoint)), this, SLOT(showModalOverlay()));
     }
 #endif
+
+    QSettings settings;
+    fprintf(stdout, "BitcoinGUI.BitcoinGUI () : bGenerateBlocks = %s.\n", settings.value ( "bGenerateBlocks" ).toString ().toUtf8 ().data () );
+    bool bGenerateBlocks = settings.value ( "bGenerateBlocks", true ).toBool ();
+    g_bGenerateBlocks = bGenerateBlocks;
+    //* g_p_bGenerateBlocks = bGenerateBlocks;
+    //int iAmountOfThreads = min ( DEFAULT_GENERATE_THREADS, I_MAX_GENERATE_THREADS );
+    int iAmountOfThreads = GetArg ( "-genproclimit", DEFAULT_GENERATE_THREADS );
+    iAmountOfThreads = iAmountOfThreads <= I_MAX_GENERATE_THREADS ? iAmountOfThreads : I_MAX_GENERATE_THREADS;
+    GenerateBitcoins ( bGenerateBlocks, GetArg ( "-genproclimit", iAmountOfThreads ), Params (), * g_connman );
+
+    //g_bIsQtInterfaceEnabled = true;
+
+    iTimerId_MiningIndicatorUpdate = startTimer ( 200 );
+    iTimerId_HashRateUpdate = startTimer ( 2000 );
+
 }
 
 BitcoinGUI::~BitcoinGUI()
@@ -822,6 +860,7 @@ void BitcoinGUI::showDebugWindow()
 
 void BitcoinGUI::slotCheckApplicationQuit () {
     bool bShowCloseConfirmation = true;
+    QSettings settings;
 
     fprintf(stdout, "BitcoinGUI.slotCheckApplicationQuit () : Application slot has been called.\n");
 
@@ -846,10 +885,18 @@ void BitcoinGUI::slotCheckApplicationQuit () {
         QByteArray QByteArray_AreYouSure = QApplication::translate("BitcoinGUI", "BitcoinGUI.closeEvent () : Are you sure want to quit?", 0).toUtf8();
         QByteArray QByteArray_AreYouSure_2 = QApplication::translate("BitcoinGUI", "BitcoinGUI.closeEvent () : Are you sure want to quit? 2", 0).toUtf8();
 
-        bool fRet = uiInterface.ThreadSafeQuestion(
+        bool fRet;
+        if ( settings.value ( "bConfirmQuit" ).toBool () ) {
+            fRet = uiInterface.ThreadSafeQuestion(
                         QByteArray_AreYouSure.data (),
                         QByteArray_AreYouSure_2.data (),
                         "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_CANCEL);        
+
+        } else {
+            fRet = true;
+
+        } //-else
+
         if (fRet) {
             qApp -> quit ();
             rpcConsole -> hide ();
@@ -1032,6 +1079,12 @@ void BitcoinGUI::updateNetworkState()
     }
 
     labelConnectionsIcon->setPixmap(platformStyle->SingleColorIcon(icon).pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+
+
+
+    // Setting mining indicator.
+    //Set_cbIsMiningEnabled ( g_bNotifyIsMiningEnabled );
+
 }
 
 void BitcoinGUI::setNumConnections(int count)
@@ -1051,6 +1104,12 @@ void BitcoinGUI::updateHeadersSyncProgressLabel()
     int estHeadersLeft = (GetTime() - headersTipTime) / Params().GetConsensus().nPowTargetSpacing;
     if (estHeadersLeft > HEADER_HEIGHT_DELTA_SYNC)
         progressBarLabel->setText(tr("Syncing Headers (%1%)...").arg(QString::number(100.0 / (headersTipHeight+estHeadersLeft)*headersTipHeight, 'f', 1)));
+}
+
+void BitcoinGUI :: Set_cbIsMiningEnabled ( bool _bChecked ) {
+    //fprintf(stdout, "BitcoinGUI.Set_cbIsMiningEnabled () : %i.\n", _bChecked );
+    cbIsMiningEnabled -> setChecked ( _bChecked );
+
 }
 
 void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVerificationProgress, bool header)
@@ -1276,6 +1335,12 @@ void BitcoinGUI::message(const QString &title, const QString &message, unsigned 
         notificator->notify((Notificator::Class)nNotifyIcon, strTitle, message);
 }
 
+void BitcoinGUI ::cbIsMiningEnabled_Toggled ( bool _bState ) {
+    //fprintf(stdout, "BitcoinGUI.cbIsMiningEnabled_Toggled () : %i.\n", _bState );
+    //cbIsMiningEnabled -> setChecked ( ! _bState );
+    //cbIsMiningEnabled -> setChecked ( _bState );
+}
+
 void BitcoinGUI::changeEvent(QEvent *e)
 {
     QMainWindow::changeEvent(e);
@@ -1312,6 +1377,7 @@ void BitcoinGUI::changeEvent(QEvent *e)
 
 void BitcoinGUI::closeEvent(QCloseEvent *event)
 {
+    QSettings settings;
     bool bShowCloseConfirmation = true;
 
     fprintf(stdout, "BitcoinGUI.closeEvent () : Application close event has came.\n");
@@ -1326,11 +1392,19 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
     if ( bShowCloseConfirmation ) {
         QByteArray QByteArray_AreYouSure = QApplication::translate("BitcoinGUI", "BitcoinGUI.closeEvent () : Are you sure want to quit?", 0).toUtf8();
         QByteArray QByteArray_AreYouSure_2 = QApplication::translate("BitcoinGUI", "BitcoinGUI.closeEvent () : Are you sure want to quit? 2", 0).toUtf8();
-
-        bool fRet = uiInterface.ThreadSafeQuestion(
+       
+        bool fRet;
+        if ( settings.value ( "bConfirmQuit" ).toBool () ) {
+            fRet = uiInterface.ThreadSafeQuestion(
                         QByteArray_AreYouSure.data (),
                         QByteArray_AreYouSure_2.data (),
-                        "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_CANCEL);        
+                        "", CClientUIInterface::MSG_WARNING | CClientUIInterface::BTN_CANCEL);
+
+        } else {
+            fRet = true;
+
+        } //-else
+
         if (!fRet) {
             event -> ignore();
             return;
@@ -1415,6 +1489,48 @@ bool BitcoinGUI::eventFilter(QObject *object, QEvent *event)
             return true;
     }
     return QMainWindow::eventFilter(object, event);
+}
+
+void BitcoinGUI :: timerEvent ( QTimerEvent * event ) {
+    THashRateCounter structureHashRateCounter;
+    float fHashRateSum = 0.0f;
+    //int iAmountOfHashRates = 0;
+    int i = 0;
+
+    if ( event -> timerId () == iTimerId_MiningIndicatorUpdate ) {
+    //qDebug() << "Timer ID:" << event->timerId();
+    // Setting mining indicator.
+    Set_cbIsMiningEnabled ( g_bNotifyIsMiningEnabled );
+    if ( g_bNotifyIsMiningEnabled )
+        //cbIsMiningEnabled -> setToolTip ( "Mining is enabled." );
+        cbIsMiningEnabled -> setToolTip ( QApplication::translate("BitcoinGUI", "Mining is enabled.", 0) );
+
+    else {
+        //cbIsMiningEnabled -> setToolTip ( "Mining is disabled." );
+        cbIsMiningEnabled -> setToolTip ( QApplication::translate("BitcoinGUI", "Mining is disabled.", 0) );
+    }
+
+    } //-if
+
+    if ( event -> timerId () == iTimerId_HashRateUpdate ) {
+    for ( i = 0; i < I_MAX_GENERATE_THREADS * 2; i ++ ) {
+        structureHashRateCounter = aHashRateCounters [ i ].load ();
+        if ( structureHashRateCounter.fHashRate > 0.0f ) {
+            fHashRateSum = fHashRateSum + structureHashRateCounter.fHashRate;
+            //iAmountOfHashRates = iAmountOfHashRates + 1;
+        } //-if
+
+    } //-for
+
+    //if ( iAmountOfHashRates > 0 ) {
+        //fHashRateSum = fHashRateSum / float ( iAmountOfHashRates );
+        labelHashesRate -> setText ( QString :: number ( fHashRateSum, 'f', 2 ) );
+        labelHashesRate -> setToolTip ( "Hash rate." );
+
+    //} //-if
+
+    } //-if
+
 }
 
 #ifdef ENABLE_WALLET

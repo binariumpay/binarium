@@ -228,6 +228,7 @@ public:
 
     /// Get window identifier of QMainWindow (BitcoinGUI)
     WId getMainWinId() const;
+    BitcoinGUI * getMainWin () const;
 
 public Q_SLOTS:
     void initializeResult(int retval);
@@ -563,6 +564,18 @@ WId BitcoinApplication::getMainWinId() const
         return 0;
 
     return window->winId();
+}
+
+BitcoinGUI * BitcoinApplication :: getMainWin () const {
+    return window;
+
+}
+
+void GUI_SetMiningIsEnabled ( bool _bIsEnabled ) {
+    //fprintf(stdout, "binarium.cpp : SetMiningIsEnabled () : %i.\n", static_cast < BitcoinApplication * > ( QApplication :: instance () ) );
+    if ( ( static_cast < BitcoinApplication * > ( QApplication :: instance () ) != nullptr ) &&
+         ( static_cast < BitcoinApplication * > ( QApplication :: instance () ) -> getMainWin () != nullptr ) )
+        static_cast < BitcoinApplication * > ( QApplication :: instance () ) -> getMainWin () -> Set_cbIsMiningEnabled ( _bIsEnabled );
 }
 
 #ifndef BITCOIN_QT_TEST

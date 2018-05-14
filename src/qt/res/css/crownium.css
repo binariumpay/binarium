@@ -52,6 +52,26 @@ QStatusBar .frameBlocks {
 margin-right : 20px;
 }
 
+QStatusBar #cbIsMiningEnabled::indicator {
+width: 33px;
+height: 33px;
+}
+
+QStatusBar #cbIsMiningEnabled::indicator:checked {
+image: url(':/icons/crownium/mining_enabled') 0 0 0 0 stretch stretch;
+}
+
+QStatusBar #cbIsMiningEnabled::indicator:unchecked {
+image: url(':/icons/crownium/mining_disabled') 0 0 0 0 stretch stretch;
+}
+
+QStatusBar #labelHashesRate {
+min-width : 80px;
+max-width : 80px;
+margin-left : 10px;
+margin-right : 10px;
+}
+
 .QFrame {
 background-color:transparent;
 border:0px solid #fff;

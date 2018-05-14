@@ -903,6 +903,7 @@ QString getThemeName()
 {
     QSettings settings;
     QString theme = settings.value("theme", "").toString();
+    //fprintf(stdout, "guiutil.cpp : getThemeName () : theme = %s.\n", settings.value ( "theme" ).toString ().toUtf8 ().data () );
 
     if(!theme.isEmpty()){
         return theme;
@@ -917,6 +918,7 @@ QString loadStyleSheet()
     QSettings settings;
     QString cssName;
     QString theme = settings.value("theme", "").toString();
+    //fprintf(stdout, "guiutil.cpp : loadStyleSheet () : theme = %s.\n", settings.value ( "theme" ).toString ().toUtf8 ().data () );
 
     if(!theme.isEmpty()){
         cssName = QString(":/css/") + theme; 

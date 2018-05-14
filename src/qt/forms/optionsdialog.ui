@@ -167,6 +167,13 @@
         </layout>
        </item>
        <item>
+        <widget class="QCheckBox" name="cbEnableMining">
+         <property name="text">
+          <string>Enable mining</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="lbDataDirMessage">
          <property name="text">
           <string/>
@@ -696,6 +703,13 @@
          </property>
          <property name="text">
           <string>M&amp;inimize on close</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cbConfirmQuit">
+         <property name="text">
+          <string>Confirm quit</string>
          </property>
         </widget>
        </item>

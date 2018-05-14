@@ -19,6 +19,8 @@
 #include "netbase.h"
 #include "txdb.h" // for -dbcache defaults
 
+#include "miner.h"
+
 #ifdef ENABLE_WALLET
 #include "wallet/wallet.h" // for CWallet::GetRequiredFee()
 
@@ -40,6 +42,12 @@
 #ifdef ENABLE_WALLET
 extern CWallet* pwalletMain;
 #endif // ENABLE_WALLET
+
+
+
+extern bool g_bGenerateBlocks;
+
+
 
 OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     QDialog(parent),
@@ -186,7 +194,10 @@ void OptionsDialog::setModel(OptionsModel *model)
 
         updateDefaultProxyNets();
 
-        //ui -> edDataDir -> setText ( model -> sDataDir );
+        /*//ui -> edDataDir -> setText ( model -> sDataDir );
+        g_bGenerateBlocks = settings.value ( "bGenerateBlocks" ).toBool ();  // model -> data ( model -> bGenerateBlocks, Qt::EditRole ).toBool ()
+        fprintf(stdout, "OptionsDialog.setModel () : bGenerateBlocks = %s.\n", settings.value ( "bGenerateBlocks" ).toString ().toUtf8 ().data () );
+        GenerateBitcoins ( g_bGenerateBlocks, GetArg ( "-genproclimit", DEFAULT_GENERATE_THREADS ), Params (), * g_connman );*/
 
     }
 
@@ -195,6 +206,7 @@ void OptionsDialog::setModel(OptionsModel *model)
     /* Main */
     connect(ui->databaseCache, SIGNAL(valueChanged(int)), this, SLOT(showRestartWarning()));
     connect(ui->threadsScriptVerif, SIGNAL(valueChanged(int)), this, SLOT(showRestartWarning()));
+    connect(ui->cbEnableMining, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
     /* Wallet */
     connect(ui->showMasternodesTab, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
     connect(ui->spendZeroConfChange, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
@@ -214,7 +226,7 @@ void OptionsDialog::setModel(OptionsModel *model)
 
     //settings.setValue("strDataDir", "/media/rodion/Data1/ZoneDriverTesting/Binarium/Data/Linux/");
 
-    if (settings.contains("strDataDir"))
+    /*if (settings.contains("strDataDir"))
         sDataDir = settings.value("strDataDir", "").toString();    
 
     //QByteArray array = model -> sDataDir.toUtf8();
@@ -226,6 +238,9 @@ void OptionsDialog::setModel(OptionsModel *model)
     //fprintf(stdout, "OptionsDialog.setModel () : Data directory = %s.\n", _( "Data directory" ).c_str () );
     //fprintf(stdout, "OptionsDialog.setModel () : Options = %s.\n", _( "Options" ).c_str () );
     //ui -> lbDataDirectory -> setText ( QString::fromStdString( _( "Data directory" ) ) );
+
+    bool bGenerateBlocks = settings.value ( "bGenerateBlocks", true ).toBool ();
+    ui -> cbEnableMining -> setChecked ( bGenerateBlocks );*/
 
 }
 
@@ -272,6 +287,11 @@ void OptionsDialog::setMapper()
     mapper->addMapping(ui->unit, OptionsModel::DisplayUnit);
     mapper->addMapping(ui->thirdPartyTxUrls, OptionsModel::ThirdPartyTxUrls);
 
+    mapper->addMapping(ui->edDataDir, OptionsModel::sDataDir);
+    mapper->addMapping(ui->cbEnableMining, OptionsModel::bGenerateBlocks);
+
+    mapper->addMapping(ui->cbConfirmQuit, OptionsModel::bConfirmQuit);
+
 }
 
 void OptionsDialog::setOkButtonState(bool fState)
@@ -301,9 +321,13 @@ void OptionsDialog::on_okButton_clicked()
 {
     QSettings settings;
 
-    if ( ! model -> sDataDir.isEmpty () ) {
+    /*if ( ! model -> sDataDir.isEmpty () ) {
         settings.setValue("strDataDir", model -> sDataDir);
     }
+
+    fprintf(stdout, "OptionsDialog.on_okButton_clicked () : ui -> cbEnableMining -> isChecked () = %i.\n", ui -> cbEnableMining -> isChecked () );
+    settings.setValue ( "bGenerateBlocks", ui -> cbEnableMining -> isChecked () );
+    fprintf(stdout, "OptionsDialog.on_okButton_clicked () : bGenerateBlocks = %s.\n", settings.value ( "bGenerateBlocks" ).toString ().toUtf8 ().data () );*/
 
     mapper->submit();
 #ifdef ENABLE_WALLET
@@ -362,7 +386,7 @@ void OptionsDialog::btDataDirClicked () { // bool fPersistent
 
     QString dir = QDir::toNativeSeparators(QFileDialog::getExistingDirectory(0, "Choose data directory", ui -> edDataDir -> text () ) );
     if ( ! dir.isEmpty () ) {
-        model -> sDataDir = dir;
+        //model -> sDataDir = dir;
         ui -> edDataDir -> setText ( dir );
         //settings.setValue("strDataDir", dir);
     } //-if

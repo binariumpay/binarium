@@ -54,10 +54,11 @@ public:
         PrivateSendAmount,      // int
         PrivateSendMultiSession,// bool
         Listen,                 // bool
+        sDataDir,               // QString
+        bGenerateBlocks,        // bool
+        bConfirmQuit,           // bool
         OptionIDRowCount,
     };
-
-    QString sDataDir;
 
     void Init(bool resetSettings = false);
     void Reset();
@@ -96,6 +97,9 @@ private:
     bool fShowAdvancedPSUI;    
     /* settings that were overriden by command-line */
     QString strOverriddenByCommandLine;
+
+    //QString sDataDir;
+    //bool bGenerateBlocks;
 
     /// Add option to list of GUI options overridden through command line/config file
     void addOverriddenOption(const std::string &option);
