@@ -31,12 +31,13 @@
 
 //#include "bitcoingui.h"
 
-#include <atomic>
+//#include <atomic>
 #include <inttypes.h>
 
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/atomic.hpp>
 #include <queue>
 
 //#include <QApplication>
@@ -54,7 +55,8 @@ using namespace std;
 bool g_bNotifyIsMiningEnabled = false;
 //std :: atomic_bool g_bNotifyIsMiningEnabled = false;
 
-std :: atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
+//std :: atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
+boost::atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
 
 //////////////////////////////////////////////////////////////////////////////
 //

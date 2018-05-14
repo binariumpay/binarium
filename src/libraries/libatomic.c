@@ -54,9 +54,9 @@ warning: conflicting types for built-in function â€˜__atomic_compare_exchange_1â
 #define __LIBATOMIC_SUPPORTS_I8		1
 #endif
 
-#ifndef  __LIBATOMIC_SUPPORTS_I16
-#define __LIBATOMIC_SUPPORTS_I16	1
-#endif
+//#ifndef  __LIBATOMIC_SUPPORTS_I16
+//#define __LIBATOMIC_SUPPORTS_I16	1
+//#endif
 
 /* Define types for all supported sizes.  */
 
