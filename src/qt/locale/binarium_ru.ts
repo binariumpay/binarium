@@ -672,6 +672,10 @@
         <source>Measuring hash rate.</source>
         <translation>Измеряем Hash Rate.</translation>
     </message>
+    <message>    
+        <source>Hash rate ( Hashes/s ).</source>
+        <translation>Hash rate ( Хэшей/с ).</translation>
+    </message>
 
 </context>
 <context>

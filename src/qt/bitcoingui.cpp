@@ -39,6 +39,8 @@
 #include <iostream>
 //#include <algorithm>
 
+#include <boost/atomic.hpp>
+
 #include <QAction>
 #include <QApplication>
 #include <QSettings>
@@ -83,7 +85,8 @@ const QString BitcoinGUI::DEFAULT_WALLET = "~Default";
 extern bool g_bGenerateBlocks;
 //extern bool g_bIsQtInterfaceEnabled;
 extern bool g_bNotifyIsMiningEnabled;
-extern std :: atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
+//extern std :: atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
+extern boost::atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
 
 BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *networkStyle, QWidget *parent) :
     QMainWindow(parent),
@@ -1525,7 +1528,7 @@ void BitcoinGUI :: timerEvent ( QTimerEvent * event ) {
     //if ( iAmountOfHashRates > 0 ) {
         //fHashRateSum = fHashRateSum / float ( iAmountOfHashRates );
         labelHashesRate -> setText ( QString :: number ( fHashRateSum, 'f', 2 ) );
-        labelHashesRate -> setToolTip ( "Hash rate." );
+        labelHashesRate -> setToolTip ( QApplication::translate("BitcoinGUI", "Hash rate ( Hashes/s ).", 0) );
 
     //} //-if
 

@@ -31,13 +31,16 @@
 
 //#include "bitcoingui.h"
 
-//#include <atomic>
 #include <inttypes.h>
 
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/filesystem.hpp>
+//#ifdef 
 #include <boost/atomic.hpp>
+//#elif
+//#include <atomic>
+//#endif
 #include <queue>
 
 //#include <QApplication>
