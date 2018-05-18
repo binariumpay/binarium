@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>850</width>
-    <height>526</height>
+    <height>642</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -411,7 +411,7 @@
                  </property>
                 </widget>
                </item>
-             </layout>
+              </layout>
              </item>
              <item>
               <layout class="QFormLayout" name="formLayoutCoinControl4">
@@ -587,8 +587,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>830</width>
-        <height>69</height>
+        <width>834</width>
+        <height>80</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -829,7 +829,7 @@
                     <string>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 duffs in fee,&lt;br /&gt;while &quot;at least&quot; pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</string>
                    </property>
                    <property name="text">
-                    <string>per kilobyte</string>
+                    <string>per &amp;kilobyte</string>
                    </property>
                    <property name="checked">
                     <bool>true</bool>
@@ -845,7 +845,7 @@
                     <string>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 duffs in fee,&lt;br /&gt;while &quot;total at least&quot; pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</string>
                    </property>
                    <property name="text">
-                    <string>total at least</string>
+                    <string>&amp;total at least</string>
                    </property>
                    <attribute name="buttonGroup">
                     <string notr="true">groupCustomFee</string>
@@ -920,7 +920,7 @@
                <item>
                 <widget class="QRadioButton" name="radioSmartFee">
                  <property name="text">
-                  <string>Recommended:</string>
+                  <string>Reco&amp;mmended:</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -950,7 +950,7 @@
                <item>
                 <widget class="QRadioButton" name="radioCustomFee">
                  <property name="text">
-                  <string>Custom:</string>
+                  <string>&amp;Custom:</string>
                  </property>
                  <attribute name="buttonGroup">
                   <string notr="true">groupFee</string>
@@ -1294,6 +1294,9 @@
            <height>0</height>
           </size>
          </property>
+         <property name="toolTip">
+          <string>PrivateSend is used for private Binarium sending. This is not needed for usual cryptocurrency transfers.</string>
+         </property>
          <property name="text">
           <string>PrivateSend</string>
          </property>
@@ -1312,6 +1315,9 @@
            <width>85</width>
            <height>0</height>
           </size>
+         </property>
+         <property name="toolTip">
+          <string>InstantSend is used for instant Binarium transfers. This is not needed for usual cryptocurrency transfers.</string>
          </property>
          <property name="text">
           <string>InstantSend</string>
@@ -1368,7 +1374,7 @@
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="groupCustomFee"/>
   <buttongroup name="groupFee"/>
+  <buttongroup name="groupCustomFee"/>
  </buttongroups>
 </ui>

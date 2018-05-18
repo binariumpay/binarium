@@ -185,6 +185,9 @@
         </item>
         <item row="8" column="2">
          <widget class="QCheckBox" name="checkUseInstantSend">
+          <property name="toolTip">
+           <string>InstantSend is used for instant Binarium transfers. This is not needed for usual cryptocurrency transfers.</string>
+          </property>
           <property name="text">
            <string>Request InstantSend</string>
           </property>

@@ -391,8 +391,11 @@
                 <bold>true</bold>
                </font>
               </property>
+              <property name="toolTip">
+               <string>PrivateSend is used for private Binarium sending. This is not needed for usual cryptocurrency transfers.</string>
+              </property>
               <property name="text">
-               <string>PrivateSend</string>
+               <string>PrivateSend (Advanced)</string>
               </property>
              </widget>
             </item>
@@ -415,118 +418,152 @@
            </layout>
           </item>
           <item>
-           <layout class="QFormLayout" name="privateSendFormLayout">
-            <property name="fieldGrowthPolicy">
-             <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           <widget class="QScrollArea" name="scrollArea">
+            <property name="widgetResizable">
+             <bool>true</bool>
             </property>
-            <property name="horizontalSpacing">
-             <number>11</number>
-            </property>
-            <property name="verticalSpacing">
-             <number>12</number>
-            </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="labelPrivateSendEnabledText">
-              <property name="text">
-               <string>Status:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="labelPrivateSendEnabled">
-              <property name="text">
-               <string>Enabled/Disabled</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="labelCompletitionText">
-              <property name="text">
-               <string>Completion:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QProgressBar" name="privateSendProgress">
-              <property name="maximumSize">
-               <size>
-                <width>154</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="value">
+            <widget class="QWidget" name="scrollAreaWidgetContents">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>428</width>
+               <height>178</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <property name="spacing">
                <number>0</number>
               </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="labelAnonymizedText">
-              <property name="text">
-               <string>PrivateSend Balance:</string>
+              <property name="leftMargin">
+               <number>0</number>
               </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLabel" name="labelAnonymized">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
+              <property name="topMargin">
+               <number>0</number>
               </property>
-              <property name="text">
-               <string notr="true">0 BINARIUM</string>
+              <property name="rightMargin">
+               <number>0</number>
               </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="labelAmountAndRoundsText">
-              <property name="text">
-               <string>Amount and Rounds:</string>
+              <property name="bottomMargin">
+               <number>0</number>
               </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QLabel" name="labelAmountRounds">
-              <property name="text">
-               <string>0 BINARIUM / 0 Rounds</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="labelSubmittedDenomText">
-              <property name="text">
-               <string>Submitted Denom:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QLabel" name="labelSubmittedDenom">
-              <property name="toolTip">
-               <string>The denominations you submitted to the Masternode.&lt;br&gt;To mix, other users must submit the exact same denominations.</string>
-              </property>
-              <property name="text">
-               <string>n/a</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+              <item>
+               <layout class="QFormLayout" name="privateSendFormLayout">
+                <property name="fieldGrowthPolicy">
+                 <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                </property>
+                <property name="horizontalSpacing">
+                 <number>11</number>
+                </property>
+                <property name="verticalSpacing">
+                 <number>12</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="labelPrivateSendEnabledText">
+                  <property name="text">
+                   <string>Status:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="labelPrivateSendEnabled">
+                  <property name="text">
+                   <string>Enabled/Disabled</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="labelCompletitionText">
+                  <property name="text">
+                   <string>Completion:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QProgressBar" name="privateSendProgress">
+                  <property name="maximumSize">
+                   <size>
+                    <width>154</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="value">
+                   <number>0</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="labelAnonymizedText">
+                  <property name="text">
+                   <string>PrivateSend Balance:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLabel" name="labelAnonymized">
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string notr="true">0 BINARIUM</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="labelAmountAndRoundsText">
+                  <property name="text">
+                   <string>Amount and Rounds:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QLabel" name="labelAmountRounds">
+                  <property name="text">
+                   <string>0 BINARIUM / 0 Rounds</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="labelSubmittedDenomText">
+                  <property name="text">
+                   <string>Submitted Denom:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLabel" name="labelSubmittedDenom">
+                  <property name="toolTip">
+                   <string>The denominations you submitted to the Masternode.&lt;br&gt;To mix, other users must submit the exact same denominations.</string>
+                  </property>
+                  <property name="text">
+                   <string>n/a</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelPrivateSendLastMessage">
+                <property name="text">
+                 <string>(Last Message)</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
           </item>
           <item>
            <layout class="QVBoxLayout" name="VerticalLayout_PS">
-            <item>
-             <widget class="QLabel" name="labelPrivateSendLastMessage">
-              <property name="text">
-               <string>(Last Message)</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
             <item>
              <widget class="QPushButton" name="togglePrivateSend">
               <property name="sizePolicy">

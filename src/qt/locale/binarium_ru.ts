@@ -1703,8 +1703,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Для расхода:</translation>
     </message>
     <message>
-        <source>PrivateSend</source>
-        <translation>PrivateSend</translation>
+        <source>PrivateSend (Advanced)</source>
+        <translation>PrivateSend (Дополнительно)</translation>
+    </message>
+    <message>
+        <source>PrivateSend is used for private Binarium sending. This is not needed for usual cryptocurrency transfers.</source>
+        <translation>PrivateSend используется для приватной отправки Бинариума. Эту технологию не нужно активировать для обычных переводов криптовалюты.</translation>
     </message>
     <message>
         <source>Status:</source>
@@ -2555,6 +2559,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Запросить InstantSend</translation>
     </message>
     <message>
+        <source>InstantSend is used for instant Binarium transfers. This is not needed for usual cryptocurrency transfers.</source>
+        <translation>InstantSend используется для быстрой отправки переводов. Эта функция не нужна для обычных переводов криптовалюты.</translation>
+    </message>
+    <message>
         <source>Requested payments history</source>
         <translation>История запрошенных платежей</translation>
     </message>
@@ -2764,8 +2772,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>PrivateSend</translation>
     </message>
     <message>
+        <source>PrivateSend is used for private Binarium sending. This is not needed for usual cryptocurrency transfers.</source>
+        <translation>PrivateSend используется для приватной отправки Бинариума. Эту технологию не нужно активировать для обычных переводов криптовалюты.</translation>
+    </message>
+    <message>
         <source>InstantSend</source>
         <translation>InstantSend</translation>
+    </message>
+    <message>
+        <source>InstantSend is used for instant Binarium transfers. This is not needed for usual cryptocurrency transfers.</source>
+        <translation>InstantSend используется для быстрой отправки переводов. Эта функция не нужна для обычных переводов криптовалюты.</translation>
     </message>
     <message>
         <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>

@@ -140,10 +140,12 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
     QFontDatabase :: addApplicationFont ( ":/fonts/PT_Sans-Web-Italic" );
     QFontDatabase :: addApplicationFont ( ":/fonts/PT_Sans-Web-BoldItalic" );
 
+    GUIUtil::restoreWindowGeometry("nWindow", QSize(850, 550), this);
+
+    this -> resize ( QSize ( 600, 300 ) );
+
     /* Open CSS when configured */
     this->setStyleSheet(GUIUtil::loadStyleSheet());
-
-    GUIUtil::restoreWindowGeometry("nWindow", QSize(850, 550), this);
 
     QString windowTitle = tr("Binarium Core") + " - ";
 #ifdef ENABLE_WALLET
