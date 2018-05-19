@@ -867,10 +867,12 @@ max-width:60px;
 
 QDialog#RPCConsole QTextEdit#messagesWidget { /* Console Messages Window */
 border:0;
+background-color:#00152e;
 }
 
 QDialog#RPCConsole QLineEdit#lineEdit { /* Console Input */
 margin-right:5px;
+background-color:#00152e;
 }
 
 QDialog#RPCConsole QPushButton#clearButton { /* Console Clear Button */
