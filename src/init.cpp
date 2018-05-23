@@ -111,6 +111,7 @@ static const bool DEFAULT_STOPAFTERBLOCKIMPORT = false;
 std::unique_ptr<CConnman> g_connman;
 std::unique_ptr<PeerLogicValidation> peerLogic;
 bool g_bGenerateBlocks = false;
+int g_iAmountOfMiningThreads = -2;
 
 //#ifdef BITCOIN_UI_INTERFACE_H
 #ifdef BITCOIN_QT_BITCOINGUI_H
@@ -2175,7 +2176,11 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     boost :: filesystem :: path full_path ( boost::filesystem::current_path() );
     fprintf(stdout, "init.cpp : AppInit2 () : full_path = %s ; %i ; %" PRIu64 " ; %i .\n", full_path.string ().c_str (), get_uptime (), GetTimeMicros (), int ( ( get_uptime () + GetTimeMicros () % 100000000 ) % 100000000 ) );
     int iAmountOfThreads = min ( DEFAULT_GENERATE_THREADS, I_MAX_GENERATE_THREADS );
-    GenerateBitcoins ( GetBoolArg("-gen", DEFAULT_GENERATE ) || g_bGenerateBlocks, GetArg("-genproclimit", iAmountOfThreads ), chainparams, connman );
+    iAmountOfThreads = GetArg("-genproclimit", iAmountOfThreads );
+    if ( g_iAmountOfMiningThreads >= -1 ) {
+        iAmountOfThreads = g_iAmountOfMiningThreads;
+    }
+    GenerateBitcoins ( GetBoolArg("-gen", DEFAULT_GENERATE ) || g_bGenerateBlocks, iAmountOfThreads, chainparams, connman );
 
     // ********************************************************* Step 13: finished
 

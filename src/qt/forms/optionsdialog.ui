@@ -53,19 +53,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="databaseCache"/>
-         </item>
-         <item>
-          <widget class="QLabel" name="databaseCacheUnitLabel">
-           <property name="text">
-            <string>MB</string>
-           </property>
-           <property name="textFormat">
-            <enum>Qt::PlainText</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
           <spacer name="horizontalSpacer_2_Main">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -77,6 +64,19 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="databaseCache"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="databaseCacheUnitLabel">
+           <property name="text">
+            <string>MB</string>
+           </property>
+           <property name="textFormat">
+            <enum>Qt::PlainText</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -96,13 +96,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="threadsScriptVerif">
-           <property name="toolTip">
-            <string>(0 = auto, &lt;0 = leave that many cores free)</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <spacer name="horizontalSpacer_3_Main">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -114,6 +107,13 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="threadsScriptVerif">
+           <property name="toolTip">
+            <string>(0 = auto, &lt;0 = leave that many cores free)</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -172,6 +172,43 @@
           <string>Enable mining</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="lbMiningThreads">
+           <property name="text">
+            <string>Amount of mining threads</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinboxAmountOfMiningThreads">
+           <property name="toolTip">
+            <string>Amount of mining threads should be less of equal than amount of your CPU threads. -1 means : Use all cores.</string>
+           </property>
+           <property name="minimum">
+            <number>-1</number>
+           </property>
+           <property name="maximum">
+            <number>200</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QLabel" name="lbDataDirMessage">

@@ -211,6 +211,7 @@ public:
         //assert(genesis.hashMerkleRoot == uint256S("0x8a0510ff8dc69bc7e9a33597be92c29aefd30acb7b67b77c03c3edd7b3727b7c")); // e0028eb9648db56b1ac77cf090b99048a8007e2bb64b68f092c03c7f56a662c7
 
         vSeeds.push_back(CDNSSeedData("binarium.money", "dnsseed.binarium.money")); // dash.org dnsseed.dash.org
+        vSeeds.push_back(CDNSSeedData("dnsseed2.binarium.money", "dnsseed2.binarium.money"));
         /*vSeeds.push_back(CDNSSeedData("dashdot.io", "dnsseed.dashdot.io"));
         vSeeds.push_back(CDNSSeedData("masternode.io", "dnsseed.masternode.io"));
         vSeeds.push_back(CDNSSeedData("dashpay.io", "dnsseed.dashpay.io"));*/

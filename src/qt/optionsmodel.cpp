@@ -134,6 +134,10 @@ void OptionsModel::Init(bool resetSettings)
         settings.setValue ( "bGenerateBlocks", true );
     }
 
+    if ( ! settings.contains ( "iAmountOfMiningThreads" ) ) {
+        settings.setValue ( "iAmountOfMiningThreads", 1 );
+    }
+
     /*if (!settings.contains("nDatabaseCache"))
         settings.setValue("nDatabaseCache", (qint64)nDefaultDbCache);
     if (!SoftSetArg("-dbcache", settings.value("nDatabaseCache").toString().toStdString()))
@@ -330,6 +334,10 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             fprintf(stdout, "OptionsModel.data () : bGenerateBlocks = %s.\n", settings.value ( "bGenerateBlocks" ).toString ().toUtf8 ().data () );
             return settings.value ( "bGenerateBlocks" );
 
+        case iAmountOfMiningThreads :
+            fprintf(stdout, "OptionsModel.data () : iAmountOfMiningThreads = %i.\n", settings.value ( "iAmountOfMiningThreads" ).toInt () );
+            return settings.value ( "iAmountOfMiningThreads" );
+
         default:
             return QVariant();
         }
@@ -378,6 +386,12 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
         case bGenerateBlocks :
             fprintf(stdout, "OptionsModel.setData () : bGenerateBlocks = %s.\n", value.toString ().toUtf8 ().data () );
             settings.setValue ( "bGenerateBlocks", value.toBool () );
+            setRestartRequired(true);
+            break;
+
+        case iAmountOfMiningThreads :
+            settings.setValue ( "iAmountOfMiningThreads", value.toInt () );
+            //fprintf(stdout, "OptionsModel.setData () : bGenerateBlocks = %s.\n", value.toString ().toUtf8 ().data () );
             setRestartRequired(true);
             break;
 

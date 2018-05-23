@@ -207,6 +207,7 @@ void OptionsDialog::setModel(OptionsModel *model)
     connect(ui->databaseCache, SIGNAL(valueChanged(int)), this, SLOT(showRestartWarning()));
     connect(ui->threadsScriptVerif, SIGNAL(valueChanged(int)), this, SLOT(showRestartWarning()));
     connect(ui->cbEnableMining, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
+    connect(ui->spinboxAmountOfMiningThreads, SIGNAL(valueChanged(int)), this, SLOT(showRestartWarning()));
     /* Wallet */
     connect(ui->showMasternodesTab, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
     connect(ui->spendZeroConfChange, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
@@ -289,6 +290,7 @@ void OptionsDialog::setMapper()
 
     mapper->addMapping(ui->edDataDir, OptionsModel::sDataDir);
     mapper->addMapping(ui->cbEnableMining, OptionsModel::bGenerateBlocks);
+    mapper->addMapping(ui->spinboxAmountOfMiningThreads, OptionsModel::iAmountOfMiningThreads);
 
     mapper->addMapping(ui->cbConfirmQuit, OptionsModel::bConfirmQuit);
 

@@ -1344,6 +1344,14 @@
         <source>Enable mining</source>
         <translation>Включить майнинг</translation>
     </message>
+    <message>        
+        <source>Amount of mining threads</source>
+        <translation>Количество потоков майнинга</translation>
+    </message>
+    <message>        
+        <source>Amount of mining threads should be less of equal than amount of your CPU threads. -1 means : Use all cores.</source>
+        <translation>Количество потоков майнинга должно быть равно количеству потоков процессора или меньше его. -1 означает : Использовать все ядра.</translation>
+    </message>
 
     <message>
         <source>MB</source>

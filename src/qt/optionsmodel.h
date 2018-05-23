@@ -57,6 +57,7 @@ public:
         sDataDir,               // QString
         bGenerateBlocks,        // bool
         bConfirmQuit,           // bool
+        iAmountOfMiningThreads, // int
         OptionIDRowCount,
     };
 

@@ -88,6 +88,8 @@ extern bool g_bNotifyIsMiningEnabled;
 //extern std :: atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
 extern boost::atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
 
+extern int g_iAmountOfMiningThreads;
+
 BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *networkStyle, QWidget *parent) :
     QMainWindow(parent),
     clientModel(0),
@@ -307,11 +309,13 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
     g_bGenerateBlocks = bGenerateBlocks;
     //* g_p_bGenerateBlocks = bGenerateBlocks;
     //int iAmountOfThreads = min ( DEFAULT_GENERATE_THREADS, I_MAX_GENERATE_THREADS );
-    int iAmountOfThreads = GetArg ( "-genproclimit", DEFAULT_GENERATE_THREADS );
+    /*int iAmountOfThreads = GetArg ( "-genproclimit", DEFAULT_GENERATE_THREADS );
     iAmountOfThreads = iAmountOfThreads <= I_MAX_GENERATE_THREADS ? iAmountOfThreads : I_MAX_GENERATE_THREADS;
-    GenerateBitcoins ( bGenerateBlocks, GetArg ( "-genproclimit", iAmountOfThreads ), Params (), * g_connman );
+    GenerateBitcoins ( bGenerateBlocks, GetArg ( "-genproclimit", iAmountOfThreads ), Params (), * g_connman );*/
 
     //g_bIsQtInterfaceEnabled = true;
+
+    g_iAmountOfMiningThreads = settings.value ( "iAmountOfMiningThreads", 1 ).toInt ();
 
     iTimerId_MiningIndicatorUpdate = startTimer ( 200 );
     iTimerId_HashRateUpdate = startTimer ( 2000 );
