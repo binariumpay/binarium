@@ -84,11 +84,15 @@ const QString BitcoinGUI::DEFAULT_WALLET = "~Default";
 
 extern bool g_bGenerateBlocks;
 //extern bool g_bIsQtInterfaceEnabled;
-extern bool g_bNotifyIsMiningEnabled;
+//extern bool g_bNotifyIsMiningEnabled;
 //extern std :: atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
-extern boost::atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
+//extern boost::atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
 
-extern int g_iAmountOfMiningThreads;
+//extern int g_iAmountOfMiningThreads;
+
+extern int g_iPreviousAmountOfMiningThreads;
+
+
 
 BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *networkStyle, QWidget *parent) :
     QMainWindow(parent),
@@ -228,7 +232,8 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
     frameBlocksLayout->setContentsMargins(3,0,3,0);
     frameBlocksLayout->setSpacing(3);
     cbIsMiningEnabled = new QCheckBox;
-    connect(cbIsMiningEnabled, SIGNAL(toggled(bool)), this, SLOT(cbIsMiningEnabled_Toggled()));
+    //connect(cbIsMiningEnabled, SIGNAL(toggled(bool)), this, SLOT(cbIsMiningEnabled_Toggled()));
+    connect(cbIsMiningEnabled, SIGNAL(clicked(bool)), this, SLOT(cbIsMiningEnabled_Toggled()));
     cbIsMiningEnabled -> setObjectName ( "cbIsMiningEnabled" );
     cbIsMiningEnabled -> setText ( QApplication::translate("BitcoinGUI", "Mining: ", 0) );
     cbIsMiningEnabled -> setLayoutDirection ( Qt :: RightToLeft );
@@ -1119,6 +1124,8 @@ void BitcoinGUI :: Set_cbIsMiningEnabled ( bool _bChecked ) {
     //fprintf(stdout, "BitcoinGUI.Set_cbIsMiningEnabled () : %i.\n", _bChecked );
     cbIsMiningEnabled -> setChecked ( _bChecked );
 
+    //GenerateBitcoins ( _bChecked, g_iAmountOfMiningThreads, Params(), *g_connman );
+
 }
 
 void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVerificationProgress, bool header)
@@ -1345,9 +1352,19 @@ void BitcoinGUI::message(const QString &title, const QString &message, unsigned 
 }
 
 void BitcoinGUI ::cbIsMiningEnabled_Toggled ( bool _bState ) {
-    //fprintf(stdout, "BitcoinGUI.cbIsMiningEnabled_Toggled () : %i.\n", _bState );
+    fprintf(stdout, "BitcoinGUI.cbIsMiningEnabled_Toggled () : %i , %i, %i.\n", cbIsMiningEnabled -> isChecked (), g_iPreviousAmountOfMiningThreads, g_iAmountOfMiningThreads );
     //cbIsMiningEnabled -> setChecked ( ! _bState );
     //cbIsMiningEnabled -> setChecked ( _bState );
+
+    if ( ! cbIsMiningEnabled -> isChecked () ) {
+        //g_iPreviousAmountOfMiningThreads = g_iAmountOfMiningThreads;
+        GenerateBitcoins ( cbIsMiningEnabled -> isChecked (), g_iAmountOfMiningThreads, Params(), *g_connman );
+    
+    } else {
+        GenerateBitcoins ( cbIsMiningEnabled -> isChecked (), g_iPreviousAmountOfMiningThreads, Params(), *g_connman );
+        //g_iPreviousAmountOfMiningThreads = 0;
+    }
+
 }
 
 void BitcoinGUI::changeEvent(QEvent *e)
@@ -1503,14 +1520,17 @@ bool BitcoinGUI::eventFilter(QObject *object, QEvent *event)
 void BitcoinGUI :: timerEvent ( QTimerEvent * event ) {
     THashRateCounter structureHashRateCounter;
     float fHashRateSum = 0.0f;
-    //int iAmountOfHashRates = 0;
+    int iAmountOfHashRates = 0;
     int i = 0;
 
     if ( event -> timerId () == iTimerId_MiningIndicatorUpdate ) {
     //qDebug() << "Timer ID:" << event->timerId();
     // Setting mining indicator.
-    Set_cbIsMiningEnabled ( g_bNotifyIsMiningEnabled );
-    if ( g_bNotifyIsMiningEnabled )
+
+    //fprintf(stdout, "BitcoinGUI.timerEvent () : %i.\n", g_iAmountOfMiningThreads );
+
+    Set_cbIsMiningEnabled ( g_bNotifyIsMiningEnabled && ( g_iAmountOfMiningThreads > 0 ) );
+    if ( g_bNotifyIsMiningEnabled && ( g_iAmountOfMiningThreads > 0 ) )
         //cbIsMiningEnabled -> setToolTip ( "Mining is enabled." );
         cbIsMiningEnabled -> setToolTip ( QApplication::translate("BitcoinGUI", "Mining is enabled.", 0) );
 
@@ -1522,14 +1542,16 @@ void BitcoinGUI :: timerEvent ( QTimerEvent * event ) {
     } //-if
 
     if ( event -> timerId () == iTimerId_HashRateUpdate ) {
-    for ( i = 0; i < I_MAX_GENERATE_THREADS * 2; i ++ ) {
+    for ( i = 0; i < g_iAmountOfMiningThreads; i ++ ) {   // I_MAX_GENERATE_THREADS * 2
         structureHashRateCounter = aHashRateCounters [ i ].load ();
-        if ( structureHashRateCounter.fHashRate > 0.0f ) {
+        //if ( structureHashRateCounter.fHashRate > 0.0f ) {
             fHashRateSum = fHashRateSum + structureHashRateCounter.fHashRate;
-            //iAmountOfHashRates = iAmountOfHashRates + 1;
-        } //-if
+            iAmountOfHashRates = iAmountOfHashRates + 1;
+        //} //-if
 
     } //-for
+
+    //fprintf(stdout, "BitcoinGUI.timerEvent () : iAmountOfHashRates : %i.\n", iAmountOfHashRates );
 
     //if ( iAmountOfHashRates > 0 ) {
         //fHashRateSum = fHashRateSum / float ( iAmountOfHashRates );

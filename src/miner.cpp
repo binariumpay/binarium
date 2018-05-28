@@ -37,7 +37,7 @@
 #include <boost/tuple/tuple.hpp>
 #include <boost/filesystem.hpp>
 //#ifdef 
-#include <boost/atomic.hpp>
+//#include <boost/atomic.hpp>
 //#elif
 //#include <atomic>
 //#endif
@@ -60,6 +60,10 @@ bool g_bNotifyIsMiningEnabled = false;
 
 //std :: atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
 boost::atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
+
+int g_iAmountOfMiningThreads = -2;
+//extern int g_iAmountOfMiningThreads;
+int g_iPreviousAmountOfMiningThreads;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -437,9 +441,11 @@ static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainpar
 }
 
 // ***TODO*** that part changed in bitcoin, we are using a mix with old one here for now
-void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman, const int & _iIndex )
+void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman, const int _iIndex )   // const int & _iIndex
 {
     int iIndex = _iIndex;
+
+    fprintf(stdout, "miner.cpp : BitcoinMiner () : Miner thread started : %i.\n", iIndex );
 
     LogPrintf("BinariumMiner -- started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
@@ -641,9 +647,6 @@ void GenerateBitcoins(bool fGenerate, int nThreads, const CChainParams& chainpar
         minerThreads = NULL;
     }
 
-    if (nThreads == 0 || !fGenerate)
-        return;
-
     //g_bNotifyIsMiningEnabled = true;
 
     THashRateCounter structureHashRateCounter;
@@ -654,7 +657,63 @@ void GenerateBitcoins(bool fGenerate, int nThreads, const CChainParams& chainpar
 
     } //-for
 
+    g_iPreviousAmountOfMiningThreads = g_iAmountOfMiningThreads;
+    g_iAmountOfMiningThreads = fGenerate ? nThreads : 0;
+
+    if (nThreads == 0 || !fGenerate)
+        return;
+
     minerThreads = new boost::thread_group();
-    for ( i = 0; i < nThreads; i++)
-        minerThreads->create_thread(boost::bind(&BitcoinMiner, boost::cref(chainparams), boost::ref(connman), boost::cref(i) ) );
+    for ( i = 0; i < nThreads; i++) {
+        //minerThreads->create_thread(boost::bind(&BitcoinMiner, boost::cref(chainparams), boost::ref(connman), boost::cref(i) ) );
+        minerThreads->create_thread(boost::bind(&BitcoinMiner, boost::cref(chainparams), boost::ref(connman), i ) );
+    }
+
+}
+
+
+
+std::string HelpExampleCli2(const std::string& methodname, const std::string& args)
+{
+    return "> binarium-cli " + methodname + " " + args + "\n";
+}
+
+std::string HelpExampleRpc2(const std::string& methodname, const std::string& args)
+{
+    return "> curl --user myusername --data-binary '{\"jsonrpc\": \"1.0\", \"id\":\"curltest\", "
+        "\"method\": \"" + methodname + "\", \"params\": [" + args + "] }' -H 'content-type: text/plain;' http://127.0.0.1:9998/\n";
+}
+
+UniValue GetClientHashesPerSecond () {
+    THashRateCounter structureHashRateCounter;
+    float fHashRateSum = 0.0f;
+    int i = 0;
+
+    for ( i = 0; i < g_iAmountOfMiningThreads; i ++ ) {   // I_MAX_GENERATE_THREADS * 2
+        structureHashRateCounter = aHashRateCounters [ i ].load ();
+        //if ( structureHashRateCounter.fHashRate > 0.0f ) {
+            fHashRateSum = fHashRateSum + structureHashRateCounter.fHashRate;
+        //} //-if
+
+    } //-for
+
+    return fHashRateSum;
+}
+
+UniValue get_client_hashes_per_second (const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() > 0)
+        throw runtime_error(
+            "get_client_hashes_per_second ()\n"
+            "\nReturns the estimated client hashes per second.\n"
+            "\nArguments:\n"
+            "\nResult:\n"
+            "x             (numeric) Hashes per second estimated\n"
+            "\nExamples:\n"
+            + HelpExampleCli2("get_client_hashes_per_second", "")
+            + HelpExampleRpc2("get_client_hashes_per_second", "")
+       );
+
+    LOCK(cs_main);
+    return GetClientHashesPerSecond ();
 }

@@ -307,6 +307,7 @@ static const CRPCCommand vRPCCommands[] =
     { "generating",         "getgenerate",            &getgenerate,            true  },
     { "generating",         "setgenerate",            &setgenerate,            true  },
     { "generating",         "generate",               &generate,               true  },
+    { "generating",         "get_client_hashes_per_second",               &get_client_hashes_per_second,               true  },
 
     /* Raw transactions */
     { "rawtransactions",    "createrawtransaction",   &createrawtransaction,   true  },

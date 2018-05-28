@@ -111,7 +111,8 @@ static const bool DEFAULT_STOPAFTERBLOCKIMPORT = false;
 std::unique_ptr<CConnman> g_connman;
 std::unique_ptr<PeerLogicValidation> peerLogic;
 bool g_bGenerateBlocks = false;
-int g_iAmountOfMiningThreads = -2;
+//int g_iAmountOfMiningThreads = -2;
+//extern int g_iAmountOfMiningThreads;
 
 //#ifdef BITCOIN_UI_INTERFACE_H
 #ifdef BITCOIN_QT_BITCOINGUI_H

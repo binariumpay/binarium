@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 
+#include <boost/atomic.hpp>
+
 class CBlockIndex;
 class CChainParams;
 class CConnman;
@@ -33,7 +35,13 @@ struct THashRateCounter {
 //bool i = 1;
 //std :: unique_ptr < bool > g_p_bGenerateBlocks = std :: make_unique < bool > ( g_bGenerateBlocks );
 
+extern bool g_bNotifyIsMiningEnabled;
+
+extern boost::atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
+
 static const bool DEFAULT_PRINTPRIORITY = false;
+
+extern int g_iAmountOfMiningThreads;
 
 struct CBlockTemplate
 {
