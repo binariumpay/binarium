@@ -494,6 +494,26 @@
         <translation>Показать краткую информацию о PrivateSend</translation>
     </message>
     <message>
+        <source>Go to Binarium Discord channel.</source>
+        <translation>Перейти на Discord-канал Бинариума.</translation>
+    </message>
+    <message>
+        <source>Go to Binarium Facebook page.</source>
+        <translation>Перейти на страницу Facebook Бинариума</translation>
+    </message>
+    <message>
+        <source>Go to Binarium Twitter group.</source>
+        <translation>Перейти в группу Twitter Бинариума</translation>
+    </message>
+    <message>
+        <source>Go to Binarium Telegram channel.</source>
+        <translation>Перейти на Telegram-канал Бинариума</translation>
+    </message>
+    <message>
+        <source>Go to Binarium VK group.</source>
+        <translation>Перейти в группу ВКонтакте Бинариума</translation>
+    </message>
+    <message>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
@@ -1761,6 +1781,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>n/a</source>
         <translation>н/д</translation>
+    </message>
+    <message>
+        <source>Exchanges</source>
+        <translation>Биржи</translation>
     </message>
     <message>
         <source>Recent transactions</source>

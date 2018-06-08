@@ -46,6 +46,7 @@
 #include <QSettings>
 #include <QDateTime>
 #include <QDesktopWidget>
+#include <QDesktopServices>
 #include <QDragEnterEvent>
 #include <QListWidget>
 #include <QMenuBar>
@@ -325,6 +326,18 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
     iTimerId_MiningIndicatorUpdate = startTimer ( 200 );
     iTimerId_HashRateUpdate = startTimer ( 2000 );
 
+
+
+    QString sThemeName = GUIUtil::getThemeName();
+    QPalette pal = static_cast < QApplication * > ( QApplication :: instance () ) -> palette();
+    if ( sThemeName == "crownium" ) {
+        pal.setBrush ( QPalette::Link, QColor ( "#0088ce" ) ); // <===
+    } else {
+        pal.setBrush ( QPalette::Link, QColor ( "#ffffff" ) );
+    }
+
+    static_cast < QApplication * > ( QApplication :: instance () ) -> setPalette ( pal );
+
 }
 
 BitcoinGUI::~BitcoinGUI()
@@ -517,6 +530,26 @@ void BitcoinGUI::createActions()
     showPrivateSendHelpAction->setMenuRole(QAction::NoRole);
     showPrivateSendHelpAction->setStatusTip(tr("Show the PrivateSend basic information"));
 
+    qactionDiscord = new QAction ( QIcon ( ":/icons/" + theme + "/about" ), "Discord", this);
+    qactionDiscord->setMenuRole(QAction::NoRole);
+    qactionDiscord->setStatusTip(tr("Go to Binarium Discord channel."));
+
+    qactionFacebook = new QAction ( QIcon ( ":/icons/" + theme + "/about" ), "Facebook", this);
+    qactionFacebook->setMenuRole(QAction::NoRole);
+    qactionFacebook->setStatusTip(tr("Go to Binarium Facebook page."));
+
+    qactionTwitter = new QAction ( QIcon ( ":/icons/" + theme + "/about" ), "Twitter", this);
+    qactionTwitter->setMenuRole(QAction::NoRole);
+    qactionTwitter->setStatusTip(tr("Go to Binarium Twitter group."));
+
+    qactionTelegram = new QAction ( QIcon ( ":/icons/" + theme + "/about" ), "Telegram", this);
+    qactionTelegram->setMenuRole(QAction::NoRole);
+    qactionTelegram->setStatusTip(tr("Go to Binarium Telegram channel."));
+
+    qactionVK = new QAction ( QIcon ( ":/icons/" + theme + "/about" ), "VK", this);
+    qactionVK->setMenuRole(QAction::NoRole);
+    qactionVK->setStatusTip(tr("Go to Binarium VK group."));
+
     //connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));     
     connect(quitAction, SIGNAL(triggered()), this, SLOT(slotCheckApplicationQuit()));
 
@@ -526,6 +559,11 @@ void BitcoinGUI::createActions()
     connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
     connect(showHelpMessageAction, SIGNAL(triggered()), this, SLOT(showHelpMessageClicked()));
     connect(showPrivateSendHelpAction, SIGNAL(triggered()), this, SLOT(showPrivateSendHelpClicked()));
+    connect(qactionDiscord, SIGNAL(triggered()), this, SLOT(qactionDiscord_Triggered()));
+    connect(qactionFacebook, SIGNAL(triggered()), this, SLOT(qactionFacebook_Triggered()));
+    connect(qactionTwitter, SIGNAL(triggered()), this, SLOT(qactionTwitter_Triggered()));
+    connect(qactionTelegram, SIGNAL(triggered()), this, SLOT(qactionTelegram_Triggered()));
+    connect(qactionVK, SIGNAL(triggered()), this, SLOT(qactionVK_Triggered()));
 
     // Jump directly to tabs in RPC-console
     connect(openInfoAction, SIGNAL(triggered()), this, SLOT(showInfo()));
@@ -623,6 +661,11 @@ void BitcoinGUI::createMenuBar()
     help->addAction(showPrivateSendHelpAction);
     help->addSeparator();
     help->addAction(aboutAction);
+    help->addAction ( qactionDiscord );
+    help->addAction ( qactionFacebook );
+    help->addAction ( qactionTwitter );
+    help->addAction ( qactionTelegram );
+    help->addAction ( qactionVK );
     help->addAction(aboutQtAction);
 }
 
@@ -985,6 +1028,26 @@ void BitcoinGUI::showPrivateSendHelpClicked()
 
     HelpMessageDialog dlg(this, HelpMessageDialog::pshelp);
     dlg.exec();
+}
+
+void BitcoinGUI :: qactionDiscord_Triggered () {
+    QDesktopServices :: openUrl ( QUrl ( "https://discord.gg/NThv2yn", QUrl::TolerantMode ) );
+}
+
+void BitcoinGUI :: qactionFacebook_Triggered () {
+    QDesktopServices :: openUrl ( QUrl ( "https://www.facebook.com/Binarium.money/", QUrl::TolerantMode ) );
+}
+
+void BitcoinGUI :: qactionTwitter_Triggered () {
+    QDesktopServices :: openUrl ( QUrl ( "https://twitter.com/Binarium_money", QUrl::TolerantMode ) );
+}
+
+void BitcoinGUI :: qactionTelegram_Triggered () {
+    QDesktopServices :: openUrl ( QUrl ( "https://t.me/binarium_money", QUrl::TolerantMode ) );
+}
+
+void BitcoinGUI :: qactionVK_Triggered () {
+    QDesktopServices :: openUrl ( QUrl ( "https://vk.com/binarium_money", QUrl::TolerantMode ) );
 }
 
 #ifdef ENABLE_WALLET

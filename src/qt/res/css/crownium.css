@@ -1357,14 +1357,55 @@ QWidget .QFrame#framePrivateSend .QPushButton#privateSendInfo:pressed {
 /*border:1px solid #9e9e9e;*/
 }
 
+/* Links block. */
+
+#frameLinks {
+min-width : 370px;
+max-width : 370px;
+height : 60px;
+margin-top : 10px;
+margin-right:20px;
+margin-left:20px;
+background : #ffffff;
+border:1px solid #bdd3de;
+padding-top : 10px;
+padding-bottom : 10px;
+padding-left : 20px;
+padding-right : 20px;
+margin-bottom : 10px;
+}
+
+#lbExchangesBlockTitle {
+color : #303030;
+margin-top:0px;
+font-weight:bold;
+font-size:15px;
+text-transform: uppercase;
+}
+
+#scrollAreaWidgetContents_Links, #scrollArea_Links {
+background : transparent;
+}
+
+#hlBinariumLinks {
+margin-top : 10px;
+}
+
+#lbBinariumSiteAddress {
+}
+
+#lbBinariumBCE {
+margin-left : 5px;
+}
+
 /* RECENT TRANSACTIONS */
 
 QWidget .QFrame#frame_2 { /* Transactions Widget */
 qproperty-alignment: 'AlignVTop | AlignLeft';
 min-width:410px;
 max-width:410px;
-min-height:562px;
-max-height:562px;
+min-height:378px;
+max-height:378px;
 margin-right:20px;
 margin-left:20px;
 /*margin-top:15px;*/
@@ -1386,7 +1427,7 @@ margin-left:20px;
 margin-top:0px;
 margin-right:5px;
 padding-right:5px;
-font-weight:normal;
+font-weight:bold;
 font-size:15px;
 min-height:24px;
 text-transform: uppercase;
@@ -1534,7 +1575,7 @@ QDialog#SendCoinsDialog .QPushButton#addButton:pressed {
 }
 
 QDialog#SendCoinsDialog .QCheckBox#checkUsePrivateSend { /* PrivateSend Checkbox */
-color:#616161;
+/*color:#616161;*/
 font-weight:bold;
 /*background: qradialgradient(cx:0.5, cy:0.5, radius: 0.5, fx:0.5, fy:0.5, stop:0 rgba(248, 246, 246, 128), stop: 1 rgba(0, 0, 0, 0));*/
 border-radius:5px;
@@ -1543,7 +1584,7 @@ padding-bottom:18px;
 }
 
 QDialog#SendCoinsDialog .QCheckBox#checkUseInstantSend { /* InstantSend Checkbox */
-color:#616161;
+/*color:#616161;*/
 font-weight:bold;
 /*background: qradialgradient(cx:0.5, cy:0.5, radius: 0.5, fx:0.5, fy:0.5, stop:0 rgba(248, 246, 246, 128), stop: 1 rgba(0, 0, 0, 0));*/
 border-radius:5px;

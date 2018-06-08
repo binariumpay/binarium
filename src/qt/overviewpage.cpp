@@ -138,6 +138,13 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
     ui->setupUi(this);
     QString theme = GUIUtil::getThemeName();
 
+    /*//if ( theme != "crownium" ) {
+        QPalette p;
+        p.setColor(QPalette::Link, QColor ( "#eccee1" ) );
+        p.setColor(QPalette::LinkVisited, QColor ( 0, 255, 0 ) );
+        ui -> lbBinariumSiteAddress -> setPalette ( p );
+    //} //-if*/
+
     // Recent transactions
     ui->listTransactions->setItemDelegate(txdelegate);
     ui->listTransactions->setIconSize(QSize(DECORATION_SIZE, DECORATION_SIZE));

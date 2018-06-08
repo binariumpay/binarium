@@ -135,6 +135,11 @@ private:
     QAction *openAction;
     QAction *showHelpMessageAction;
     QAction *showPrivateSendHelpAction;
+    QAction * qactionDiscord;
+    QAction * qactionFacebook;
+    QAction * qactionTwitter;
+    QAction * qactionTelegram;
+    QAction * qactionVK;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
@@ -270,6 +275,11 @@ private Q_SLOTS:
     void showHelpMessageClicked();
     /** Show PrivateSend help message dialog */
     void showPrivateSendHelpClicked();
+    void qactionDiscord_Triggered ();
+    void qactionFacebook_Triggered ();
+    void qactionTwitter_Triggered ();
+    void qactionTelegram_Triggered ();
+    void qactionVK_Triggered ();
 #ifndef Q_OS_MAC
     /** Handle tray icon clicked */
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);

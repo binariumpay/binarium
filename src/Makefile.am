@@ -3,6 +3,7 @@ DIST_SUBDIRS = secp256k1 univalue
 AM_LDFLAGS = $(PTHREAD_CFLAGS) $(LIBTOOL_LDFLAGS) $(HARDENED_LDFLAGS) -std=c++11 -lstdc++
 AM_CXXFLAGS = $(HARDENED_CXXFLAGS) -std=c++11
 AM_CPPFLAGS = $(HARDENED_CPPFLAGS) -std=c++11
+AM_CFLAGS = -std=c11
 EXTRA_LIBRARIES =
 
 if EMBEDDED_UNIVALUE
@@ -302,9 +303,9 @@ libbitcoin_wallet_a_SOURCES = \
 
 # crypto primitives library
 # $(AM_CPPFLAGS)
-crypto_libbitcoin_crypto_a_CPPFLAGS = $(BITCOIN_CONFIG_INCLUDES) $(PIC_FLAGS)
+crypto_libbitcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(AM_CFLAGS) $(BITCOIN_CONFIG_INCLUDES) $(PIC_FLAGS)
 # $(AM_CXXFLAGS)
-crypto_libbitcoin_crypto_a_CXXFLAGS = $(PIE_FLAGS) $(PIC_FLAGS)
+crypto_libbitcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(AM_CFLAGS) $(PIE_FLAGS) $(PIC_FLAGS)
 crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/common.h \
   crypto/hmac_sha256.cpp \

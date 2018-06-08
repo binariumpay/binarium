@@ -79,9 +79,9 @@ void OptionsModel::Init(bool resetSettings)
         settings.setValue("nDisplayUnit", BitcoinUnits::BINARIUM);
     nDisplayUnit = settings.value("nDisplayUnit").toInt();
 
-    if (!settings.contains("strThirdPartyTxUrls"))
-        settings.setValue("strThirdPartyTxUrls", "");
-    strThirdPartyTxUrls = settings.value("strThirdPartyTxUrls", "").toString();
+    if ( !settings.contains("strThirdPartyTxUrls") || ( settings.value ( "strThirdPartyTxUrls" ) == "" ) )
+        settings.setValue("strThirdPartyTxUrls", "https://binarium.money/explorer/tx/%s");
+    strThirdPartyTxUrls = settings.value("strThirdPartyTxUrls", "https://binarium.money/explorer/tx/%s").toString();
 
     if (!settings.contains("theme"))
         settings.setValue("theme", "");   // trad
