@@ -134,3 +134,5 @@ dash-cli
 dashd
 dash-qt
 make
+/db4
+/db-4.8.30.NC
