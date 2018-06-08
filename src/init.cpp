@@ -2177,7 +2177,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     GenerateBitcoins(GetBoolArg("-gen", DEFAULT_GENERATE && bGenerateBlocks ), GetArg("-genproclimit", DEFAULT_GENERATE_THREADS), chainparams, connman);*/
     fprintf(stdout, "init.cpp : AppInit2 () : g_bGenerateBlocks = %i.\n", g_bGenerateBlocks );
     boost :: filesystem :: path full_path ( boost::filesystem::current_path() );
-    fprintf(stdout, "init.cpp : AppInit2 () : full_path = %s ; %i ; %" PRIu64 " ; %i .\n", full_path.string ().c_str (), get_uptime (), GetTimeMicros (), int ( ( get_uptime () + GetTimeMicros () % 100000000 ) % 100000000 ) );
+    //fprintf(stdout, "init.cpp : AppInit2 () : full_path = %s ; %i ; %" PRIu64 " ; %i .\n", full_path.string ().c_str (), get_uptime (), GetTimeMicros (), int ( ( get_uptime () + GetTimeMicros () % 100000000 ) % 100000000 ) );
     int iAmountOfThreads = min ( DEFAULT_GENERATE_THREADS, I_MAX_GENERATE_THREADS );
     iAmountOfThreads = GetArg("-genproclimit", iAmountOfThreads );
     if ( g_iAmountOfMiningThreads >= -1 ) {

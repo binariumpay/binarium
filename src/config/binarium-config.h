@@ -257,7 +257,7 @@
 #define HAVE_PTHREAD 1
 
 /* Have PTHREAD_PRIO_INHERIT. */
-#define HAVE_PTHREAD_PRIO_INHERIT 1
+/* #undef HAVE_PTHREAD_PRIO_INHERIT */
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
@@ -304,7 +304,8 @@
 /* Define this symbol if boost sleep_for works */
 #define HAVE_WORKING_BOOST_SLEEP_FOR 1
 
-/* Define to the sub-directory where libtool stores uninstalled libraries. */
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
 #define LT_OBJDIR ".libs/"
 
 /* Define to the address where bug reports for this package should be sent. */
@@ -339,7 +340,7 @@
 #define QT_QPA_PLATFORM_XCB 1
 
 /* Define this symbol if qt plugins are static */
-#define QT_STATICPLUGIN 1
+/* #undef QT_STATICPLUGIN */
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -348,10 +349,10 @@
 #define STRERROR_R_CHAR_P 1
 
 /* Define if dbus support should be compiled in */
-#define USE_DBUS 1
+/* #undef USE_DBUS */
 
 /* Define if QR support should be compiled in */
-#define USE_QRCODE 1
+/* #undef USE_QRCODE */
 
 /* UPnP support not compiled if undefined, otherwise value (0 or 1) determines
    default state */
