@@ -1,4 +1,4 @@
-Binarium staging tree 0.12.5
+Binarium staging tree 0.12.6
 ===============================
 
 `master:` [![Build Status](https://travis-ci.org/dashpay/dash.svg?branch=master)](https://travis-ci.org/dashpay/dash) `develop:` [![Build Status](https://travis-ci.org/dashpay/dash.svg?branch=develop)](https://travis-ci.org/dashpay/dash/branches)
