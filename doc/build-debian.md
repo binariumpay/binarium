@@ -21,7 +21,7 @@ After these steps, BDB libraries will be here /full/path/to/binarium/db4
 
 BDB required for wallet functionality.
 
-Configuration
+Configuration & Build
 -------------------
 
 Example configure string for server variant of binaries (No Qt GUI)
