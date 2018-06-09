@@ -11,8 +11,8 @@
  * - December 2014, Pieter Wuille: converted from YASM to GCC inline assembly
  */
 
-#ifndef _SECP256K1_FIELD_INNER5X52_IMPL_H_
-#define _SECP256K1_FIELD_INNER5X52_IMPL_H_
+#ifndef SECP256K1_FIELD_INNER5X52_IMPL_H
+#define SECP256K1_FIELD_INNER5X52_IMPL_H
 
 /* It is desirable to be able to build with -fno-omit-frame-pointer (for tools like ASAN) but the code in this file won't compile without frame pointers.
  * So we force frame pointers to be on for this file only.
@@ -506,4 +506,4 @@ __asm__ __volatile__(
 );
 }
 
-#endif
+#endif /* SECP256K1_FIELD_INNER5X52_IMPL_H */
