@@ -19,7 +19,7 @@ To Build
 
 ```bash
 ./autogen.sh
-./configure CFLAGS=-std=c11 CPPFLAGS=-std=c11 CXXFLAGS=-std=c11
+./configure CFLAGS=-std=c11
 make
 make install # optional
 ```
