@@ -19,7 +19,7 @@ To Build
 
 ```bash
 ./autogen.sh
-./configure
+./configure CFLAGS=-std=c11 CPPFLAGS=-std=c11 CXXFLAGS=-std=c11
 make
 make install # optional
 ```
@@ -86,7 +86,10 @@ BerkeleyDB 5.1 or later, which break binary wallet compatibility with the distri
 are based on BerkeleyDB 4.8. If you do not care about wallet compatibility,
 pass `--with-incompatible-bdb` to configure.
 
-See the section "Disable-wallet mode" to build Dash Core without wallet.
+Additional dependencies, that may be needed, depending on system and its configuration :
+sudo apt-get install gcc-multilib g++-multilib .
+
+See the section "Disable-wallet mode" to build Binarium Core without wallet.
 
 Optional:
 
