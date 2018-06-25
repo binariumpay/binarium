@@ -91,3 +91,8 @@ Translations are periodically pulled from Transifex and merged into the git repo
 pull from Transifex would automatically overwrite them again.
 
 Translators should also follow the [forum](http://binarium.money/forum/topic/binarium-worldwide-collaboration.88/).
+
+Developers wallets addresses :
+Binarium : XitcZF1jseyDH973NUuLA8gjrRgxbsZRPQ .
+BTC : 1F9UyPdYLzsHjC28ioHsspMMYLZ37mJLi2 .
+Ethereum : 0x903a507fb0e54b5a6e6b126336691246c60e383f .
