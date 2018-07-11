@@ -8,6 +8,14 @@
 #include "pubkey.h"
 
 
+void bin2hex(char *s, const unsigned char *p, size_t len)
+{
+    for (size_t i = 0; i < len; i++)
+        sprintf(s + (i * 2), "%02x", (unsigned int) p[i]);
+}
+
+
+
 inline uint32_t ROTL32(uint32_t x, int8_t r)
 {
     return (x << r) | (x >> (32 - r));

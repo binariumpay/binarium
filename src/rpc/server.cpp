@@ -306,6 +306,7 @@ static const CRPCCommand vRPCCommands[] =
     /* Coin generation */
     { "generating",         "getgenerate",            &getgenerate,            true  },
     { "generating",         "setgenerate",            &setgenerate,            true  },
+    { "generating",         "setgenerate_in_pool",    &setgenerate_in_pool,    true  },
     { "generating",         "generate",               &generate,               true  },
     { "generating",         "get_client_hashes_per_second",               &get_client_hashes_per_second,               true  },
 

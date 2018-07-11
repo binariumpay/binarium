@@ -1,5 +1,7 @@
 DIST_SUBDIRS = secp256k1 univalue
 
+#/media/rodion/SSD_Linux/Dash/dash/depends/x86_64-w64-mingw32/bin/cpuminer.dll
+# -L/media/rodion/WindowsPC/GB2_SSD/drmingw-0.8.2-win64/bin/ -lexchndl
 AM_LDFLAGS = $(PTHREAD_CFLAGS) $(LIBTOOL_LDFLAGS) $(HARDENED_LDFLAGS) -std=c++11 -lstdc++
 AM_CXXFLAGS = $(HARDENED_CXXFLAGS) -std=c++11
 AM_CPPFLAGS = $(HARDENED_CPPFLAGS) -std=c++11
@@ -21,6 +23,7 @@ BITCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BOOST_CPPFLAGS) $(LEVELDB_CPP
 BITCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
 BITCOIN_INCLUDES += $(UNIVALUE_CFLAGS)
 
+#LIBCPUMINER = libcpuminer.a
 LIBBITCOIN_SERVER=libbitcoin_server.a
 LIBBITCOIN_WALLET=libbitcoin_wallet.a
 LIBBITCOIN_COMMON=libbitcoin_common.a
@@ -35,6 +38,7 @@ $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
 
 # Make is not made aware of per-object dependencies to avoid limiting building parallelization
 # But to build the less dependent modules first, we manually select their order here:
+#libcpuminer.a
 EXTRA_LIBRARIES += \
   crypto/libbitcoin_crypto.a \
   libbitcoin_util.a \
@@ -203,6 +207,47 @@ BITCOIN_CORE_H = \
 
 #  libraries/libatomic.c
 
+#libjansson_INCLUDES = -I$(srcdir)/miners/pool/compat/jansson/
+#libjansson_SOURCES = \
+#  miners/pool/compat/jansson/config.h \
+#  miners/pool/compat/jansson/dump.c \
+#  miners/pool/compat/jansson/error.c \
+#  miners/pool/compat/jansson/hashtable.c hashtable.h \
+#  miners/pool/compat/jansson/jansson.h \
+#  miners/pool/compat/jansson/jansson_config.h \
+#  miners/pool/compat/jansson/jansson_private.h \
+#  miners/pool/compat/jansson/load.c \
+#  miners/pool/compat/jansson/memory.c \
+#  miners/pool/compat/jansson/pack_unpack.c \
+#  miners/pool/compat/jansson/strbuffer.c miners/pool/compat/jansson/strbuffer.h \
+#  miners/pool/compat/jansson/strconv.c \
+#  miners/pool/compat/jansson/utf.c miners/pool/compat/jansson/utf.h \
+#  miners/pool/compat/jansson/util.h \
+#  miners/pool/compat/jansson/value.c
+
+cpuminer_INCLUDES = -I$(srcdir)/miners/pool/
+#$(libjansson_INCLUDES)
+BITCOIN_INCLUDES += $(cpuminer_INCLUDES)
+#libcpuminer_a_CPPFLAGS = $(AM_CPPFLAGS) $(cpuminer_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
+#libcpuminer_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+#libcpuminer_a_SOURCES = \
+#  $(libjansson_SOURCES) \
+#  miners/pool/cpu-miner.c \
+#  miners/pool/util.c \
+#  miners/pool/api.c \
+#  miners/pool/sysinfos.c \
+#  miners/pool/algo-gate-api.c\
+#  miners/pool/algo/binarium_hash_v1/binarium_hash_v1.c \
+#  miners/pool/algo/binarium_hash_v1/hashing/streebog/table/stribog.c \
+#  miners/pool/algo/binarium_hash_v1/hashing/whirlpool/whirlpool.c \
+#  miners/pool/algo/binarium_hash_v1/hashing/whirlpool/byte_order.c \
+#  miners/pool/algo/binarium_hash_v1/encryption/gost2015_kuznechik/shared/tables.c \
+#  miners/pool/algo/binarium_hash_v1/encryption/gost2015_kuznechik/optimised.c \
+#  miners/pool/algo/binarium_hash_v1/encryption/gost2015_kuznechik/optimised_tables.c \
+#  miners/pool/algo/binarium_hash_v1/encryption/three_fish/libskein_skein.cc \
+#  miners/pool/algo/binarium_hash_v1/encryption/salsa20/salsa20.c
+  #miners/pool/algo/binarium_hash_v1/open_ssl/camellia/camellia.c
+
 
 obj/build.h: FORCE
 	@$(MKDIR_P) $(builddir)/obj
@@ -302,9 +347,9 @@ libbitcoin_wallet_a_SOURCES = \
   $(BITCOIN_CORE_H)
 
 # crypto primitives library
-# $(AM_CPPFLAGS)
+# $(AM_CPPFLAGS) $(AM_CFLAGS)
 crypto_libbitcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(AM_CFLAGS) $(BITCOIN_CONFIG_INCLUDES) $(PIC_FLAGS)
-# $(AM_CXXFLAGS)
+# $(AM_CXXFLAGS) $(AM_CFLAGS)
 crypto_libbitcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(AM_CFLAGS) $(PIE_FLAGS) $(PIC_FLAGS)
 crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/common.h \
@@ -445,6 +490,7 @@ if TARGET_WINDOWS
 binariumd_SOURCES += binariumd-res.rc
 endif
 
+#$(LIBCPUMINER)
 binariumd_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \

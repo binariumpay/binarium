@@ -748,6 +748,7 @@ int main(int argc, char *argv[])
         app.exec();
         app.requestShutdown();
         app.exec();
+
     } catch (const std::exception& e) {
         PrintExceptionContinue(&e, "Runaway exception");
         app.handleRunawayException(QString::fromStdString(strMiscWarning));

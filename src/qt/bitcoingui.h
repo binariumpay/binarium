@@ -78,6 +78,7 @@ public:
 protected:
     int iTimerId_MiningIndicatorUpdate;
     int iTimerId_HashRateUpdate;
+    int iTimerId_ActivatePoolMining;
 
     void changeEvent(QEvent *e);
     void closeEvent(QCloseEvent *event);
@@ -207,6 +208,8 @@ public Q_SLOTS:
     void message(const QString &title, const QString &message, unsigned int style, bool *ret = NULL);
 
     void cbIsMiningEnabled_Toggled ( bool _bState = false );
+
+    void PoolMiner_Start ( bool _bStart );
 
 #ifdef ENABLE_WALLET
     /** Set the hd-enabled status as shown in the UI.

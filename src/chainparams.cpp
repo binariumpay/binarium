@@ -797,4 +797,13 @@ void TestCryptographicFunctions () {
 
     //assert ( false );*/
 
+
+
+    /*CBlock blockTest;
+    SelectParams ( CBaseChainParams :: TESTNET );
+    fprintf(stdout, "chainparams.cpp : TestCryptographicFunctions () : Test block hash :\n%s\n :\n", blockTest.ToString ().c_str () );
+    uint256 uint256Result = blockTest.GetHash ();
+    fprintf ( stdout, "chainparams.cpp : TestCryptographicFunctions () : Resulting hash : %s .\n", uint256Result.ToString ().c_str () );
+    assert ( false );*/
+
 }

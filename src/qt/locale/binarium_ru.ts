@@ -697,6 +697,11 @@
         <translation>Hash rate ( Хэшей/с ).</translation>
     </message>
 
+    <message>    
+        <source>PoolMiner is not ready for new start from previous run. Please, try again in 20 - 30 seconds.</source>
+        <translation>Пул-майнер ещё не готов к новому старту после предыдущего запуска. Пожалуйста, попробуйте вновь через 20 - 30 секунд.</translation>
+    </message>
+
 </context>
 <context>
     <name>ClientModel</name>
@@ -1374,6 +1379,59 @@
     </message>
 
     <message>
+        <source>Enable mining in pool</source>
+        <translation>Включить майнинг в пуле</translation>
+    </message>
+    <message>
+        <source>Pool URL</source>
+        <translation>URL пула</translation>
+    </message>
+    <message>
+        <source>Place here pool URL, like stratum+tcp://pool.binarium.money:3001 .</source>
+        <translation>Разместите здесь URL пула, например, stratum+tcp://pool.binarium.money:3001 .</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>Пользователь</translation>
+    </message>
+    <message>
+        <source>Place here your Binariums receive address, you can generate one on Receive tab of wallet.</source>
+        <translation>Разместите здесь ваш адрес для получения Бинариумов, вы можете сгенерировать его на вкладке Получить.</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation>Пароль</translation>
+    </message>
+    <message>
+        <source>Password for your account on pool.</source>
+        <translation>Пароль для вашего подключения к майнинг-пулу.</translation>
+    </message>
+    <message>
+        <source>Algorithm</source>
+        <translation>Алгоритм</translation>
+    </message>
+    <message>
+        <source>Hashing algorithm, for Binarium it should be Binarium_hash_v1 .</source>
+        <translation>Хэширующий алгоритм, для Бинариума нужно установить Binarium_hash_v1 .</translation>
+    </message>
+    <message>
+        <source>CPU Priority</source>
+        <translation>Приоритет CPU</translation>
+    </message>
+    <message>
+        <source>CPU priority of pool-mining threads : 0 - 5.</source>
+        <translation>Приоритет процессора для потоков пул-майнинга : 0 - 5.</translation>
+    </message>
+    <message>
+        <source>Affinity</source>
+        <translation>Аффинность</translation>
+    </message>
+    <message>
+        <source>Set process affinity to cpu core(s), mask 0x3 for cores 0 and 1.</source>
+        <translation>Афинность потока к ядрам процессора ( степени 2-х для ядер, их сумма для указания нескольких ядер ) : 1 - 1-е ядро, 2 - 2-е ядро, 4 - 3-е ядро, 8 - 4-е ядро, ... 3 - ядра 1 и 2.</translation>
+    </message>
+
+    <message>
         <source>MB</source>
         <translation>МБ</translation>
     </message>
@@ -1785,6 +1843,18 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Exchanges</source>
         <translation>Биржи</translation>
+    </message>
+    <message>
+        <source>Third party pools</source>
+        <translation>Пулы сторонних разработчиков</translation>
+    </message>
+    <message>
+        <source>Select Binarium pool for mining : stratum+tcp://pool.binarium.money:3001 .</source>
+        <translation>Выбрать пул Бинариума для майнинга : stratum+tcp://pool.binarium.money:3001 .</translation>
+    </message>
+    <message>
+        <source>Select Doufen pool for mining : stratum+tcp://pool.doufen.com:3001 .</source>
+        <translation>Выбрать пул Doufen для майнинга : stratum+tcp://pool.doufen.com:3001 .</translation>
     </message>
     <message>
         <source>Recent transactions</source>

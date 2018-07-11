@@ -58,4 +58,15 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
 void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
 
+extern bool g_bIsPoolMiningEnabled;
+char * StartPoolMining ( bool _bStart,
+    std :: string _sPoolURL = "",
+    std :: string _sPoolUser = "",
+    std :: string _sPoolUserPassword = "",
+    std :: string _sPoolMiningAlgorithm = "",
+    int _iAmountOfPoolMiningThreads = 0,
+    int _iPoolMinerCPUPriority = 0,
+    int _iPoolMinerCPUAffinity = -1 );
+double Wallet_PoolMiner_GetHashesRate ();
+
 #endif // BITCOIN_MINER_H

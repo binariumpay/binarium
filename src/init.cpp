@@ -90,6 +90,8 @@
 #include <boost/thread.hpp>
 #include <openssl/crypto.h>
 
+//#include "exchndl.h"
+
 #if ENABLE_ZMQ
 #include "zmq/zmqnotificationinterface.h"
 #endif
@@ -258,7 +260,18 @@ void PrepareShutdown()
 
     fprintf(stdout, "init.cpp : PrepareShutdown () : Function has been called. \n");
 
+    try
+    {
+        if ( g_bIsPoolMiningEnabled )
+            StartPoolMining ( false );
 
+    } catch (const std::exception& e) {
+        PrintExceptionContinue(&e, "Runaway exception");
+
+    } catch (...) {
+        PrintExceptionContinue(NULL, "Runaway exception");
+
+    }
 
     fRequestShutdown = true; // Needed when we shutdown the wallet
     fRestartRequested = true; // Needed when we restart the wallet
@@ -1029,6 +1042,27 @@ void InitLogging()
     LogPrintf("Binarium Core version %s (%s)\n", FormatFullVersion(), CLIENT_DATE);
 }
 
+void onterminate () {
+  try {
+    auto unknown = std::current_exception();
+    if (unknown) {
+      std::rethrow_exception(unknown);
+    } else {
+      std::cerr << "normal termination" << std::endl;
+      fprintf(stdout, "init.cpp : onterminate () : normal termination.\n" );
+      LogPrintf ( "normal termination", FormatFullVersion (), CLIENT_DATE );
+    }
+  } catch (const std::exception& e) { // for proper `std::` exceptions
+    std::cerr << "init.cpp : onterminate () : unexpected exception : " << e.what() << std::endl;
+    fprintf(stdout, "init.cpp : onterminate () : unexpected exception : %s .\n", e.what() );
+    uiInterface.ThreadSafeMessageBox( e.what (), "init.cpp : onterminate () : unexpected exception : ", CClientUIInterface::MSG_ERROR);
+  } catch (...) { // last resort for things like `throw 1;`
+    std::cerr << "init.cpp : onterminate () : unknown exception" << std::endl;
+    fprintf(stdout, "init.cpp : onterminate () : unknown exception.\n" );
+    uiInterface.ThreadSafeMessageBox("init.cpp : onterminate () : unknown exception", "", CClientUIInterface::MSG_ERROR);
+  }
+}
+
 /** Initialize Binarium Core.
  *  @pre Parameters should be parsed and config file should be read.
  */
@@ -1070,6 +1104,12 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     } else {
         umask(077);
     }
+
+    //---Errors catching.------------------------------------------------
+    //std :: set_terminate ( onterminate );
+    //ExcHndlInit ();
+
+    //-------------------------------------------------------------------
 
     // Clean shutdown on SIGTERM
     struct sigaction sa;

@@ -530,6 +530,10 @@ inline uint64_t GetUint64IndexFrom512BitsKey ( const void * _pKey, int pos ) {
            ((uint64_t)ptr[7]) << 56;
 }*/
 
+void bin2hex(char *s, const unsigned char *p, size_t len);
+
+
+
 //---Hashing.-------------------------------------------------------------
 inline void IntermediateHashFunction_Blake ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
     sph_blake512_context     ctx_blake;
@@ -650,8 +654,13 @@ inline void IntermediateHashFunction_Whirlpool ( const void * _pData, const uint
 
 //---Encryption.----------------------------------------------------------------------
 inline void IntermediateEncryptionFunction_GOST_2015_Kuznechik ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
+    char roundkeys_str [ 401 ];
+
     //uint64_t iIndex = GetUint64IndexFrom512BitsKey ( _pKey, 0 );
     //iIndex = iIndex % chainActive.Height ();
+
+    //bin2hex(roundkeys_str, (unsigned char *) _pData, 200 );
+    //fprintf(stdout, "IntermediateEncryptionFunction_GOST_2015_Kuznechik () : roundkeys_str : %s.\n", roundkeys_str );
 
     encryptBlockWithGost15 ( _pKey, ( unsigned char * ) _pResult );           // _pKey & chainActive [ chainActive.Height () - iIndex ] -> nVersion
     encryptBlockWithGost15 ( _pData, ( unsigned char * ) _pResult + 16 );     // _pData

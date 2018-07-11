@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>577</width>
-    <height>490</height>
+    <height>596</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -167,18 +167,11 @@
         </layout>
        </item>
        <item>
-        <widget class="QCheckBox" name="cbEnableMining">
-         <property name="text">
-          <string>Enable mining</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QLabel" name="lbMiningThreads">
+          <widget class="QCheckBox" name="cbEnableMining">
            <property name="text">
-            <string>Amount of mining threads</string>
+            <string>Enable mining</string>
            </property>
           </widget>
          </item>
@@ -196,7 +189,26 @@
           </spacer>
          </item>
          <item>
+          <widget class="QLabel" name="lbMiningThreads">
+           <property name="text">
+            <string>Amount of threads</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QSpinBox" name="spinboxAmountOfMiningThreads">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="toolTip">
             <string>Amount of mining threads should be less of equal than amount of your CPU threads. -1 means : Use all cores.</string>
            </property>
@@ -205,6 +217,264 @@
            </property>
            <property name="maximum">
             <number>200</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QCheckBox" name="cbEnableMiningInPool">
+           <property name="text">
+            <string>Enable mining in pool</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Amount of threads</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinboxAmountOfPoolMiningThreads">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Amount of mining threads should be less of equal than amount of your CPU threads. -1 means : Use all cores.</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Pool URL</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="edPoolURL">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>36</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>36</height>
+            </size>
+           </property>
+           <property name="baseSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Place here pool URL, like stratum+tcp://pool.binarium.money:3001 .</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>User</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="edUser">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>36</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>36</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Place here your Binariums receive address, you can generate one on Receive tab of wallet.</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>Password</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="edPassword">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>36</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>36</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Password for your account on pool.</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Algorithm</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="edPoolMiningAlgorithm">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>36</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>36</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Hashing algorithm, for Binarium it should be Binarium_hash_v1 .</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>CPU Priority</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinboxPoolMinerCPUPriority">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>CPU priority of pool-mining threads : 0 - 5.</string>
+           </property>
+           <property name="minimum">
+            <number>0</number>
+           </property>
+           <property name="maximum">
+            <number>5</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_10">
+           <property name="text">
+            <string>Affinity</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinboxPoolMinerCPUAffinity">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Set process affinity to cpu core(s), mask 0x3 for cores 0 and 1.</string>
+           </property>
+           <property name="minimum">
+            <number>-1</number>
            </property>
           </widget>
          </item>
@@ -462,7 +732,7 @@
          <item>
           <widget class="QLabel" name="proxyPortLabel">
            <property name="text">
-            <string>&amp;Port:</string>
+            <string>Por&amp;t:</string>
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>
@@ -617,7 +887,7 @@
          <item>
           <widget class="QLabel" name="proxyIpTorLabel">
            <property name="text">
-            <string>P&amp;roxy IP:</string>
+            <string>Pro&amp;xy IP:</string>
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>
@@ -849,7 +1119,7 @@ https://www.transifex.com/projects/p/binarium/</string>
          <item>
           <widget class="QLabel" name="unitLabel">
            <property name="text">
-            <string>Unit to &amp;show amounts in:</string>
+            <string>&amp;Unit to show amounts in:</string>
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>

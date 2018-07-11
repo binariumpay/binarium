@@ -58,6 +58,14 @@ public:
         bGenerateBlocks,        // bool
         bConfirmQuit,           // bool
         iAmountOfMiningThreads, // int
+        bEnableMiningInPool,
+        iAmountOfPoolMiningThreads,
+        sPoolURL,
+        sPoolUser,
+        sPoolUserPassword,
+        sPoolMiningAlgorithm,
+        iPoolMinerCPUPriority,
+        iPoolMinerCPUAffinity,
         OptionIDRowCount,
     };
 

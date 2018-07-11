@@ -292,6 +292,15 @@ void OptionsDialog::setMapper()
     mapper->addMapping(ui->cbEnableMining, OptionsModel::bGenerateBlocks);
     mapper->addMapping(ui->spinboxAmountOfMiningThreads, OptionsModel::iAmountOfMiningThreads);
 
+    mapper->addMapping(ui->cbEnableMiningInPool, OptionsModel::bEnableMiningInPool);
+    mapper->addMapping(ui->spinboxAmountOfPoolMiningThreads, OptionsModel::iAmountOfPoolMiningThreads);
+    mapper->addMapping(ui->edPoolURL, OptionsModel::sPoolURL);
+    mapper->addMapping(ui->edUser, OptionsModel::sPoolUser);
+    mapper->addMapping(ui->edPassword, OptionsModel::sPoolUserPassword);
+    mapper->addMapping(ui->edPoolMiningAlgorithm, OptionsModel::sPoolMiningAlgorithm);
+    mapper->addMapping(ui->spinboxPoolMinerCPUPriority, OptionsModel::iPoolMinerCPUPriority);
+    mapper->addMapping(ui->spinboxPoolMinerCPUAffinity, OptionsModel::iPoolMinerCPUAffinity);
+
     mapper->addMapping(ui->cbConfirmQuit, OptionsModel::bConfirmQuit);
 
 }

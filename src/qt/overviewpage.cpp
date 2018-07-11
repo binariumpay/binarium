@@ -304,6 +304,9 @@ void OverviewPage::setWalletModel(WalletModel *model)
         connect(ui->togglePrivateSend, SIGNAL(clicked()), this, SLOT(togglePrivateSend()));
         updateWatchOnlyLabels(model->haveWatchOnly());
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
+
+        connect ( ui -> btSelectBinariumPool, SIGNAL(clicked()), this, SLOT ( btSelectBinariumPool_Clicked () ));
+        connect ( ui -> btSelectDoufenPool, SIGNAL(clicked()), this, SLOT ( btSelectDoufenPool_Clicked () ));
     }
 }
 
@@ -683,4 +686,18 @@ void OverviewPage::DisablePrivateSendCompletely() {
         ui->labelPrivateSendEnabled->setText("<span style='color:red;'>(" + tr("Disabled") + ")</span>");
     }
     privateSendClient.fEnablePrivateSend = false;
+}
+
+
+
+void OverviewPage :: btSelectBinariumPool_Clicked () {
+    QSettings settings;
+
+    settings.setValue ( "sPoolURL", "stratum+tcp://pool.binarium.money:3001" );
+}
+
+void OverviewPage :: btSelectDoufenPool_Clicked () {
+    QSettings settings;
+
+    settings.setValue ( "sPoolURL", "stratum+tcp://pool.doufen.com:3001" );
 }

@@ -131,11 +131,43 @@ void OptionsModel::Init(bool resetSettings)
 
     if ( ! settings.contains ( "bGenerateBlocks" ) ) {
         //bGenerateBlocks = settings.value ( "bGenerateBlocks", true ).toBool ();
-        settings.setValue ( "bGenerateBlocks", true );
+        settings.setValue ( "bGenerateBlocks", false );
     }
 
     if ( ! settings.contains ( "iAmountOfMiningThreads" ) ) {
         settings.setValue ( "iAmountOfMiningThreads", 1 );
+    }
+
+    if ( ! settings.contains ( "bEnableMiningInPool" ) ) {
+        settings.setValue ( "bEnableMiningInPool", true );
+    }
+    if ( ! settings.contains ( "iAmountOfPoolMiningThreads" ) ) {
+        settings.setValue ( "iAmountOfPoolMiningThreads", 1 );
+    }
+    if ( ! settings.contains ( "sPoolURL" ) ) {
+        settings.setValue ( "sPoolURL", "stratum+tcp://pool.binarium.money:3001" );
+    }
+    if ( ! settings.contains ( "sPoolUser" ) ) {
+        /*CPubKey newKey;
+        if (!pwalletMain->GetKeyFromPool(newKey, false))
+            fprintf(stdout, "OptionsModel.Init () : Error: Keypool ran out, please call keypoolrefill first.\n" );
+        CKeyID keyID = newKey.GetID();
+        pwalletMain->SetAddressBook(keyID, "", "receive");
+        std :: string sAddress = CBitcoinAddress ( keyID ).ToString ();
+        settings.setValue ( "sPoolUser", sAddress.c_str () );*/
+        settings.setValue ( "sPoolUser", "" );
+    }
+    if ( ! settings.contains ( "sPoolUserPassword" ) ) {
+        settings.setValue ( "sPoolUserPassword", "Password" );
+    }
+    if ( ! settings.contains ( "sPoolMiningAlgorithm" ) ) {
+        settings.setValue ( "sPoolMiningAlgorithm", "Binarium_hash_v1" );
+    }
+    if ( ! settings.contains ( "iPoolMinerCPUPriority" ) ) {
+        settings.setValue ( "iPoolMinerCPUPriority", 0 );
+    }
+    if ( ! settings.contains ( "iPoolMinerCPUAffinity" ) ) {
+        settings.setValue ( "iPoolMinerCPUAffinity", -1 );
     }
 
     /*if (!settings.contains("nDatabaseCache"))
@@ -338,6 +370,23 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             fprintf(stdout, "OptionsModel.data () : iAmountOfMiningThreads = %i.\n", settings.value ( "iAmountOfMiningThreads" ).toInt () );
             return settings.value ( "iAmountOfMiningThreads" );
 
+        case bEnableMiningInPool :
+            return settings.value ( "bEnableMiningInPool" );
+        case iAmountOfPoolMiningThreads :
+            return settings.value ( "iAmountOfPoolMiningThreads" );
+        case sPoolURL :
+            return settings.value ( "sPoolURL" );
+        case sPoolUser :
+            return settings.value ( "sPoolUser" );
+        case sPoolUserPassword :
+            return settings.value ( "sPoolUserPassword" );
+        case sPoolMiningAlgorithm :
+            return settings.value ( "sPoolMiningAlgorithm" );
+        case iPoolMinerCPUPriority :
+            return settings.value ( "iPoolMinerCPUPriority" );
+        case iPoolMinerCPUAffinity :
+            return settings.value ( "iPoolMinerCPUAffinity" );
+
         default:
             return QVariant();
         }
@@ -392,6 +441,39 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
         case iAmountOfMiningThreads :
             settings.setValue ( "iAmountOfMiningThreads", value.toInt () );
             //fprintf(stdout, "OptionsModel.setData () : bGenerateBlocks = %s.\n", value.toString ().toUtf8 ().data () );
+            setRestartRequired(true);
+            break;
+
+        case bEnableMiningInPool :
+            settings.setValue ( "bEnableMiningInPool", value.toBool () );
+            setRestartRequired(true);
+            break;
+        case iAmountOfPoolMiningThreads :
+            settings.setValue ( "iAmountOfPoolMiningThreads", value.toInt () );
+            setRestartRequired(true);
+            break;
+        case sPoolURL :
+            settings.setValue ( "sPoolURL", value.toString () );
+            setRestartRequired(true);
+            break;
+        case sPoolUser :
+            settings.setValue ( "sPoolUser", value.toString () );
+            setRestartRequired(true);
+            break;
+        case sPoolUserPassword :
+            settings.setValue ( "sPoolUserPassword", value.toString () );
+            setRestartRequired(true);
+            break;
+        case sPoolMiningAlgorithm :
+            settings.setValue ( "sPoolMiningAlgorithm", value.toString () );
+            setRestartRequired(true);
+            break;
+        case iPoolMinerCPUPriority :
+            settings.setValue ( "iPoolMinerCPUPriority", value.toInt () );
+            setRestartRequired(true);
+            break;
+        case iPoolMinerCPUAffinity :
+            settings.setValue ( "iPoolMinerCPUAffinity", value.toInt () );
             setRestartRequired(true);
             break;
 

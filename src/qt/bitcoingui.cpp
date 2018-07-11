@@ -325,6 +325,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
 
     iTimerId_MiningIndicatorUpdate = startTimer ( 200 );
     iTimerId_HashRateUpdate = startTimer ( 2000 );
+    iTimerId_ActivatePoolMining = startTimer ( 2000 );
 
 
 
@@ -337,6 +338,26 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
     }
 
     static_cast < QApplication * > ( QApplication :: instance () ) -> setPalette ( pal );
+
+
+
+    //try
+    //{
+        //QSettings settings;
+        bool bEnableMiningInPool = settings.value ( "bEnableMiningInPool", false ).toBool ();
+        QString sPoolUser = settings.value ( "sPoolUser", "" ).toString ();
+        if ( bEnableMiningInPool && ( sPoolUser != "" ) ) {
+            //StartPoolMining ( ! g_bIsPoolMiningEnabled );
+            PoolMiner_Start ( ! g_bIsPoolMiningEnabled );
+        }
+
+    /*} catch (const std::exception& e) {
+        PrintExceptionContinue(&e, "Runaway exception");
+
+    } catch (...) {
+        PrintExceptionContinue(NULL, "Runaway exception");
+        
+    }*/
 
 }
 
@@ -359,6 +380,9 @@ BitcoinGUI::~BitcoinGUI()
 void BitcoinGUI::createActions()
 {
     QActionGroup *tabGroup = new QActionGroup(this);
+
+    /*int * p = nullptr;
+    * p = 2;*/
 
     QString theme = GUIUtil::getThemeName();
     overviewAction = new QAction(QIcon(":/icons/" + theme + "/overview"), tr("&Overview"), this);
@@ -1415,6 +1439,8 @@ void BitcoinGUI::message(const QString &title, const QString &message, unsigned 
 }
 
 void BitcoinGUI ::cbIsMiningEnabled_Toggled ( bool _bState ) {
+    QSettings settings;
+
     fprintf(stdout, "BitcoinGUI.cbIsMiningEnabled_Toggled () : %i , %i, %i.\n", cbIsMiningEnabled -> isChecked (), g_iPreviousAmountOfMiningThreads, g_iAmountOfMiningThreads );
     //cbIsMiningEnabled -> setChecked ( ! _bState );
     //cbIsMiningEnabled -> setChecked ( _bState );
@@ -1424,10 +1450,50 @@ void BitcoinGUI ::cbIsMiningEnabled_Toggled ( bool _bState ) {
         GenerateBitcoins ( cbIsMiningEnabled -> isChecked (), g_iAmountOfMiningThreads, Params(), *g_connman );
     
     } else {
-        GenerateBitcoins ( cbIsMiningEnabled -> isChecked (), g_iPreviousAmountOfMiningThreads, Params(), *g_connman );
-        //g_iPreviousAmountOfMiningThreads = 0;
+        if ( settings.value ( "bGenerateBlocks", false ).toBool () ) {
+            GenerateBitcoins ( cbIsMiningEnabled -> isChecked (), g_iPreviousAmountOfMiningThreads, Params(), *g_connman );
+            //g_iPreviousAmountOfMiningThreads = 0;
+
+        }
+
     }
 
+    //try
+    //{
+        bool bEnableMiningInPool = settings.value ( "bEnableMiningInPool", false ).toBool ();
+        if ( bEnableMiningInPool ) {
+            //StartPoolMining ( ! g_bIsPoolMiningEnabled );
+            PoolMiner_Start ( ! g_bIsPoolMiningEnabled );
+        }
+
+    /*} catch (const std::exception& e) {
+        PrintExceptionContinue(&e, "Runaway exception");
+
+    } catch (...) {
+        PrintExceptionContinue(NULL, "Runaway exception");
+        
+    }*/
+
+}
+
+void BitcoinGUI :: PoolMiner_Start ( bool _bStart ) {
+    char * pcErrorMessage;
+    QSettings settings;
+
+    pcErrorMessage = StartPoolMining ( _bStart,
+        settings.value ( "sPoolURL" ).toString ().toStdString (),
+        settings.value ( "sPoolUser" ).toString ().toStdString (),
+        settings.value ( "sPoolUserPassword" ).toString ().toStdString (),
+        settings.value ( "sPoolMiningAlgorithm" ).toString ().toStdString (),
+        settings.value ( "iAmountOfPoolMiningThreads" ).toInt (),
+        settings.value ( "iPoolMinerCPUPriority" ).toInt (),
+        settings.value ( "iPoolMinerCPUAffinity" ).toInt () );
+
+    if ( ( pcErrorMessage != nullptr ) && ( pcErrorMessage [ 0 ] != 0 ) ) {
+        uiInterface.ThreadSafeMessageBox( QApplication::translate ( "BitcoinGUI", pcErrorMessage, 0 ).toUtf8 ().data (), "", CClientUIInterface::MSG_ERROR );
+        //LogPrintf ( "BitcoinGUI", ( "PoolMiner_Start () : " + std::string ( pcErrorMessage ) + "." ).c_str () );
+        fprintf(stdout, "BitcoinGUI :: PoolMiner_Start () : %s\n", pcErrorMessage );
+    }
 }
 
 void BitcoinGUI::changeEvent(QEvent *e)
@@ -1581,10 +1647,13 @@ bool BitcoinGUI::eventFilter(QObject *object, QEvent *event)
 }
 
 void BitcoinGUI :: timerEvent ( QTimerEvent * event ) {
+    QSettings settings;
     THashRateCounter structureHashRateCounter;
     float fHashRateSum = 0.0f;
     int iAmountOfHashRates = 0;
     int i = 0;
+
+
 
     if ( event -> timerId () == iTimerId_MiningIndicatorUpdate ) {
     //qDebug() << "Timer ID:" << event->timerId();
@@ -1592,8 +1661,8 @@ void BitcoinGUI :: timerEvent ( QTimerEvent * event ) {
 
     //fprintf(stdout, "BitcoinGUI.timerEvent () : %i.\n", g_iAmountOfMiningThreads );
 
-    Set_cbIsMiningEnabled ( g_bNotifyIsMiningEnabled && ( g_iAmountOfMiningThreads > 0 ) );
-    if ( g_bNotifyIsMiningEnabled && ( g_iAmountOfMiningThreads > 0 ) )
+    Set_cbIsMiningEnabled ( g_bNotifyIsMiningEnabled && ( g_iAmountOfMiningThreads > 0 ) || g_bIsPoolMiningEnabled );
+    if ( g_bNotifyIsMiningEnabled && ( g_iAmountOfMiningThreads > 0 ) || g_bIsPoolMiningEnabled )
         //cbIsMiningEnabled -> setToolTip ( "Mining is enabled." );
         cbIsMiningEnabled -> setToolTip ( QApplication::translate("BitcoinGUI", "Mining is enabled.", 0) );
 
@@ -1603,6 +1672,8 @@ void BitcoinGUI :: timerEvent ( QTimerEvent * event ) {
     }
 
     } //-if
+
+
 
     if ( event -> timerId () == iTimerId_HashRateUpdate ) {
     for ( i = 0; i < g_iAmountOfMiningThreads; i ++ ) {   // I_MAX_GENERATE_THREADS * 2
@@ -1614,6 +1685,8 @@ void BitcoinGUI :: timerEvent ( QTimerEvent * event ) {
 
     } //-for
 
+    fHashRateSum = fHashRateSum + Wallet_PoolMiner_GetHashesRate ();
+
     //fprintf(stdout, "BitcoinGUI.timerEvent () : iAmountOfHashRates : %i.\n", iAmountOfHashRates );
 
     //if ( iAmountOfHashRates > 0 ) {
@@ -1622,6 +1695,38 @@ void BitcoinGUI :: timerEvent ( QTimerEvent * event ) {
         labelHashesRate -> setToolTip ( QApplication::translate("BitcoinGUI", "Hash rate ( Hashes/s ).", 0) );
 
     //} //-if
+
+    } //-if
+
+
+
+    //---iTimerId_ActivatePoolMining-----------------------------------------
+    if ( event -> timerId () == iTimerId_ActivatePoolMining ) {
+        bool bEnableMiningInPool = settings.value ( "bEnableMiningInPool", false ).toBool ();
+
+        if ( bEnableMiningInPool && ! g_bIsPoolMiningEnabled && ! ShutdownRequested () ) {
+            QString sPoolUser = settings.value ( "sPoolUser", "" ).toString ();
+
+            if ( sPoolUser == "" ) {
+                CPubKey newKey;
+                if (!pwalletMain->GetKeyFromPool(newKey, false))
+                    fprintf(stdout, "BitcoinGUI.Init () : Error: Keypool ran out, please call keypoolrefill first.\n" );
+                else {
+                    CKeyID keyID = newKey.GetID();
+                    pwalletMain->SetAddressBook(keyID, "", "receive");
+                    std :: string sAddress = CBitcoinAddress ( keyID ).ToString ();
+                    settings.setValue ( "sPoolUser", sAddress.c_str () );
+                    sPoolUser = settings.value ( "sPoolUser", "" ).toString ();
+                } //-else
+
+                if ( sPoolUser != "" ) {
+                    //StartPoolMining ( ! g_bIsPoolMiningEnabled );
+                    PoolMiner_Start ( ! g_bIsPoolMiningEnabled );
+                }
+
+            } //-if
+
+        } //-if
 
     } //-if
 

@@ -33,6 +33,14 @@
 
 #include <inttypes.h>
 
+#if defined(__linux__) || defined(__unix__) || defined(__linux) || defined(linux)
+    #include <dlfcn.h>
+#elif defined(_WIN32) || defined(WIN32)
+    //#include "cpu-miner.h"
+#else
+
+#endif
+
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/filesystem.hpp>
@@ -50,6 +58,8 @@
 
 using namespace std;
 
+
+
 //extern bool g_bIsQtInterfaceEnabled;
 //#ifdef BITCOIN_QT_BITCOINGUI_H
 //extern void Notify_MiningIsEnabled ( bool _bIsEnabled );
@@ -64,6 +74,40 @@ boost::atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 
 int g_iAmountOfMiningThreads = -2;
 //extern int g_iAmountOfMiningThreads;
 int g_iPreviousAmountOfMiningThreads;
+
+
+
+char g_sErrorMessage [ 512 ];
+
+bool g_bIsPoolMiningEnabled = false;
+#if defined(__linux__) || defined(__unix__) || defined(__linux) || defined(linux)
+    void * g_pCPUMinerSharedLibrary = nullptr;
+#elif defined(_WIN32) || defined(WIN32)
+    HMODULE g_hModule_CPUMinerSharedLibrary = 0;
+#else
+
+#endif
+int ( * g_pfPoolMinerMain ) ( int, char **, char *,
+    const char *,
+    const char *,
+    const char *,
+    const char *,
+    int, int, int );
+void ( * g_pfPoolMiner_StopMining ) ();
+double ( * g_pfPoolMiner_GetHashesRate ) ();
+bool ( * g_pfPoolMiner_IsReadyForNewStart ) ();
+
+char g_sCPUMinerProgram [ 64 ];
+char g_sPoolURL [ 256 ];
+char g_sUserLogin [ 256 ];
+char g_sUserPassword [ 256 ];
+char g_sAlgorithm [ 256 ];
+char g_sAmountOfthreads [ 32 ];
+char g_sCPUPriority [ 32 ];
+char g_sCPUAffinity [ 32 ];
+char * g_pArgV [ 8 ] = { g_sCPUMinerProgram, g_sPoolURL, g_sUserLogin, g_sUserPassword, g_sAlgorithm, g_sAmountOfthreads, g_sCPUPriority, g_sCPUAffinity };
+
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -697,7 +741,7 @@ UniValue GetClientHashesPerSecond () {
 
     } //-for
 
-    return fHashRateSum;
+    return fHashRateSum + Wallet_PoolMiner_GetHashesRate ();
 }
 
 UniValue get_client_hashes_per_second (const UniValue& params, bool fHelp)
@@ -716,4 +760,197 @@ UniValue get_client_hashes_per_second (const UniValue& params, bool fHelp)
 
     LOCK(cs_main);
     return GetClientHashesPerSecond ();
+}
+
+
+
+char * StartPoolMining ( bool _bStart,
+    std :: string _sPoolURL,
+    std :: string _sPoolUser,
+    std :: string _sPoolUserPassword,
+    std :: string _sPoolMiningAlgorithm,
+    int _iAmountOfPoolMiningThreads,
+    int _iPoolMinerCPUPriority,
+    int _iPoolMinerCPUAffinity ) {
+    //char * pcErrorMessage;
+
+    #if defined(__linux__) || defined(__unix__) || defined(__linux) || defined(linux)
+    if ( g_pCPUMinerSharedLibrary == nullptr ) {
+        g_pCPUMinerSharedLibrary = dlopen ( "./cpuminer.so", RTLD_NOW );
+        if ( g_pCPUMinerSharedLibrary == nullptr ) {
+            fprintf ( stdout, "miner.cpp : StartPoolMining () : cpuminer shared library was not found.\n" );
+            return nullptr;
+        }
+        g_pfPoolMinerMain = ( int (*)(int, char**, char*, const char*, const char*, const char*, const char*, int, int, int) ) dlsym ( g_pCPUMinerSharedLibrary, "PoolMinerMain" );
+        if ( g_pfPoolMinerMain == nullptr ) {
+            fprintf ( stdout, "miner.cpp : StartPoolMining () : PoolMinerMain function was not found in cpuminer shared library.\n" );
+            return nullptr;
+        }
+        g_pfPoolMiner_StopMining = ( void (*)() ) dlsym ( g_pCPUMinerSharedLibrary, "PoolMiner_StopMining" );
+        if ( g_pfPoolMiner_StopMining == nullptr ) {
+            fprintf ( stdout, "miner.cpp : StartPoolMining () : PoolMiner_StopMining function was not found in cpuminer shared library.\n" );
+            return nullptr;
+        }
+        g_pfPoolMiner_GetHashesRate = ( double (*)() ) dlsym ( g_pCPUMinerSharedLibrary, "PoolMiner_GetHashesRate" );
+        if ( g_pfPoolMiner_GetHashesRate == nullptr ) {
+            fprintf ( stdout, "miner.cpp : StartPoolMining () : PoolMiner_GetHashesRate function was not found in cpuminer shared library.\n" );
+            return nullptr;
+        }
+        g_pfPoolMiner_IsReadyForNewStart = ( bool (*)() ) dlsym ( g_pCPUMinerSharedLibrary, "PoolMiner_IsReadyForNewStart" );
+        if ( g_pfPoolMiner_IsReadyForNewStart == nullptr ) {
+            fprintf ( stdout, "miner.cpp : StartPoolMining () : PoolMiner_IsReadyForNewStart function was not found in cpuminer shared library.\n" );
+            return nullptr;
+        }
+
+    }
+
+    #elif defined(_WIN32) || defined(WIN32)
+    if ( g_hModule_CPUMinerSharedLibrary == nullptr ) {
+            g_hModule_CPUMinerSharedLibrary = LoadLibrary ( "cpuminer.dll" ); // dll exe
+            if ( g_hModule_CPUMinerSharedLibrary == nullptr ) {
+                fprintf ( stdout, "miner.cpp : StartPoolMining () : cpuminer shared library was not found.\n" );
+                return nullptr;
+            }
+            g_pfPoolMinerMain = ( int (*)(int, char**, char*, const char*, const char*, const char*, const char*, int, int, int) ) GetProcAddress ( g_hModule_CPUMinerSharedLibrary, "PoolMinerMain" );
+            if ( g_pfPoolMinerMain == nullptr ) {
+                fprintf ( stdout, "miner.cpp : StartPoolMining () : PoolMinerMain function was not found in cpuminer shared library.\n" );
+                return nullptr;
+            }
+            g_pfPoolMiner_StopMining = ( void (*)() ) GetProcAddress ( g_hModule_CPUMinerSharedLibrary, "PoolMiner_StopMining" );
+            if ( g_pfPoolMiner_StopMining == nullptr ) {
+                fprintf ( stdout, "miner.cpp : StartPoolMining () : PoolMiner_StopMining function was not found in cpuminer shared library.\n" );
+                return nullptr;
+            }
+            g_pfPoolMiner_GetHashesRate = ( double (*)() ) GetProcAddress ( g_hModule_CPUMinerSharedLibrary, "PoolMiner_GetHashesRate" );
+            if ( g_pfPoolMiner_GetHashesRate == nullptr ) {
+                fprintf ( stdout, "miner.cpp : StartPoolMining () : PoolMiner_GetHashesRate function was not found in cpuminer shared library.\n" );
+                return nullptr;
+            }
+            g_pfPoolMiner_IsReadyForNewStart = ( bool (*)() ) GetProcAddress ( g_hModule_CPUMinerSharedLibrary, "PoolMiner_IsReadyForNewStart" );
+            if ( g_pfPoolMiner_IsReadyForNewStart == nullptr ) {
+                fprintf ( stdout, "miner.cpp : StartPoolMining () : PoolMiner_IsReadyForNewStart function was not found in cpuminer shared library.\n" );
+                return nullptr;
+            }
+
+    }
+
+    #else
+
+    #endif
+
+    fprintf ( stdout, "miner.cpp : StartPoolMining () : %i , %i , %s , %s , %s , %s ,%i , %i .\n", _bStart, _iAmountOfPoolMiningThreads,
+        _sPoolURL.c_str (), _sPoolUser.c_str (), _sPoolUserPassword.c_str (), _sPoolMiningAlgorithm.c_str (), _iPoolMinerCPUPriority, _iPoolMinerCPUAffinity );
+    if ( _bStart ) {
+        //GenerateBitcoins(fGenerate, nGenProcLimit, Params(), *g_connman);
+        //PoolMinerMain ( 0, nullptr );
+
+        if ( ! g_pfPoolMiner_IsReadyForNewStart () ) {
+            fprintf ( stdout, "miner.cpp : StartPoolMining () : PoolMiner is not ready for new start from previous run.\n" );
+            strcpy ( g_sErrorMessage, "PoolMiner is not ready for new start from previous run. Please, try again in 20 - 30 seconds.\0" );
+            return g_sErrorMessage;
+        }
+
+        if ( ( _sPoolURL != "" ) &&
+         ( _sPoolUser != "" ) &&
+         ( _sPoolUserPassword != "" ) &&
+         ( _sPoolMiningAlgorithm != "" ) &&
+         ( _iAmountOfPoolMiningThreads > 0 ) ) {
+
+        g_pfPoolMiner_StopMining ();
+
+        // setgenerate_in_pool true 1 \"stratum+tcp://pool.binarium.money:3001\" \"XbCiEW3RpLyvuTBxf2Kn99bv6PrPB9Azy8\" \"password\" \"Binarium_hash_v1\" 0 -1
+        strcpy ( g_sCPUMinerProgram, "./cpuminer" );
+        /*strcpy ( g_sPoolURL, "--url=stratum+tcp://pool.binarium.money:3001" );
+        strcpy ( g_sUserLogin, "--user=XbCiEW3RpLyvuTBxf2Kn99bv6PrPB9Azy8" );
+        strcpy ( g_sUserPassword, "--pass=password" );
+        strcpy ( g_sAlgorithm, "--algo=Binarium_hash_v1" );
+        strcpy ( g_sAmountOfthreads, "--threads=2" );
+        strcpy ( g_sCPUPriority, "--cpu-priority=0" );
+        strcpy ( g_sCPUAffinity, "--cpu-affinity=-1" );*/
+        strcpy ( g_sPoolURL, ( "--url=" + _sPoolURL ).c_str () );
+        strcpy ( g_sUserLogin, ( "--user=" + _sPoolUser ).c_str () );
+        strcpy ( g_sUserPassword, ( "--pass=" + _sPoolUserPassword ).c_str () );
+        strcpy ( g_sAlgorithm, ( "--algo=" + _sPoolMiningAlgorithm ).c_str () );
+        strcpy ( g_sAmountOfthreads, ( "--threads=" + std :: to_string ( _iAmountOfPoolMiningThreads ) ).c_str () );
+        strcpy ( g_sCPUPriority, ( "--cpu-priority=" + std :: to_string ( _iPoolMinerCPUPriority ) ).c_str () );
+        strcpy ( g_sCPUAffinity, ( "--cpu-affinity=" + std :: to_string ( _iPoolMinerCPUAffinity ) ).c_str () );
+        memset ( g_sErrorMessage, 0, sizeof ( g_sErrorMessage ) );
+
+        //#if defined(__linux__) || defined(__unix__) || defined(__linux) || defined(linux)
+        g_pfPoolMinerMain ( 8, g_pArgV, g_sErrorMessage,
+            _sPoolURL.c_str (),
+            _sPoolUser.c_str (),
+            _sPoolUserPassword.c_str (),
+            _sPoolMiningAlgorithm.c_str (),
+            _iAmountOfPoolMiningThreads,
+            _iPoolMinerCPUPriority,
+            _iPoolMinerCPUAffinity );
+
+        /*#elif defined(_WIN32) || defined(WIN32)
+        PoolMinerMain ( 8, g_pArgV, g_sErrorMessage,
+            _sPoolURL.c_str (),
+            _sPoolUser.c_str (),
+            _sPoolUserPassword.c_str (),
+            _sPoolMiningAlgorithm.c_str (),
+            _iAmountOfPoolMiningThreads,
+            _iPoolMinerCPUPriority,
+            _iPoolMinerCPUAffinity );
+
+        #else
+
+        #endif*/
+
+        if ( g_sErrorMessage [ 0 ] != 0 ) {
+            return g_sErrorMessage;
+        }
+        g_bIsPoolMiningEnabled = true;
+
+        }
+
+    } else {
+        //#if defined(__linux__) || defined(__unix__) || defined(__linux) || defined(linux)
+        g_pfPoolMiner_StopMining ();
+
+        /*#elif defined(_WIN32) || defined(WIN32)
+        PoolMiner_StopMining ();
+
+        #else
+
+        #endif*/
+
+        g_bIsPoolMiningEnabled = false;
+
+        #if defined(__linux__) || defined(__unix__) || defined(__linux) || defined(linux)
+    if ( g_pCPUMinerSharedLibrary != nullptr ) {
+        //dlclose ( g_pCPUMinerSharedLibrary );
+
+    }
+
+        #elif defined(_WIN32) || defined(WIN32)
+    if ( g_hModule_CPUMinerSharedLibrary != nullptr ) {
+        //FreeLibrary ( g_hModule_CPUMinerSharedLibrary );
+    }
+
+        #endif
+
+    }
+
+    return nullptr;
+}
+
+double Wallet_PoolMiner_GetHashesRate () {
+    if ( g_bIsPoolMiningEnabled )
+        //#if defined(__linux__) || defined(__unix__) || defined(__linux) || defined(linux)
+        return g_pfPoolMiner_GetHashesRate ();
+        //return 2.0;
+
+        /*#elif defined(_WIN32) || defined(WIN32)
+        return PoolMiner_GetHashesRate ();
+
+        #else
+
+        #endif*/
+
+    else
+        return 0.0;
 }

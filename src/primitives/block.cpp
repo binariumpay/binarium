@@ -180,11 +180,13 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     // blake512
     //aIntermediateHashFunctions [ 0 ] ( (pbegin == pend ? pblank : static_cast<const void*>(&pbegin[0])), (pend - pbegin) * sizeof(pbegin[0]), nullptr, hash[0].begin () );
     aIntermediateHashFunctions [ 0 ] ( & nVersion, ( ( unsigned char * ) & nNonce - ( unsigned char * ) & nVersion ) /* sizeof(pbegin[0])*/ + sizeof ( nNonce ), nullptr, hash[0].begin () );
-    //aIntermediateHashFunctions [ 0 ] ( & nVersion, ( ( unsigned char * ) & nHeightOfPreviousBlock - ( unsigned char * ) & nVersion ) /* sizeof(pbegin[0])*/ + sizeof ( nHeightOfPreviousBlock ), nullptr, hash[0].begin () );    
+    //aIntermediateHashFunctions [ 0 ] ( & nVersion, ( ( unsigned char * ) & nHeightOfPreviousBlock - ( unsigned char * ) & nVersion ) /* sizeof(pbegin[0])*/ + sizeof ( nHeightOfPreviousBlock ), nullptr, hash[0].begin () );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : blake512 : %s .\n", hash[0].ToString ().c_str () );
 
     // bmw512
     //aIntermediateHashFunctions [ 1 ] ( static_cast<const void*>(&hash[0]), 64, nullptr, static_cast<void*>(&hash[1]) );
     aIntermediateHashFunctions [ 1 ] ( static_cast<const void*>(&hash[0]), 64, nullptr, uint512AdditionalHash.begin () );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : bmw512 : %s .\n", uint512AdditionalHash.ToString ().c_str () );
 
     //iIndexOfBlcok = ( ( CBlockIndex * ) _pPreviousBlockIndex ) -> nHeight / ( I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES / 2 ) * ( I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_MINUTES / 2 );    
     iWeekNumber = _iTimeFromGenesisBlock / I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_SECONDS * I_ALGORITHM_RECONFIGURATION_TIME_PERIOD_IN_SECONDS;
@@ -194,13 +196,16 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     //memcpy ( hash [ 0 ].begin (), hash [ 1 ].begin (), 64 );
     //aIntermediateHashFunctions [ iIndex ] ( static_cast<const void*>(&hash[0]), 64, nullptr, static_cast<void*>(&hash[1]) );
     aIntermediateHashFunctions [ iIndex ] ( uint512AdditionalHash.begin (), 64, nullptr, static_cast<void*>(&hash[1]) );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : aIntermediateHashFunctions 1 : %s .\n", hash[1].ToString ().c_str () );
 
     // groestl512
     aIntermediateHashFunctions [ 2 ] ( static_cast<const void*>(&hash[1]), 64, nullptr, static_cast<void*>(&hash[2]) );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : groestl512 : %s .\n", hash[2].ToString ().c_str () );
 
     // skein512
     //aIntermediateHashFunctions [ 5 ] ( static_cast<const void*>(&hash[2]), 64, nullptr, static_cast<void*>(&hash[3]) );
     aIntermediateHashFunctions [ 5 ] ( static_cast<const void*>(&hash[2]), 64, nullptr, uint1024CombinedHashes.begin () + 64 );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : skein512 ( uint1024CombinedHashes in + 64 ) : %s .\n", uint1024CombinedHashes.ToString ().c_str () );
 
     //-Streebog.--------------------------------------
     // jh512    
@@ -213,6 +218,7 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     //aIntermediateHashFunctions [ 3 ] ( static_cast<const void*>(&hash[3]), 64, nullptr, static_cast<void*> ( & uint1024CombinedHashes ) );
     //aIntermediateHashFunctions [ 3 ] ( uint1024CombinedHashes.begin () + 64, 64, nullptr, static_cast<void*>(&hash[4]) );
     aIntermediateHashFunctions [ 3 ] ( uint1024CombinedHashes.begin () + 64, 64, nullptr, uint1024CombinedHashes.begin () );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : jh512 ( uint1024CombinedHashes ) : %s .\n", uint1024CombinedHashes.ToString ().c_str () );
     //memcpy ( hash[3].begin (), uint1024CombinedHashes.begin () + 64, 64 );
 
     //aIntermediateHashFunctions [ 11 ] ( static_cast<const void*>(&hash[3]), 64 * 8, nullptr, static_cast<void*>(&hash[4]) );
@@ -313,16 +319,20 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : %s .\n", uint1024CombinedHashes.ToString ().c_str () );
     //assert ( false );
 
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : Memory hard hashing function : %s .\n", uint1024CombinedHashes.ToString ().c_str () );
+
     //-Whirlpool--------------------------------------
     // keccak512
     //aIntermediateHashFunctions [ 4 ] ( static_cast<const void*>(&hash[4]), 64, nullptr, static_cast<void*>(&hash[5]) );
     aIntermediateHashFunctions [ 4 ] ( uint1024CombinedHashes.begin (), 128, nullptr, static_cast<void*>(&hash[5]) );
     //aIntermediateHashFunctions [ 12 ] ( static_cast<const void*>(&hash[4]), 64, nullptr, static_cast<void*>(&hash[5]) );
     //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : %s .\n", hash[5].ToString ().c_str () );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : keccak512 : %s .\n", hash[5].ToString ().c_str () );
 
     //-SWIFFT.----------------------------------------
     // luffa512
     aIntermediateHashFunctions [ 6 ] ( static_cast<const void*>(&hash[5]), 64, nullptr, static_cast<void*>(&hash[6]) );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : luffa512 : %s .\n", hash[6].ToString ().c_str () );
 
     /*char pSwiFFTKey [ 1025 ];
     
@@ -349,6 +359,7 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
 
     // cubehash512
     aIntermediateHashFunctions [ 7 ] ( static_cast<const void*>(&hash[6]), 64, nullptr, static_cast<void*>(&hash[7]) );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : cubehash512 : %s .\n", hash[7].ToString ().c_str () );
 
     //-GOST 2015_Kuznechik.---------------------------
     /*iIndex = GetUint64IndexFrom512BitsKey ( hash[3].begin (), 0 );
@@ -377,11 +388,15 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     iIndex = ( iWeekNumber + nBits ) % I_AMOUNT_OF_INTERMEDIATE_ENCRYPTION_FUNCTIONS;
     //fprintf(stdout, "block.cpp : GetHash_SHA256AndX11 () : %i .\n", iIndex );
     //iIndex = 0;
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : aIntermediateEncryptionFunctions 1 : Data : %s .\n", hash[6].ToString ().c_str () );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : aIntermediateEncryptionFunctions 1 : Key : %s .\n", hash[0].ToString ().c_str () );
     aIntermediateEncryptionFunctions [ iIndex ] ( static_cast<const void*>(&hash[6]), 64, static_cast<const void*>(&hash[0]), static_cast<void*>(&hash[7]) );
     //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : %s , %s .\n", uint512ChainBlockData.ToString ().c_str (), hash [ 7 ].ToString ().c_str () );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : aIntermediateEncryptionFunctions 1 : %i , %s .\n", iIndex, hash[7].ToString ().c_str () );
 
     // shavite512
     aIntermediateHashFunctions [ 8 ] ( static_cast<const void*>(&hash[7]), 64, nullptr, static_cast<void*>(&hash[8]) );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : shavite512 : %s .\n", hash[8].ToString ().c_str () );
 
     //---ThreeFish.----------------------------------
     // Copying from 8 to 7.
@@ -391,12 +406,14 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
     // simd512
     //aIntermediateHashFunctions [ 9 ] ( static_cast<const void*>(&hash[8]), 64, nullptr, static_cast<void*>(&hash[9]) );
     aIntermediateHashFunctions [ 9 ] ( static_cast<const void*>(&hash[8]), 64, nullptr, uint512AdditionalHash.begin () );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : simd512 : %s .\n", uint512AdditionalHash.ToString ().c_str () );
 
     //iIndex = ( iIndexFromWeekChangeBlock + 10 ) % I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS; nBits
     iIndex = ( iWeekNumber + nBits + 10 ) % I_AMOUNT_OF_INTERMEDIATE_HASH_FUNCTIONS;
     //memcpy ( hash [ 8 ].begin (), hash [ 9 ].begin (), 64 );
     //aIntermediateHashFunctions [ iIndex ] ( static_cast<const void*>(&hash[8]), 64, nullptr, static_cast<void*>(&hash[9]) );
     aIntermediateHashFunctions [ iIndex ] ( uint512AdditionalHash.begin (), 64, nullptr, static_cast<void*>(&hash[9]) );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : aIntermediateHashFunctions 2 : %s .\n", hash[9].ToString ().c_str () );
 
     //---Camellia.-----------------------------------    
     //memcpy ( hash [ 8 ].begin (), hash [ 9 ].begin (), 64 );    
@@ -404,6 +421,7 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
 
     // echo512
     aIntermediateHashFunctions [ 10 ] ( static_cast<const void*>(&hash[9]), 64, nullptr, static_cast<void*>(&hash[10]) );
+    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : echo512 : %s .\n", hash[10].ToString ().c_str () );
 
 
 

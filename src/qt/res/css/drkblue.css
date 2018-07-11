@@ -1426,14 +1426,48 @@ margin-top : 10px;
 margin-left : 5px;
 }
 
+/* Third party pools block. */
+
+#frame_ThirdPartyPools {
+min-width : 370px;
+max-width : 370px;
+height : 60px;
+margin-top : 10px;
+margin-right:20px;
+margin-left:20px;
+background : #16497d;
+border:1px solid #166c98;
+padding-top : 10px;
+padding-bottom : 10px;
+padding-left : 20px;
+padding-right : 20px;
+margin-bottom : 10px;
+}
+
+#lbThirdPartyPools {
+color : #ffffff;
+margin-top:0px;
+font-weight:bold;
+font-size:15px;
+text-transform: uppercase;
+}
+
+#scrollAreaWidgetContents_ThirdPartyPools, #scrollArea_ThirdPartyPools {
+background : transparent;
+}
+
+#scrollArea_ThirdPartyPools QLabel {
+	margin-right : 5px;
+}
+
 /* RECENT TRANSACTIONS */
 
 QWidget .QFrame#frame_2 { /* Transactions Widget */
 qproperty-alignment: 'AlignVTop | AlignLeft';
 min-width:410px;
 max-width:410px;
-min-height:378px;
-max-height:378px;
+min-height:270px;
+max-height:270px;
 margin-right:20px;
 margin-left:20px;
 /*margin-top:15px;*/

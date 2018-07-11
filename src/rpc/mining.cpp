@@ -24,11 +24,15 @@
 #include "utilstrencodings.h"
 #include "validationinterface.h"
 
+//#include "cpu-miner.h"
+
 #include "governance-classes.h"
 #include "masternode-payments.h"
 #include "masternode-sync.h"
 
 #include <stdint.h>
+#include <stdlib.h>
+//#include <dlfcn.h>
 
 #include <boost/assign/list_of.hpp>
 #include <boost/shared_ptr.hpp>
@@ -36,6 +40,21 @@
 #include <univalue.h>
 
 using namespace std;
+
+
+
+/*void * g_pCPUMinerSharedLibrary = nullptr;
+int ( * g_pfPoolMinerMain ) ( int, char ** );
+void ( * g_pfPoolMiner_StopMining ) ();
+char g_sCPUMinerProgram [ 64 ];
+char g_sPoolURL [ 256 ];
+char g_sUserLogin [ 256 ];
+char g_sUserPassword [ 256 ];
+char g_sAlgorithm [ 256 ];
+char g_sAmountOfthreads [ 32 ];
+char g_sCPUPriority [ 32 ];
+char g_sCPUAffinity [ 32 ];
+char * g_pArgV [ 8 ] = { g_sCPUMinerProgram, g_sPoolURL, g_sUserLogin, g_sUserPassword, g_sAlgorithm, g_sAmountOfthreads, g_sCPUPriority, g_sCPUAffinity };*/
 
 
 
@@ -238,6 +257,149 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
 
     return NullUniValue;
 }
+
+UniValue setgenerate_in_pool(const UniValue& params, bool fHelp)
+//UniValue SetGenerateInPool(const UniValue& params, bool fHelp)
+{
+    if ( fHelp || params.size() < 8 || params.size() > 8 )
+        throw runtime_error(
+            "setgenerate_in_pool generate ( genproclimit )\n"
+            "\nSet 'generate' true or false to turn generation on or off.\n"
+            "Generation is limited to 'genproclimit' processors, -1 is unlimited.\n"
+            "See the getgenerate_in_pool call for the current setting.\n"
+            "\nArguments:\n"
+            "1. generate         (boolean, required) Set to true to turn on generation, false to turn off.\n"
+            "2. genproclimit     (numeric, required) Set the processor limit for when generation is on. Can be -1 for unlimited.\n"
+            "3. pool url         (string, required)\n"
+            "4. pool user        (string, required) Cryptocurrency wallet receive address.\n"
+            "5. pool pass        (string, required)\n"
+            "6. algorithm        (string, required)\n"
+            "7. cpu-priority     (numeric, required)\n"
+            "8. cpu-affinity     (numeric, required)\n"
+            "\nExamples:\n"
+            "\nSet the generation on with a limit of one processor\n"
+            + HelpExampleCli("setgenerate_in_pool", "true 1 \\\"stratum+tcp://pool.binarium.money:3001\\\" \\\"XbCiEW3RpLyvuTBxf2Kn99bv6PrPB9Azy8\\\" \\\"password\\\" \\\"Binarium_hash_v1\\\" 0 -1") +
+            "\nCheck the setting\n"
+            + HelpExampleCli("getgenerate", "") +
+            "\nTurn off generation\n"
+            + HelpExampleCli("setgenerate_in_pool", "false 2 \\\"t\\\" \\\"t\\\" \\\"t\\\" \\\"t\\\" 0 -1") +
+            "\nUsing json rpc\n"
+            + HelpExampleRpc("setgenerate_in_pool", "true, 1, \\\"stratum+tcp://pool.binarium.money:3001\\\", \\\"XbCiEW3RpLyvuTBxf2Kn99bv6PrPB9Azy8\\\", \\\"password\\\", \\\"Binarium_hash_v1\\\", 0, -1")
+        );
+
+    if (Params().MineBlocksOnDemand())
+        throw JSONRPCError(RPC_METHOD_NOT_FOUND, "Use the generate method instead of setgenerate_in_pool on this network");
+
+    bool fGenerate = true;
+    if (params.size() > 0) {
+        //throw JSONRPCError ( RPC_METHOD_NOT_FOUND, params[0].get_str () );
+        //throw JSONRPCError ( RPC_METHOD_NOT_FOUND, uvTypeName ( params[0].getType () ) );
+        fGenerate = params[0].get_bool();
+    }
+
+    int iAmountOfThreads = min ( DEFAULT_GENERATE_THREADS, I_MAX_GENERATE_THREADS );
+    int nGenProcLimit = GetArg("-genproclimit", iAmountOfThreads );
+    if (params.size() > 1)
+    {
+        nGenProcLimit = params[1].get_int();
+        if (nGenProcLimit == 0)
+            fGenerate = false;
+    }
+
+    mapArgs["-gen"] = (fGenerate ? "1" : "0");
+    mapArgs ["-genproclimit"] = itostr(nGenProcLimit);
+
+    /*if ( g_pCPUMinerSharedLibrary == nullptr ) {
+        g_pCPUMinerSharedLibrary = dlopen ( "./cpuminer.so", RTLD_NOW );
+        if ( g_pCPUMinerSharedLibrary == nullptr ) {
+            throw JSONRPCError(RPC_MISC_ERROR, "cpuminer shared library was not found.");
+            return NullUniValue;
+        }
+        g_pfPoolMinerMain = ( int (*)(int, char**) ) dlsym ( g_pCPUMinerSharedLibrary, "PoolMinerMain" );
+        if ( g_pfPoolMinerMain == nullptr ) {
+            throw JSONRPCError(RPC_MISC_ERROR, "PoolMinerMain function was not found in cpuminer shared library.");
+            return NullUniValue;
+        }
+        g_pfPoolMiner_StopMining = ( void (*)() ) dlsym ( g_pCPUMinerSharedLibrary, "PoolMiner_StopMining" );
+        if ( g_pfPoolMinerMain == nullptr ) {
+            throw JSONRPCError(RPC_MISC_ERROR, "PoolMiner_StopMining function was not found in cpuminer shared library.");
+            return NullUniValue;
+        }
+    }
+
+    fprintf ( stdout, "mining.cpp : setgenerate_in_pool () : %i.\n", fGenerate );
+    if ( fGenerate ) {
+        //GenerateBitcoins(fGenerate, nGenProcLimit, Params(), *g_connman);
+        //PoolMinerMain ( 0, nullptr );
+
+        g_pfPoolMiner_StopMining ();
+
+        // setgenerate_in_pool true 1 \"stratum+tcp://pool.binarium.money:3001\" \"XbCiEW3RpLyvuTBxf2Kn99bv6PrPB9Azy8\" \"password\" \"Binarium_hash_v1\" 0 -1
+        strcpy ( g_sCPUMinerProgram, "./cpuminer" );
+        strcpy ( g_sPoolURL, "--url=stratum+tcp://pool.binarium.money:3001" );
+        strcpy ( g_sUserLogin, "--user=XbCiEW3RpLyvuTBxf2Kn99bv6PrPB9Azy8" );
+        strcpy ( g_sUserPassword, "--pass=password" );
+        strcpy ( g_sAlgorithm, "--algo=Binarium_hash_v1" );
+        strcpy ( g_sAmountOfthreads, "--threads=2" );
+        strcpy ( g_sCPUPriority, "--cpu-priority=0" );
+        strcpy ( g_sCPUAffinity, "--cpu-affinity=-1" );
+        g_pfPoolMinerMain ( 8, g_pArgV );
+
+    } else {
+        g_pfPoolMiner_StopMining ();
+    }*/
+
+
+    char * pcErrorMessage;
+
+    //try
+    //{
+        fprintf ( stdout, "mining.cpp : setgenerate_in_pool () : nGenProcLimit : %i.\n", nGenProcLimit );
+
+    pcErrorMessage = StartPoolMining ( fGenerate,
+        params[2].get_str (),
+        params[3].get_str (),
+        params[4].get_str (),
+        params[5].get_str (),
+        nGenProcLimit,
+        params[6].get_int (),
+        params[7].get_int () );
+
+    if ( ( pcErrorMessage != nullptr ) && ( pcErrorMessage [ 0 ] != 0 ) ) {
+        throw JSONRPCError(RPC_MISC_ERROR, ( std::string ( pcErrorMessage ) ).c_str () );
+        LogPrintf ( "BitcoinGUI", ( "setgenerate_in_pool () : " + std::string ( pcErrorMessage ) + "." ).c_str () );
+        return NullUniValue;
+    }
+
+    /*} catch (const std::exception& e) {
+        throw JSONRPCError(RPC_MISC_ERROR, "Runaway exception" );
+        PrintExceptionContinue(&e, "Runaway exception");
+
+    } catch (...) {
+        PrintExceptionContinue(NULL, "Runaway exception");
+        
+    }*/
+
+    return NullUniValue;
+}
+
+/*UniValue getgenerate_in_pool (const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "getgenerate_in_pool \n"
+            "\nReturn if the server is set to generate coins or not. The default is false.\n"
+            "It can also be set with the getgenerate_in_pool call.\n"
+            "\nResult\n"
+            "true|false      (boolean) If the server is set to generate coins or not\n"
+            "\nExamples:\n"
+            + HelpExampleCli("getgenerate_in_pool", "")
+            + HelpExampleRpc("getgenerate_in_pool", "")
+        );
+
+    LOCK(cs_main);
+    return GetBoolArg("-gen", DEFAULT_GENERATE);
+}*/
 
 UniValue getmininginfo(const UniValue& params, bool fHelp)
 {

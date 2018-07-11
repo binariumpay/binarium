@@ -3,7 +3,7 @@ AC_PREREQ([2.60])
 define(_CLIENT_VERSION_MAJOR, 0)
 define(_CLIENT_VERSION_MINOR, 12)
 define(_CLIENT_VERSION_REVISION, 2)
-define(_CLIENT_VERSION_BUILD, 6)
+define(_CLIENT_VERSION_BUILD, 7)
 define(_CLIENT_VERSION_IS_RELEASE, true)
 define(_COPYRIGHT_YEAR, 2018)
 AC_INIT([Binarium Core],[_CLIENT_VERSION_MAJOR._CLIENT_VERSION_MINOR._CLIENT_VERSION_REVISION],[https://github.com/binariumpay/binarium/issues],[binariumcore])
@@ -1113,3 +1113,11 @@ case ${OS} in
      mv qa/pull-tester/tests_config-2.py qa/pull-tester/tests_config.py
    ;;
 esac
+
+if test -n "$with_curl" ; then
+   LIBCURL_CFLAGS="$LIBCURL_CFLAGS -I$with_curl/include"
+   LIBCURL_CPPFLAGS="$LIBCURL_CPPFLAGS -I$with_curl/include"
+   LIBCURL_LDFLAGS="-L$with_curl/lib/.libs -lcurl $LIBCURL_LDFLAGS"
+   #LIBCURL="-lcurl -lz"
+   LIBCURL=""
+fi

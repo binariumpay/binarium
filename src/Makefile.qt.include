@@ -551,6 +551,7 @@ endif
 if TARGET_WINDOWS
   qt_binarium_qt_SOURCES += $(BITCOIN_RC)
 endif
+#$(LIBCPUMINER)
 qt_binarium_qt_LDADD = qt/libbitcoinqt.a $(LIBBITCOIN_SERVER)
 if ENABLE_WALLET
 qt_binarium_qt_LDADD += $(LIBBITCOIN_WALLET)
