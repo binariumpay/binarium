@@ -267,3 +267,12 @@ To build executables for ARM:
 
 
 For further documentation on the depends system see [README.md](../depends/README.md) in the depends directory.
+
+Pool-miner
+-------------------
+If you do not need pool-miner, for example, for RPC-server, then you can disable it on compilation :
+comment in configure.ac these lines :
+
+CXXFLAGS="$CXXFLAGS -DINCLUDE_POOL_MINER"
+CPPFLAGS="$CPPFLAGS -DINCLUDE_POOL_MINER"
+CFLAGS="$CFLAGS -DINCLUDE_POOL_MINER" .

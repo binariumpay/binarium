@@ -737,17 +737,56 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QLabel" name="labelLinkUbitPW">
-                <property name="text">
-                 <string>&lt;a href=&quot;https://ubit.pw&quot;&gt;https://ubit.pw&lt;/a&gt;</string>
+               <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,0,0">
+                <property name="spacing">
+                 <number>6</number>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetMinimumSize</enum>
                 </property>
-                <property name="openExternalLinks">
-                 <bool>true</bool>
+                <property name="leftMargin">
+                 <number>0</number>
                 </property>
-               </widget>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_6">
+                  <property name="text">
+                   <string>&lt;a href=&quot;https://crex24.com/exchange/BIN-BTC&quot;&gt;Crex24.com&lt;/a&gt;</string>
+                  </property>
+                  <property name="openExternalLinks">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="labelLinkUbitPW">
+                  <property name="text">
+                   <string>&lt;a href=&quot;https://ubit.pw&quot;&gt;ubit.pw&lt;/a&gt;</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="openExternalLinks">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
               </item>
               <item>
                <spacer name="verticalSpacer_3">
@@ -780,7 +819,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>&lt;a href=&quot;https://binarium.money/&quot; class=&quot;classLink&quot;&gt;&lt;span class=&quot;classLinkSpan&quot;&gt;https://binarium.money&lt;/span&gt;&lt;/a&gt;</string>
+               <string>&lt;a href=&quot;https://binarium.money/&quot; class=&quot;classLink&quot;&gt;&lt;span class=&quot;classLinkSpan&quot;&gt;binarium.money&lt;/span&gt;&lt;/a&gt;</string>
               </property>
               <property name="openExternalLinks">
                <bool>true</bool>
@@ -908,9 +947,35 @@
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QLabel" name="label_2">
+                 <widget class="QLabel" name="label_3">
                   <property name="text">
-                   <string>&lt;a href=&quot;http://pool.doufen.com&quot;&gt;http://pool.doufen.com&lt;/a&gt;</string>
+                   <string>&lt;a href=&quot;https://pool.rplant.xyz&quot;&gt;pool.rplant.xyz&lt;/a&gt;</string>
+                  </property>
+                  <property name="openExternalLinks">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btSelectRPlantPool">
+                  <property name="maximumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Select RPlant pool for mining : stratum+tcp://pool.rplant.xyz:6334 .</string>
+                  </property>
+                  <property name="text">
+                   <string>+</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lbDoufenPool">
+                  <property name="text">
+                   <string>&lt;a href=&quot;http://pool.doufen.com&quot;&gt;pool.doufen.com&lt;/a&gt;</string>
                   </property>
                   <property name="openExternalLinks">
                    <bool>true</bool>

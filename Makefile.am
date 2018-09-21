@@ -1,4 +1,4 @@
-CXXFLAGS = -std=c++17 
+CXXFLAGS = -std=c++17
 ACLOCAL_AMFLAGS = -I build-aux/m4
 SUBDIRS = src
 .PHONY: deploy FORCE

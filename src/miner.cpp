@@ -80,6 +80,9 @@ int g_iPreviousAmountOfMiningThreads;
 char g_sErrorMessage [ 512 ];
 
 bool g_bIsPoolMiningEnabled = false;
+
+#if defined ( INCLUDE_POOL_MINER )
+
 #if defined(__linux__) || defined(__unix__) || defined(__linux) || defined(linux)
     void * g_pCPUMinerSharedLibrary = nullptr;
 #elif defined(_WIN32) || defined(WIN32)
@@ -106,6 +109,8 @@ char g_sAmountOfthreads [ 32 ];
 char g_sCPUPriority [ 32 ];
 char g_sCPUAffinity [ 32 ];
 char * g_pArgV [ 8 ] = { g_sCPUMinerProgram, g_sPoolURL, g_sUserLogin, g_sUserPassword, g_sAlgorithm, g_sAmountOfthreads, g_sCPUPriority, g_sCPUAffinity };
+
+#endif // if [ defined ( INCLUDE_POOL_MINER ) ]
 
 
 
@@ -774,6 +779,7 @@ char * StartPoolMining ( bool _bStart,
     int _iPoolMinerCPUAffinity ) {
     //char * pcErrorMessage;
 
+#if defined ( INCLUDE_POOL_MINER )
     #if defined(__linux__) || defined(__unix__) || defined(__linux) || defined(linux)
     if ( g_pCPUMinerSharedLibrary == nullptr ) {
         g_pCPUMinerSharedLibrary = dlopen ( "./cpuminer.so", RTLD_NOW );
@@ -935,10 +941,14 @@ char * StartPoolMining ( bool _bStart,
 
     }
 
+#endif // if [ defined ( INCLUDE_POOL_MINER ) ]
+
     return nullptr;
 }
 
 double Wallet_PoolMiner_GetHashesRate () {
+
+#if defined ( INCLUDE_POOL_MINER )
     if ( g_bIsPoolMiningEnabled )
         //#if defined(__linux__) || defined(__unix__) || defined(__linux) || defined(linux)
         return g_pfPoolMiner_GetHashesRate ();
@@ -953,4 +963,8 @@ double Wallet_PoolMiner_GetHashesRate () {
 
     else
         return 0.0;
+#endif // if [ defined ( INCLUDE_POOL_MINER ) ]
+
+    return 0.0;
+
 }

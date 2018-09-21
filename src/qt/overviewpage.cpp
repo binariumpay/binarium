@@ -138,6 +138,9 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
     ui->setupUi(this);
     QString theme = GUIUtil::getThemeName();
 
+    ui -> btSelectDoufenPool -> setVisible ( false );
+    ui -> lbDoufenPool -> setVisible ( false );
+
     /*//if ( theme != "crownium" ) {
         QPalette p;
         p.setColor(QPalette::Link, QColor ( "#eccee1" ) );
@@ -305,8 +308,9 @@ void OverviewPage::setWalletModel(WalletModel *model)
         updateWatchOnlyLabels(model->haveWatchOnly());
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
 
-        connect ( ui -> btSelectBinariumPool, SIGNAL(clicked()), this, SLOT ( btSelectBinariumPool_Clicked () ));
-        connect ( ui -> btSelectDoufenPool, SIGNAL(clicked()), this, SLOT ( btSelectDoufenPool_Clicked () ));
+        connect ( ui -> btSelectBinariumPool, SIGNAL(clicked()), this, SLOT ( btSelectBinariumPool_Clicked () ) );
+        connect ( ui -> btSelectDoufenPool, SIGNAL(clicked()), this, SLOT ( btSelectDoufenPool_Clicked () ) );
+        connect ( ui -> btSelectRPlantPool, SIGNAL(clicked()), this, SLOT ( btSelectRPlantPool_Clicked () ) );
     }
 }
 
@@ -700,4 +704,10 @@ void OverviewPage :: btSelectDoufenPool_Clicked () {
     QSettings settings;
 
     settings.setValue ( "sPoolURL", "stratum+tcp://pool.doufen.com:3001" );
+}
+
+void OverviewPage :: btSelectRPlantPool_Clicked () {
+    QSettings settings;
+
+    settings.setValue ( "sPoolURL", "stratum+tcp://pool.rplant.xyz:6334" );
 }

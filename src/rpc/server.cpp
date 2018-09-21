@@ -395,6 +395,8 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "listreceivedonlybyaddress",  &listreceivedonlybyaddress,  false },
     { "wallet",             "listsinceblock",         &listsinceblock,         false },
     { "wallet",             "listtransactions",       &listtransactions,       false },
+    { "wallet",             "listtransactions_for_addresses",       &listtransactions_for_addresses,       false },
+    { "wallet",             "listtransactions_from_unix_time",       &listtransactions_from_unix_time,       false },
     { "wallet",             "listunspent",            &listunspent,            false },
     { "wallet",             "lockunspent",            &lockunspent,            true  },
     { "wallet",             "move",                   &movecmd,                false },

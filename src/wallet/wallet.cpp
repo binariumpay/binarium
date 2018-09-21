@@ -3885,7 +3885,15 @@ bool CWallet::GetKeyFromPool(CPubKey& result, bool fInternal)
     int64_t nIndex = 0;
     CKeyPool keypool;
     {
-        LOCK(cs_wallet);
+        //if ( cs_wallet == 0 )
+        //    return false;
+
+        //LOCK(cs_wallet);
+        //TRY_LOCK ( cs_wallet, "criticalblock_GetKeyFromPool" );
+
+        if ( ! cs_wallet.try_lock () )
+            return false;
+
         ReserveKeyFromKeyPool(nIndex, keypool, fInternal);
         if (nIndex == -1)
         {

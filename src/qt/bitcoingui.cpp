@@ -343,13 +343,13 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
 
     //try
     //{
-        //QSettings settings;
+        /*//QSettings settings;
         bool bEnableMiningInPool = settings.value ( "bEnableMiningInPool", false ).toBool ();
         QString sPoolUser = settings.value ( "sPoolUser", "" ).toString ();
         if ( bEnableMiningInPool && ( sPoolUser != "" ) ) {
             //StartPoolMining ( ! g_bIsPoolMiningEnabled );
             PoolMiner_Start ( ! g_bIsPoolMiningEnabled );
-        }
+        }*/
 
     /*} catch (const std::exception& e) {
         PrintExceptionContinue(&e, "Runaway exception");
