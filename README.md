@@ -78,21 +78,7 @@ code. This is especially important for large or high-risk changes. It is useful
 to add a test plan to the pull request description if testing the changes is
 not straightforward.
 
-Translations
-------------
-
-Changes to translations as well as new translations can be submitted to
-[Binarium Core's Transifex page](https://www.transifex.com/projects/p/binarium/).
-
-Translations are periodically pulled from Transifex and merged into the git repository. See the
-[translation process](doc/translation_process.md) for details on how this works.
-
-**Important**: We do not accept translation changes as GitHub pull requests because the next
-pull from Transifex would automatically overwrite them again.
-
-Translators should also follow the [forum](http://binarium.money/forum/topic/binarium-worldwide-collaboration.88/).
-
 Developers wallets addresses :
-Binarium : XitcZF1jseyDH973NUuLA8gjrRgxbsZRPQ .
-BTC : 1F9UyPdYLzsHjC28ioHsspMMYLZ37mJLi2 .
-Ethereum : 0x903a507fb0e54b5a6e6b126336691246c60e383f .
+Binarium: XsCBTWrbqj9DZdGGysVRRRbphumuxDGa9c .
+BTC: 33Er8o26Z6UtYVH9qEqne6WRT5uzFvbQ9Y .
+Ethereum: 0x1f269d24e782b8034e9a06894eda88e7853ce012 .
