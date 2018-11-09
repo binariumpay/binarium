@@ -38,7 +38,7 @@ To build executables for Windows 64-bit:
 
 You may need to add
 LDFLAGS=-lstdc++
-option to ./configure --prefix=`pwd`/depends/i686-w64-mingw32 command, if your system will show ld link errors during Win 32 wallet building.
+option to ./configure --prefix=`pwd`/depends/i686-w64-mingw32 command, if your system will show ld link errors during Win 32 wallet building and additional CFLAGS="-lm -ldl" option for fix some make issues
 
 
 For further documentation on the depends system see [README.md](../depends/README.md) in the depends directory.
