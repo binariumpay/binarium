@@ -1853,10 +1853,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Выбрать пул Бинариума для майнинга : stratum+tcp://pool.binarium.money:3001 .</translation>
     </message>
     <message>
-        <source>Select Doufen pool for mining : stratum+tcp://pool.doufen.com:3001 .</source>
-        <translation>Выбрать пул Doufen для майнинга : stratum+tcp://pool.doufen.com:3001 .</translation>
-    </message>
-    <message>
         <source>Recent transactions</source>
         <translation>Недавние транзакции</translation>
     </message>

@@ -81,8 +81,6 @@ private Q_SLOTS:
     void handleOutOfSyncWarningClicks();
 
     void btSelectBinariumPool_Clicked ();
-    void btSelectDoufenPool_Clicked ();
-    void btSelectRPlantPool_Clicked ();
 };
 
 #endif // BITCOIN_QT_OVERVIEWPAGE_H
