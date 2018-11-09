@@ -218,6 +218,7 @@ if test "x$CXXFLAGS_overridden" = "xno"; then
 fi
 CPPFLAGS="$CPPFLAGS -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS"
 
+# Comment these lines if you build server daemonized version and integrated miner not needed
 CXXFLAGS="$CXXFLAGS -DINCLUDE_POOL_MINER"
 CPPFLAGS="$CPPFLAGS -DINCLUDE_POOL_MINER"
 CFLAGS="$CFLAGS -DINCLUDE_POOL_MINER"

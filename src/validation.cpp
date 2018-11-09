@@ -1289,6 +1289,7 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 
                                                                       // mainnet:
     if(nHeight > nMNPIBlock)                  ret += blockValue / 20; // 158000 - 25.0% - 2014-10-24
+    // Removed in a4b74bb9a4414a1ff14f019ff00f05eec2b7b245
 
     return ret;
 }
