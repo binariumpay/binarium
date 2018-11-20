@@ -1,37 +1,34 @@
-Dash Core 0.12.1
+Binarium Core 0.12.8
 =====================
 
-This is the official reference wallet for Dash digital currency and comprises the backbone of the Dash peer-to-peer network. You can [download Dash Core](https://www.dash.org/downloads/) or [build it yourself](#building) using the guides below.
+This is the official reference wallet for Binarium digital currency and comprises the backbone of the Binarium peer-to-peer network. You can [download Binarium Core](https://github.com/binariumpay/binarium/releases) or [build it yourself](#building) using the guides below.
 
 Running
 ---------------------
-The following are some helpful notes on how to run Dash on your native platform.
+The following are some helpful notes on how to run Binarium on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- `bin/dash-qt` (GUI) or
-- `bin/dashd` (headless)
+- `bin/binarium-qt` (GUI) or
+- `bin/binariumd` (headless)
 
 ### Windows
 
-Unpack the files into a directory, and then run dash-qt.exe.
+Unpack the files into a directory, and then run binarium-qt.exe.
 
 ### OS X
 
-Drag Dash-Qt to your applications folder, and then run Dash-Qt.
+Drag Binarium-Qt to your applications folder, and then run Binarium-Qt.
 
 ### Need Help?
 
-* See the [Dash documentation](https://dashpay.atlassian.net/wiki/display/DOC)
-for help and more information.
-* Ask for help on [#dashpay](http://webchat.freenode.net?channels=dashpay) on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net?channels=dashpay).
-* Ask for help on the [DashTalk](https://dashtalk.org/) forums.
+* Discuss on the [Discord](https://discord.gg/qgKQv8s) in the Development & Technical Discussion board.
 
 Building
 ---------------------
-The following are developer notes on how to build Dash Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build Binarium Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [OS X Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
@@ -41,7 +38,7 @@ The following are developer notes on how to build Dash Core on your native platf
 
 Development
 ---------------------
-The Dash Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The Binarium Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Multiwallet Qt Development](multiwallet-qt.md)
@@ -57,8 +54,7 @@ The Dash Core repo's [root README](/README.md) contains relevant information on 
 - [Dnsseed Policy](dnsseed-policy.md)
 
 ### Resources
-* Discuss on the [DashTalk](https://dashtalk.org/) forums, in the Development & Technical Discussion board.
-* Discuss on [#dashpay](http://webchat.freenode.net/?channels=dashpay) on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net/?channels=dashpay).
+* Discuss on the [Discord](https://discord.gg/qgKQv8s) in the Development & Technical Discussion board.
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)
@@ -69,5 +65,6 @@ The Dash Core repo's [root README](/README.md) contains relevant information on 
 License
 ---------------------
 Distributed under the [MIT software license](http://www.opensource.org/licenses/mit-license.php).
+This product based on software developed by the Dash Core (http://dash.org)
 This product includes software developed by the OpenSSL Project for use in the [OpenSSL Toolkit](https://www.openssl.org/). This product includes
 cryptographic software written by Eric Young ([eay@cryptsoft.com](mailto:eay@cryptsoft.com)), and UPnP software written by Thomas Bernard.
