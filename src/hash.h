@@ -654,7 +654,7 @@ inline void IntermediateHashFunction_Whirlpool ( const void * _pData, const uint
 
 //---Encryption.----------------------------------------------------------------------
 inline void IntermediateEncryptionFunction_GOST_2015_Kuznechik ( const void * _pData, const uint32_t _iDataSize, const void * _pKey, void * _pResult ) {
-    char roundkeys_str [ 401 ];
+    //char roundkeys_str [ 401 ];
 
     //uint64_t iIndex = GetUint64IndexFrom512BitsKey ( _pKey, 0 );
     //iIndex = iIndex % chainActive.Height ();
