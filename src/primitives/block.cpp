@@ -168,9 +168,9 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
 
     uint1024 uint1024CombinedHashes;
 
-    uint64_t iIndexOfBlcok;
+    //uint64_t iIndexOfBlcok;
     uint64_t iWeekNumber;
-    uint64_t iIndexFromWeekChangeBlock;
+    //uint64_t iIndexFromWeekChangeBlock;
     uint64_t iIndex;
 
     uint32_t i = 0;
