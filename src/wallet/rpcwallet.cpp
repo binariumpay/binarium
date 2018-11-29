@@ -2995,10 +2995,10 @@ UniValue listunspent(const UniValue& params, bool fHelp)
     if (!EnsureWalletIsAvailable(fHelp))
         return NullUniValue;
 
-    if (fHelp || params.size() > 3)
+    if (fHelp || params.size() > 4)
         throw runtime_error(
             "listunspent ( minconf maxconf [\"address\",...] )\n"
-            "\nReturns array of unspent transaction outputs\n"
+            "listunspent ( minconf maxconf  [\"addresses\",...] [include_unsafe] )\n"
             "with between minconf and maxconf (inclusive) confirmations.\n"
             "Optionally filter to only include txouts paid to specified addresses.\n"
             "Results are an array of Objects, each of which has:\n"
@@ -3011,6 +3011,10 @@ UniValue listunspent(const UniValue& params, bool fHelp)
             "      \"address\"     (string) binarium address\n"
             "      ,...\n"
             "    ]\n"
+            "4. include_unsafe (bool, optional, default=true) Include outputs that are not safe to spend\n"
+            "                  because they come from unconfirmed untrusted transactions or unconfirmed\n"
+            "                  replacement transactions (cases where we are less sure that a conflicting\n"
+            "                  transaction won't be mined).\n"
             "\nResult\n"
             "[                             (array of json object)\n"
             "  {\n"
@@ -3034,18 +3038,19 @@ UniValue listunspent(const UniValue& params, bool fHelp)
             + HelpExampleRpc("listunspent", "6, 9999999 \"[\\\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\\\",\\\"XuQQkwA4FYkq2XERzMY2CiAZhJTEDAbtcg\\\"]\"")
         );
 
-    RPCTypeCheck(params, boost::assign::list_of(UniValue::VNUM)(UniValue::VNUM)(UniValue::VARR));
-
     int nMinDepth = 1;
-    if (params.size() > 0)
+    if (params.size() > 0 && !params[0].isNull())
+        RPCTypeCheckArgument(params[0], UniValue::VNUM);
         nMinDepth = params[0].get_int();
 
     int nMaxDepth = 9999999;
-    if (params.size() > 1)
+    if (params.size() > 1 && !params[1].isNull())
+        RPCTypeCheckArgument(params[1], UniValue::VNUM);
         nMaxDepth = params[1].get_int();
 
     set<CBitcoinAddress> setAddress;
-    if (params.size() > 2) {
+    if (params.size() > 2 && !params[2].isNull()) {
+        RPCTypeCheckArgument(params[2], UniValue::VARR);
         UniValue inputs = params[2].get_array();
         for (unsigned int idx = 0; idx < inputs.size(); idx++) {
             const UniValue& input = inputs[idx];
@@ -3058,11 +3063,17 @@ UniValue listunspent(const UniValue& params, bool fHelp)
         }
     }
 
+    bool include_unsafe = true;
+    if (params.size() > 3 && !params[3].isNull()) {
+        RPCTypeCheckArgument(params[3], UniValue::VBOOL);
+        include_unsafe = params[3].get_bool();
+    }
+
     UniValue results(UniValue::VARR);
     vector<COutput> vecOutputs;
     assert(pwalletMain != NULL);
     LOCK2(cs_main, pwalletMain->cs_wallet);
-    pwalletMain->AvailableCoins(vecOutputs, false, NULL, true);
+    pwalletMain->AvailableCoins(vecOutputs, !include_unsafe, NULL, true);
     BOOST_FOREACH(const COutput& out, vecOutputs) {
         if (out.nDepth < nMinDepth || out.nDepth > nMaxDepth)
             continue;
