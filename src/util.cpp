@@ -105,7 +105,7 @@ namespace boost {
 using namespace std;
 
 //Binarium only features
-bool fMasterNode = false;
+bool fMasternodeMode = false;
 bool fLiteMode = false;
 /**
     nWalletBackups:

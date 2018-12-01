@@ -377,27 +377,19 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
 
         nLastBlockTx = nBlockTx;
         nLastBlockSize = nBlockSize;
-        LogPrintf("CreateNewBlock(): total size %u txs: %u fees: %ld sigops %d\n", nBlockSize, nBlockTx, nFees, nBlockSigOps);
 
         // Update block coinbase
         pblock->vtx[0] = txNew;
         pblocktemplate->vTxFees[0] = -nFees;
 
         // Fill in header
-        pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
+        pblock->hashPrevBlock = pindexPrev->GetBlockHash();
         UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
-        pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus());
-        //pblock->nNonce         = 0;
-        //fprintf(stdout, "miner.cpp : CreateNewBlock () : machineHostName = %s.\n", QSysInfo :: machineHostName ().toUtf8 ().data () );
-        //fprintf(stdout, "miner.cpp : CreateNewBlock () : kernelType = %s.\n", QSysInfo :: kernelType ().toUtf8 ().data () );
-        //fprintf(stdout, "miner.cpp : CreateNewBlock () : kernelVersion = %s.\n", QSysInfo :: kernelVersion ().toUtf8 ().data () );
-        //fprintf(stdout, "miner.cpp : CreateNewBlock () : prettyProductName = %s.\n", QSysInfo :: prettyProductName ().toUtf8 ().data () );
-        //boost :: filesystem :: path full_path ( boost::filesystem::current_path() );
-        //fprintf(stdout, "miner.cpp : CreateNewBlock () : prettyProductName = %s.\n", full_path.string () );
-        //pblock->nNonce         = ( get_uptime () + GetTimeMicros () % 100000000 ) % 100000000;
-        pblock->nNonce         = ( get_uptime () % 86400 ) * 29 + ( GetTimeMicros () % 1000 ) * 131071;
-        fprintf(stdout, "miner.cpp : CreateNewBlock () : nNonce = %i.\n", pblock->nNonce );
-        //pblock->nHeightOfPreviousBlock = pindexPrev->nHeightOfPreviousBlock + 1;
+        pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus());
+        pblock->nNonce = (get_uptime() % 86400) * 29 + (GetTimeMicros() % 1000) * 131071;
+		
+		LogPrintf("CreateNewBlock(): total size %u txs: %u fees: %ld sigops: %d nNonce: %u\n", nBlockSize, nBlockTx, nFees, nBlockSigOps, pblock->nNonce);
+
         pblocktemplate->vTxSigOps[0] = GetLegacySigOpCount(pblock->vtx[0]);
 
         CValidationState state;

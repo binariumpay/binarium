@@ -198,7 +198,7 @@ void CMasternodeSync::ProcessTick(CConnman& connman)
         // they are temporary and should be considered unreliable for a sync process.
         // Inbound connection this early is most likely a "masternode" connection
         // initiated from another node, so skip it too.
-        if(pnode->fMasternode || (fMasterNode && pnode->fInbound)){
+        if(pnode->fMasternode || (fMasternodeMode && pnode->fInbound)){
             LogPrintf("CMasternodeSync::ProcessTick : if(pnode->fMasternode || (fMasterNode && pnode->fInbound)).\n");
             continue;
 

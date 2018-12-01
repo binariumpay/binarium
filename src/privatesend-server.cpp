@@ -18,7 +18,7 @@ CPrivateSendServer privateSendServer;
 
 void CPrivateSendServer::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv, CConnman& connman)
 {
-    if(!fMasterNode) return;
+    if(!fMasternodeMode) return;
     if(fLiteMode) return; // ignore all Binarium related functionality
     if(!masternodeSync.IsBlockchainSynced()) return;
 
@@ -278,7 +278,7 @@ void CPrivateSendServer::SetNull()
 //
 void CPrivateSendServer::CheckPool(CConnman& connman)
 {
-    if(fMasterNode) {
+    if(fMasternodeMode) {
         LogPrint("privatesend", "CPrivateSendServer::CheckPool -- entries count %lu\n", GetEntriesCount());
 
         // If entries are full, create finalized transaction
@@ -331,7 +331,7 @@ void CPrivateSendServer::CreateFinalTransaction(CConnman& connman)
 
 void CPrivateSendServer::CommitFinalTransaction(CConnman& connman)
 {
-    if(!fMasterNode) return; // check and relay final tx only on masternode
+    if(!fMasternodeMode) return; // check and relay final tx only on masternode
 
     CTransaction finalTransaction = CTransaction(finalMutableTransaction);
     uint256 hashTx = finalTransaction.GetHash();
@@ -392,7 +392,7 @@ void CPrivateSendServer::CommitFinalTransaction(CConnman& connman)
 //
 void CPrivateSendServer::ChargeFees(CConnman& connman)
 {
-    if(!fMasterNode) return;
+    if(!fMasternodeMode) return;
 
     //we don't need to charge collateral for every offence.
     if(GetRandInt(100) > 33) return;
@@ -469,7 +469,7 @@ void CPrivateSendServer::ChargeFees(CConnman& connman)
 */
 void CPrivateSendServer::ChargeRandomFees(CConnman& connman)
 {
-    if(!fMasterNode) return;
+    if(!fMasternodeMode) return;
 
     LOCK(cs_main);
 
@@ -497,9 +497,9 @@ void CPrivateSendServer::CheckTimeout(CConnman& connman)
 {
     CheckQueue();
 
-    if(!fMasterNode) return;
+    if(!fMasternodeMode) return;
 
-    int nLagTime = fMasterNode ? 0 : 10000; // if we're the client, give the server a few extra seconds before resetting.
+    int nLagTime = fMasternodeMode ? 0 : 10000; // if we're the client, give the server a few extra seconds before resetting.
     int nTimeout = (nState == POOL_STATE_SIGNING) ? PRIVATESEND_SIGNING_TIMEOUT : PRIVATESEND_QUEUE_TIMEOUT;
     bool fTimeout = GetTimeMillis() - nTimeLastSuccessfulStep >= nTimeout*1000 + nLagTime;
 
@@ -519,7 +519,7 @@ void CPrivateSendServer::CheckTimeout(CConnman& connman)
 */
 void CPrivateSendServer::CheckForCompleteQueue(CConnman& connman)
 {
-    if(!fMasterNode) return;
+    if(!fMasternodeMode) return;
 
     if(nState == POOL_STATE_QUEUE && IsSessionReady()) {
         SetState(POOL_STATE_ACCEPTING_ENTRIES);
@@ -579,7 +579,7 @@ bool CPrivateSendServer::IsInputScriptSigValid(const CTxIn& txin)
 //
 bool CPrivateSendServer::AddEntry(const CDarkSendEntry& entryNew, PoolMessage& nMessageIDRet)
 {
-    if(!fMasterNode) return false;
+    if(!fMasternodeMode) return false;
 
     BOOST_FOREACH(CTxIn txin, entryNew.vecTxDSIn) {
         if(txin.prevout.IsNull()) {
@@ -685,7 +685,7 @@ bool CPrivateSendServer::IsOutputsCompatibleWithSessionDenom(const std::vector<C
 
 bool CPrivateSendServer::IsAcceptableDenomAndCollateral(int nDenom, CTransaction txCollateral, PoolMessage& nMessageIDRet)
 {
-    if(!fMasterNode) return false;
+    if(!fMasternodeMode) return false;
 
     // is denom even smth legit?
     std::vector<int> vecBits;
@@ -707,7 +707,7 @@ bool CPrivateSendServer::IsAcceptableDenomAndCollateral(int nDenom, CTransaction
 
 bool CPrivateSendServer::CreateNewSession(int nDenom, CTransaction txCollateral, PoolMessage& nMessageIDRet, CConnman& connman)
 {
-    if(!fMasterNode || nSessionID != 0) return false;
+    if(!fMasternodeMode || nSessionID != 0) return false;
 
     // new session can only be started in idle mode
     if(nState != POOL_STATE_IDLE) {
@@ -746,7 +746,7 @@ bool CPrivateSendServer::CreateNewSession(int nDenom, CTransaction txCollateral,
 
 bool CPrivateSendServer::AddUserToExistingSession(int nDenom, CTransaction txCollateral, PoolMessage& nMessageIDRet)
 {
-    if(!fMasterNode || nSessionID == 0 || IsSessionReady()) return false;
+    if(!fMasternodeMode || nSessionID == 0 || IsSessionReady()) return false;
 
     if(!IsAcceptableDenomAndCollateral(nDenom, txCollateral, nMessageIDRet)) {
         return false;
@@ -860,7 +860,7 @@ void CPrivateSendServer::RelayCompletedTransaction(PoolMessage nMessageID, CConn
 
 void CPrivateSendServer::SetState(PoolState nStateNew)
 {
-    if(fMasterNode && (nStateNew == POOL_STATE_ERROR || nStateNew == POOL_STATE_SUCCESS)) {
+    if(fMasternodeMode && (nStateNew == POOL_STATE_ERROR || nStateNew == POOL_STATE_SUCCESS)) {
         LogPrint("privatesend", "CPrivateSendServer::SetState -- Can't set state to ERROR or SUCCESS as a Masternode. \n");
         return;
     }
