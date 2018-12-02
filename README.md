@@ -1,4 +1,4 @@
-Binarium staging tree 0.12.9
+Binarium staging tree 0.12.8
 ===============================
 
 https://binarium.money
