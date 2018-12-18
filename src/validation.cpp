@@ -1289,7 +1289,7 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 
                                                                               // mainnet:
     if (nHeight > nMNPIBlock)                      ret += blockValue / 20;    // 158000 - 25.0% - 2018-11-07 (5 + 25 / 20 = 6.25)
-    if (nHeight > nMNPIBlock + (nMNPIPeriod * 3))  ret = blockValue / 5;      // 209840 - 20.0% - 2019-01-09 Return back
+    //if (nHeight > nMNPIBlock + (nMNPIPeriod * 3))  ret = blockValue / 5;      // 209840 - 20.0% - 2019-01-09 Return back
 
     return ret;
 }
