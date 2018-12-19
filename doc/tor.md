@@ -1,7 +1,7 @@
-TOR SUPPORT IN DASH CORE
+TOR SUPPORT IN BINARIUM CORE
 =======================
 
-It is possible to run Dash Core as a Tor hidden service, and connect to such services.
+It is possible to run Binarium Core as a Tor hidden service, and connect to such services.
 
 The following directions assume you have a Tor proxy running on port 9050. Many
 distributions default to having a SOCKS proxy listening on port 9050, but others
@@ -10,10 +10,10 @@ port. See [Tor Project FAQ:TBBSocksPort](https://www.torproject.org/docs/faq.htm
 for how to properly configure Tor.
 
 
-1. Run Dash Core behind a Tor proxy
+1. Run Binarium Core behind a Tor proxy
 ----------------------------------
 
-The first step is running Dash Core behind a Tor proxy. This will already make all
+The first step is running Binarium Core behind a Tor proxy. This will already make all
 outgoing connections be anonymized, but more is possible.
 
 	-proxy=ip:port  Set the proxy server. If SOCKS5 is selected (default), this proxy
@@ -44,7 +44,7 @@ In a typical situation, this suffices to run behind a Tor proxy:
 	./dashd -proxy=127.0.0.1:9050
 
 
-2. Run a Dash Core hidden server
+2. Run a Binarium Core hidden server
 -------------------------------
 
 If you configure your Tor system accordingly, it is possible to make your node also
@@ -58,7 +58,7 @@ config file):
 The directory can be different of course, but (both) port numbers should be equal to
 your dashd's P2P listen port (9999 by default).
 
-	-externalip=X   You can tell Dash Core about its publicly reachable address using
+	-externalip=X   You can tell Binarium Core about its publicly reachable address using
 	                this option, and this can be a .onion address. Given the above
 	                configuration, you can find your onion address in
 	                /var/lib/tor/dashcore-service/hostname. Onion addresses are given
@@ -99,7 +99,7 @@ for normal IPv4/IPv6 communication, use:
 	./dashd -onion=127.0.0.1:9050 -externalip=ssapp53tmftyjmjb.onion -discover
 
 
-3. List of known Dash Core Tor relays
+3. List of known Binarium Core Tor relays
 ------------------------------------
 
 * [darkcoinie7ghp67.onion](http://darkcoinie7ghp67.onion/)
@@ -120,14 +120,14 @@ for normal IPv4/IPv6 communication, use:
 
 Starting with Tor version 0.2.7.1 it is possible, through Tor's control socket
 API, to create and destroy 'ephemeral' hidden services programmatically.
-Dash Core has been updated to make use of this.
+Binarium Core has been updated to make use of this.
 
 This means that if Tor is running (and proper authorization is available),
-Dash Core automatically creates a hidden service to listen on, without
+Binarium Core automatically creates a hidden service to listen on, without
 manual configuration. This will positively affect the number of available
 .onion nodes.
 
-This new feature is enabled by default if Dash Core is listening, and
+This new feature is enabled by default if Binarium Core is listening, and
 a connection to Tor can be made. It can be configured with the `-listenonion`,
 `-torcontrol` and `-torpassword` settings. To show verbose debugging
 information, pass `-debug=tor`.
