@@ -12,14 +12,16 @@ For example:
 
     make HOST=x86_64-w64-mingw32 -j4
 
-A prefix will be generated that's suitable for plugging into Dash's
+A prefix will be generated that's suitable for plugging into Binarium's
 configure. In the above example, a dir named x86_64-w64-mingw32 will be
-created. To use it for Dash:
+created. To use it for Binarium:
 
     ./configure --prefix=`pwd`/depends/x86_64-w64-mingw32
 
 Common `host-platform-triplets` for cross compilation are:
 
+- `i686-unknown-linux-gnu` for Linux 32 bit (Debian, Ubuntu)
+- `x86_64-unknown-linux-gnu` for Linux 64 bit (Debian, Ubuntu)
 - `i686-w64-mingw32` for Win32
 - `x86_64-w64-mingw32` for Win64
 - `x86_64-apple-darwin11` for MacOSX
@@ -40,7 +42,7 @@ The following can be set when running make: make FOO=bar
     DEBUG: disable some optimizations and enable more runtime checking
 
 If some packages are not built, for example `make NO_WALLET=1`, the appropriate
-options will be passed to Dash Core's configure. In this case, `--disable-wallet`.
+options will be passed to Binarium Core's configure. In this case, `--disable-wallet`.
 
 Additional targets:
 

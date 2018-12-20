@@ -4,7 +4,7 @@ DEBIAN BUILD NOTES
 Prepare build environment and install dependencies
 ------------------
 
-	apt-get install gcc autoconf build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils libboost-all-dev libminiupnpc-dev libzmq3-dev
+	apt-get install gcc autoconf build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils libboost-all-dev libminiupnpc-dev libzmq3-dev gcc-multilib g++-multilib libfreetype6-dev
 
 Use only absolute paths for autogen.sh, configure and their parameters for prevent some issues
 

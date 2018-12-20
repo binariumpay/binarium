@@ -1,4 +1,4 @@
-Binarium Core 0.12.8
+Binarium Core 0.12.9
 =====================
 
 This is the official reference wallet for Binarium digital currency and comprises the backbone of the Binarium peer-to-peer network. You can [download Binarium Core](https://github.com/binariumpay/binarium/releases) or [build it yourself](#building) using the guides below.
@@ -65,6 +65,7 @@ The Binarium Core repo's [root README](/README.md) contains relevant information
 License
 ---------------------
 Distributed under the [MIT software license](http://www.opensource.org/licenses/mit-license.php).
-This product based on software developed by the Binarium Core (http://dash.org)
+This product based on software developed by the Dash Core (http://dash.org)
+This product based on software developed by the Binarium Core (http://binarium.money)
 This product includes software developed by the OpenSSL Project for use in the [OpenSSL Toolkit](https://www.openssl.org/). This product includes
 cryptographic software written by Eric Young ([eay@cryptsoft.com](mailto:eay@cryptsoft.com)), and UPnP software written by Thomas Bernard.
