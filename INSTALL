@@ -1,7 +1,7 @@
-Building Dash Core
+Building Binarium Core
 
 After you install the usual build tools and C++ development tools,
-Dash Core also needs some build dependencies which are not always provided
+Binarium Core also needs some build dependencies which are not always provided
 by default by the OS package manager
 (in particular BerkeleyDB 4.8 for building with wallet support).
 
@@ -9,6 +9,7 @@ Before trying to build, be sure to read one of these files,
 depending on your environment:
 
   doc/build-unix.md
+  doc/build-debian.md
   doc/build-openbsd.md
   doc/build-osx.md
   doc/build-windows.md
@@ -21,10 +22,10 @@ use the autogen script to prepare the build environment.
     make
 
 Precompiled binaries are available at github, see
-https://github.com/dashpay/dash-binaries
+https://github.com/binariumpay/binarium/releases
 
 Always verify the signatures and checksums.
 
-See doc/build-*.md for instructions on building dashd,
+See doc/build-*.md for instructions on building binariumd,
 the intended-for-services, no-graphical-interface,
-reference implementation of Dash.
+reference implementation of Binarium.
