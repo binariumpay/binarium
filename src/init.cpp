@@ -113,8 +113,6 @@ static const bool DEFAULT_STOPAFTERBLOCKIMPORT = false;
 std::unique_ptr<CConnman> g_connman;
 std::unique_ptr<PeerLogicValidation> peerLogic;
 bool g_bGenerateBlocks = false;
-//int g_iAmountOfMiningThreads = -2;
-//extern int g_iAmountOfMiningThreads;
 
 //#ifdef BITCOIN_UI_INTERFACE_H
 #ifdef BITCOIN_QT_BITCOINGUI_H
@@ -2068,6 +2066,13 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         uiInterface.NotifyBlockTip.disconnect(BlockNotifyGenesisWait);
     }
 
+#ifdef ENABLE_WALLET
+    // Add wallet transactions that aren't already in a block to mempool
+    // Do this here as mempool requires genesis block to be loaded
+    if (pwalletMain)
+        pwalletMain->ReacceptWalletTransactions();
+#endif
+
     // ********************************************************* Step 11a: setup PrivateSend
     fMasternodeMode = GetBoolArg("-masternode", false);
     // TODO: masternode should have no wallet
@@ -2243,30 +2248,21 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     if (!connman.Start(scheduler, strNodeError, connOptions))
         return InitError(strNodeError);
 
+    // ********************************************************* Step 13: finished
+	
     // Generate coins in the background
-    /*QSettings settings;
-    bool bGenerateBlocks = settings.value ( "bGenerateBlocks", true );
-    GenerateBitcoins(GetBoolArg("-gen", DEFAULT_GENERATE && bGenerateBlocks ), GetArg("-genproclimit", DEFAULT_GENERATE_THREADS), chainparams, connman);*/
-    fprintf(stdout, "init.cpp : AppInit2 () : g_bGenerateBlocks = %i.\n", g_bGenerateBlocks );
-    boost :: filesystem :: path full_path ( boost::filesystem::current_path() );
-    //fprintf(stdout, "init.cpp : AppInit2 () : full_path = %s ; %i ; %" PRIu64 " ; %i .\n", full_path.string ().c_str (), get_uptime (), GetTimeMicros (), int ( ( get_uptime () + GetTimeMicros () % 100000000 ) % 100000000 ) );
-    int iAmountOfThreads = min ( DEFAULT_GENERATE_THREADS, I_MAX_GENERATE_THREADS );
-    iAmountOfThreads = GetArg("-genproclimit", iAmountOfThreads );
-    if ( g_iAmountOfMiningThreads >= -1 ) {
+    int iAmountOfThreads = min(DEFAULT_GENERATE_THREADS, I_MAX_GENERATE_THREADS ;
+    iAmountOfThreads = GetArg("-genproclimit", iAmountOfThreads);
+    if (g_iAmountOfMiningThreads >= -1) {
         iAmountOfThreads = g_iAmountOfMiningThreads;
     }
-    GenerateBitcoins ( GetBoolArg("-gen", DEFAULT_GENERATE ) || g_bGenerateBlocks, iAmountOfThreads, chainparams, connman );
-
-    // ********************************************************* Step 13: finished
+    GenerateBitcoins(GetBoolArg("-gen", DEFAULT_GENERATE) || g_bGenerateBlocks, iAmountOfThreads, chainparams, connman);
 
     SetRPCWarmupFinished();
     uiInterface.InitMessage(_("Done loading"));
 
 #ifdef ENABLE_WALLET
     if (pwalletMain) {
-        // Add wallet transactions that aren't already in a block to mapTransactions
-        pwalletMain->ReacceptWalletTransactions();
-
         // Run a thread to flush wallet periodically
         threadGroup.create_thread(boost::bind(&ThreadFlushWalletDB, boost::ref(pwalletMain->strWalletFile)));
     }

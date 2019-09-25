@@ -72,7 +72,6 @@ bool g_bNotifyIsMiningEnabled = false;
 boost::atomic < THashRateCounter > aHashRateCounters [ I_MAX_GENERATE_THREADS * 2 ];
 
 int g_iAmountOfMiningThreads = -2;
-//extern int g_iAmountOfMiningThreads;
 int g_iPreviousAmountOfMiningThreads;
 
 
@@ -676,7 +675,6 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman, con
 void GenerateBitcoins(bool fGenerate, int nThreads, const CChainParams& chainparams, CConnman& connman)
 {
     static boost::thread_group* minerThreads = NULL;
-    int i;
 
     if (nThreads < 0)
         nThreads = GetNumCores();
@@ -688,15 +686,12 @@ void GenerateBitcoins(bool fGenerate, int nThreads, const CChainParams& chainpar
         minerThreads = NULL;
     }
 
-    //g_bNotifyIsMiningEnabled = true;
-
     THashRateCounter structureHashRateCounter;
     structureHashRateCounter.fHashRate = 0.0f;
 
-    for ( i = 0; i < I_MAX_GENERATE_THREADS * 2; i ++ ) {
-        aHashRateCounters [ i ].store ( structureHashRateCounter );
-
-    } //-for
+    for (unsigned int i = 0; i < I_MAX_GENERATE_THREADS * 2; i++) {
+        aHashRateCounters[i].store(structureHashRateCounter);
+    }
 
     g_iPreviousAmountOfMiningThreads = g_iAmountOfMiningThreads;
     g_iAmountOfMiningThreads = fGenerate ? nThreads : 0;
@@ -705,14 +700,10 @@ void GenerateBitcoins(bool fGenerate, int nThreads, const CChainParams& chainpar
         return;
 
     minerThreads = new boost::thread_group();
-    for ( i = 0; i < nThreads; i++) {
-        //minerThreads->create_thread(boost::bind(&BitcoinMiner, boost::cref(chainparams), boost::ref(connman), boost::cref(i) ) );
-        minerThreads->create_thread(boost::bind(&BitcoinMiner, boost::cref(chainparams), boost::ref(connman), i ) );
+    for (unsigned int j = 0; j < nThreads; j++) {
+        minerThreads->create_thread(boost::bind(&BitcoinMiner, boost::cref(chainparams), boost::ref(connman), j));
     }
-
 }
-
-
 
 std::string HelpExampleCli2(const std::string& methodname, const std::string& args)
 {
@@ -725,23 +716,19 @@ std::string HelpExampleRpc2(const std::string& methodname, const std::string& ar
         "\"method\": \"" + methodname + "\", \"params\": [" + args + "] }' -H 'content-type: text/plain;' http://127.0.0.1:9998/\n";
 }
 
-UniValue GetClientHashesPerSecond () {
+UniValue GetClientHashesPerSecond ()
+{
     THashRateCounter structureHashRateCounter;
     float fHashRateSum = 0.0f;
-    int i = 0;
-
-    for ( i = 0; i < g_iAmountOfMiningThreads; i ++ ) {   // I_MAX_GENERATE_THREADS * 2
-        structureHashRateCounter = aHashRateCounters [ i ].load ();
-        //if ( structureHashRateCounter.fHashRate > 0.0f ) {
-            fHashRateSum = fHashRateSum + structureHashRateCounter.fHashRate;
-        //} //-if
-
-    } //-for
+    for (unsigned int i = 0; i < g_iAmountOfMiningThreads; i++) {
+        structureHashRateCounter = aHashRateCounters[i].load();
+        fHashRateSum = fHashRateSum + structureHashRateCounter.fHashRate;
+    }
 
     return fHashRateSum + Wallet_PoolMiner_GetHashesRate ();
 }
 
-UniValue get_client_hashes_per_second (const UniValue& params, bool fHelp)
+UniValue get_client_hashes_per_second(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 0)
         throw runtime_error(
@@ -753,7 +740,7 @@ UniValue get_client_hashes_per_second (const UniValue& params, bool fHelp)
             "\nExamples:\n"
             + HelpExampleCli2("get_client_hashes_per_second", "")
             + HelpExampleRpc2("get_client_hashes_per_second", "")
-       );
+        );
 
     LOCK(cs_main);
     return GetClientHashesPerSecond ();

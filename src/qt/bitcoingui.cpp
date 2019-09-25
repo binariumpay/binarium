@@ -1438,61 +1438,38 @@ void BitcoinGUI::message(const QString &title, const QString &message, unsigned 
         notificator->notify((Notificator::Class)nNotifyIcon, strTitle, message);
 }
 
-void BitcoinGUI ::cbIsMiningEnabled_Toggled ( bool _bState ) {
+void BitcoinGUI::cbIsMiningEnabled_Toggled (bool _bState) {
     QSettings settings;
 
-    fprintf(stdout, "BitcoinGUI.cbIsMiningEnabled_Toggled () : %i , %i, %i.\n", cbIsMiningEnabled -> isChecked (), g_iPreviousAmountOfMiningThreads, g_iAmountOfMiningThreads );
-    //cbIsMiningEnabled -> setChecked ( ! _bState );
-    //cbIsMiningEnabled -> setChecked ( _bState );
-
-    if ( ! cbIsMiningEnabled -> isChecked () ) {
-        //g_iPreviousAmountOfMiningThreads = g_iAmountOfMiningThreads;
-        GenerateBitcoins ( cbIsMiningEnabled -> isChecked (), g_iAmountOfMiningThreads, Params(), *g_connman );
-    
+    if (!cbIsMiningEnabled->isChecked()) {
+        GenerateBitcoins(cbIsMiningEnabled->isChecked(), g_iAmountOfMiningThreads, Params(), *g_connman);
     } else {
-        if ( settings.value ( "bGenerateBlocks", false ).toBool () ) {
-            GenerateBitcoins ( cbIsMiningEnabled -> isChecked (), g_iPreviousAmountOfMiningThreads, Params(), *g_connman );
-            //g_iPreviousAmountOfMiningThreads = 0;
-
+        if (settings.value("bGenerateBlocks", false).toBool()) {
+            GenerateBitcoins(cbIsMiningEnabled->isChecked(), g_iPreviousAmountOfMiningThreads, Params(), *g_connman);
         }
-
     }
 
-    //try
-    //{
-        bool bEnableMiningInPool = settings.value ( "bEnableMiningInPool", false ).toBool ();
-        if ( bEnableMiningInPool ) {
-            //StartPoolMining ( ! g_bIsPoolMiningEnabled );
-            PoolMiner_Start ( ! g_bIsPoolMiningEnabled );
-        }
-
-    /*} catch (const std::exception& e) {
-        PrintExceptionContinue(&e, "Runaway exception");
-
-    } catch (...) {
-        PrintExceptionContinue(NULL, "Runaway exception");
-        
-    }*/
-
+    bool bEnableMiningInPool = settings.value("bEnableMiningInPool", false).toBool();
+    if ( bEnableMiningInPool ) {
+        PoolMiner_Start(!g_bIsPoolMiningEnabled);
+    }
 }
 
-void BitcoinGUI :: PoolMiner_Start ( bool _bStart ) {
+void BitcoinGUI::PoolMiner_Start (bool _bStart) {
     char * pcErrorMessage;
     QSettings settings;
 
     pcErrorMessage = StartPoolMining ( _bStart,
-        settings.value ( "sPoolURL" ).toString ().toStdString (),
-        settings.value ( "sPoolUser" ).toString ().toStdString (),
-        settings.value ( "sPoolUserPassword" ).toString ().toStdString (),
-        settings.value ( "sPoolMiningAlgorithm" ).toString ().toStdString (),
-        settings.value ( "iAmountOfPoolMiningThreads" ).toInt (),
-        settings.value ( "iPoolMinerCPUPriority" ).toInt (),
-        settings.value ( "iPoolMinerCPUAffinity" ).toInt () );
+        settings.value("sPoolURL").toString().toStdString(),
+        settings.value("sPoolUser").toString().toStdString(),
+        settings.value("sPoolUserPassword").toString().toStdString(),
+        settings.value("sPoolMiningAlgorithm").toString().toStdString(),
+        settings.value("iAmountOfPoolMiningThreads").toInt(),
+        settings.value("iPoolMinerCPUPriority").toInt(),
+        settings.value("iPoolMinerCPUAffinity").toInt());
 
-    if ( ( pcErrorMessage != nullptr ) && ( pcErrorMessage [ 0 ] != 0 ) ) {
-        uiInterface.ThreadSafeMessageBox( QApplication::translate ( "BitcoinGUI", pcErrorMessage, 0 ).toUtf8 ().data (), "", CClientUIInterface::MSG_ERROR );
-        //LogPrintf ( "BitcoinGUI", ( "PoolMiner_Start () : " + std::string ( pcErrorMessage ) + "." ).c_str () );
-        fprintf(stdout, "BitcoinGUI :: PoolMiner_Start () : %s\n", pcErrorMessage );
+    if ((pcErrorMessage != nullptr) && (pcErrorMessage [0] != 0)) {
+        uiInterface.ThreadSafeMessageBox(QApplication::translate("BitcoinGUI", pcErrorMessage, 0).toUtf8().data(), "", CClientUIInterface::MSG_ERROR);
     }
 }
 
