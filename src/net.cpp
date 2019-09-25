@@ -995,12 +995,12 @@ bool CConnman::AttemptToEvictConnection()
     std::vector<unsigned char> naMostConnections;
     unsigned int nMostConnections = 0;
     int64_t nMostConnectionsTime = 0;
-    std::map<std::vector<unsigned char>, std::vector<NodeEvictionCandidate> > mapAddrCounts;
+    std::map<std::vector<unsigned char>, std::vector<NodeEvictionCandidate> > mapNetGroupNodes;
     for(size_t i = 0; i < vEvictionCandidates.size(); ++i) {
         const NodeEvictionCandidate& candidate = vEvictionCandidates[i];
-        mapAddrCounts[candidate.vchNetGroup].push_back(candidate);
-        int64_t grouptime = mapAddrCounts[candidate.vchNetGroup][0].nTimeConnected;
-        size_t groupsize = mapAddrCounts[candidate.vchNetGroup].size();
+        mapNetGroupNodes[candidate.vchNetGroup].push_back(candidate);
+        int64_t grouptime = mapNetGroupNodes[candidate.vchNetGroup][0].nTimeConnected;
+        size_t groupsize = mapNetGroupNodes[candidate.vchNetGroup].size();
 
         if (groupsize > nMostConnections || (groupsize == nMostConnections && grouptime > nMostConnectionsTime)) {
             nMostConnections = groupsize;
@@ -1010,7 +1010,7 @@ bool CConnman::AttemptToEvictConnection()
     }
 
     // Reduce to the network group with the most connections
-    std::vector<NodeEvictionCandidate> vEvictionNodes = mapAddrCounts[naMostConnections];
+    std::vector<NodeEvictionCandidate> vEvictionNodes = mapNetGroupNodes[naMostConnections];
 
     if(vEvictionNodes.empty()) {
         return false;
