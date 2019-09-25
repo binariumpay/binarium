@@ -1580,11 +1580,15 @@ void BitcoinGUI::closeEvent(QCloseEvent *event)
 
             QApplication::quit();
         }
+        else
+        {
+            QMainWindow::showMinimized();
+            event->ignore();
+        }
     }
-#endif
-
+#else
     QMainWindow::closeEvent(event);
-    
+#endif
 }
 
 void BitcoinGUI::showEvent(QShowEvent *event)
