@@ -146,7 +146,7 @@ testScriptsExt = [
     # 'pruning.py', # Prune mode is incompatible with -txindex.
     'forknotify.py',
     'invalidateblock.py',
-#    'rpcbind_test.py', #temporary, bug in libevent, see #6655
+    'rpcbind_test.py',
     'smartfees.py',
     'maxblocksinflight.py',
     'p2p-acceptblock.py', # NOTE: needs dash_hash to pass

@@ -159,7 +159,16 @@ def initialize_datadir(dirname, n):
     return datadir
 
 def rpc_url(i, rpchost=None):
-    return "http://rt:rt@%s:%d" % (rpchost or '127.0.0.1', rpc_port(i))
+    rpc_u, rpc_p = rpc_auth_pair(i)
+    host = '127.0.0.1'
+    port = rpc_port(i)
+    if rpchost:
+        parts = rpchost.split(':')
+        if len(parts) == 2:
+            host, port = parts
+        else:
+            host = rpchost
+    return "http://%s:%s@%s:%d" % (rpc_u, rpc_p, host, int(port))
 
 def wait_for_bitcoind_start(process, url, i):
     '''
