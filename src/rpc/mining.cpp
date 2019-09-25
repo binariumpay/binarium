@@ -41,23 +41,6 @@
 
 using namespace std;
 
-
-
-/*void * g_pCPUMinerSharedLibrary = nullptr;
-int ( * g_pfPoolMinerMain ) ( int, char ** );
-void ( * g_pfPoolMiner_StopMining ) ();
-char g_sCPUMinerProgram [ 64 ];
-char g_sPoolURL [ 256 ];
-char g_sUserLogin [ 256 ];
-char g_sUserPassword [ 256 ];
-char g_sAlgorithm [ 256 ];
-char g_sAmountOfthreads [ 32 ];
-char g_sCPUPriority [ 32 ];
-char g_sCPUAffinity [ 32 ];
-char * g_pArgV [ 8 ] = { g_sCPUMinerProgram, g_sPoolURL, g_sUserLogin, g_sUserPassword, g_sAlgorithm, g_sAmountOfthreads, g_sCPUPriority, g_sCPUAffinity };*/
-
-
-
 /**
  * Return average network hashes per second based on the last 'lookup' blocks,
  * or from the last difficulty change if 'lookup' is nonpositive.
@@ -259,7 +242,6 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
 }
 
 UniValue setgenerate_in_pool(const UniValue& params, bool fHelp)
-//UniValue SetGenerateInPool(const UniValue& params, bool fHelp)
 {
     if ( fHelp || params.size() < 8 || params.size() > 8 )
         throw runtime_error(
@@ -292,8 +274,6 @@ UniValue setgenerate_in_pool(const UniValue& params, bool fHelp)
 
     bool fGenerate = true;
     if (params.size() > 0) {
-        //throw JSONRPCError ( RPC_METHOD_NOT_FOUND, params[0].get_str () );
-        //throw JSONRPCError ( RPC_METHOD_NOT_FOUND, uvTypeName ( params[0].getType () ) );
         fGenerate = params[0].get_bool();
     }
 
@@ -309,52 +289,7 @@ UniValue setgenerate_in_pool(const UniValue& params, bool fHelp)
     mapArgs["-gen"] = (fGenerate ? "1" : "0");
     mapArgs ["-genproclimit"] = itostr(nGenProcLimit);
 
-    /*if ( g_pCPUMinerSharedLibrary == nullptr ) {
-        g_pCPUMinerSharedLibrary = dlopen ( "./cpuminer.so", RTLD_NOW );
-        if ( g_pCPUMinerSharedLibrary == nullptr ) {
-            throw JSONRPCError(RPC_MISC_ERROR, "cpuminer shared library was not found.");
-            return NullUniValue;
-        }
-        g_pfPoolMinerMain = ( int (*)(int, char**) ) dlsym ( g_pCPUMinerSharedLibrary, "PoolMinerMain" );
-        if ( g_pfPoolMinerMain == nullptr ) {
-            throw JSONRPCError(RPC_MISC_ERROR, "PoolMinerMain function was not found in cpuminer shared library.");
-            return NullUniValue;
-        }
-        g_pfPoolMiner_StopMining = ( void (*)() ) dlsym ( g_pCPUMinerSharedLibrary, "PoolMiner_StopMining" );
-        if ( g_pfPoolMinerMain == nullptr ) {
-            throw JSONRPCError(RPC_MISC_ERROR, "PoolMiner_StopMining function was not found in cpuminer shared library.");
-            return NullUniValue;
-        }
-    }
-
-    fprintf ( stdout, "mining.cpp : setgenerate_in_pool () : %i.\n", fGenerate );
-    if ( fGenerate ) {
-        //GenerateBitcoins(fGenerate, nGenProcLimit, Params(), *g_connman);
-        //PoolMinerMain ( 0, nullptr );
-
-        g_pfPoolMiner_StopMining ();
-
-        // setgenerate_in_pool true 1 \"stratum+tcp://pool.binarium.money:3001\" \"XbCiEW3RpLyvuTBxf2Kn99bv6PrPB9Azy8\" \"password\" \"Binarium_hash_v1\" 0 -1
-        strcpy ( g_sCPUMinerProgram, "./cpuminer" );
-        strcpy ( g_sPoolURL, "--url=stratum+tcp://pool.binarium.money:3001" );
-        strcpy ( g_sUserLogin, "--user=XbCiEW3RpLyvuTBxf2Kn99bv6PrPB9Azy8" );
-        strcpy ( g_sUserPassword, "--pass=password" );
-        strcpy ( g_sAlgorithm, "--algo=Binarium_hash_v1" );
-        strcpy ( g_sAmountOfthreads, "--threads=2" );
-        strcpy ( g_sCPUPriority, "--cpu-priority=0" );
-        strcpy ( g_sCPUAffinity, "--cpu-affinity=-1" );
-        g_pfPoolMinerMain ( 8, g_pArgV );
-
-    } else {
-        g_pfPoolMiner_StopMining ();
-    }*/
-
-
     char * pcErrorMessage;
-
-    //try
-    //{
-        fprintf ( stdout, "mining.cpp : setgenerate_in_pool () : nGenProcLimit : %i.\n", nGenProcLimit );
 
     pcErrorMessage = StartPoolMining ( fGenerate,
         params[2].get_str (),
@@ -371,35 +306,8 @@ UniValue setgenerate_in_pool(const UniValue& params, bool fHelp)
         return NullUniValue;
     }
 
-    /*} catch (const std::exception& e) {
-        throw JSONRPCError(RPC_MISC_ERROR, "Runaway exception" );
-        PrintExceptionContinue(&e, "Runaway exception");
-
-    } catch (...) {
-        PrintExceptionContinue(NULL, "Runaway exception");
-        
-    }*/
-
     return NullUniValue;
 }
-
-/*UniValue getgenerate_in_pool (const UniValue& params, bool fHelp)
-{
-    if (fHelp || params.size() != 0)
-        throw runtime_error(
-            "getgenerate_in_pool \n"
-            "\nReturn if the server is set to generate coins or not. The default is false.\n"
-            "It can also be set with the getgenerate_in_pool call.\n"
-            "\nResult\n"
-            "true|false      (boolean) If the server is set to generate coins or not\n"
-            "\nExamples:\n"
-            + HelpExampleCli("getgenerate_in_pool", "")
-            + HelpExampleRpc("getgenerate_in_pool", "")
-        );
-
-    LOCK(cs_main);
-    return GetBoolArg("-gen", DEFAULT_GENERATE);
-}*/
 
 UniValue getmininginfo(const UniValue& params, bool fHelp)
 {
@@ -414,8 +322,8 @@ UniValue getmininginfo(const UniValue& params, bool fHelp)
             "  \"currentblocktx\": nnn,     (numeric) The last block transaction\n"
             "  \"difficulty\": xxx.xxxxx    (numeric) The current difficulty\n"
             "  \"errors\": \"...\"          (string) Current errors\n"
+            "  \"networkhashps\": nnn,      (numeric) The network hashes per second\n"
             "  \"genproclimit\": n          (numeric) The processor limit for generation. -1 if no generation. (see getgenerate or setgenerate calls)\n"
-            "  \"networkhashps\": n         (numeric) An estimate of the number of hashes per second the network is generating to maintain the current difficulty\n"
             "  \"pooledtx\": n              (numeric) The size of the mem pool\n"
             "  \"testnet\": true|false      (boolean) If using testnet or not\n"
             "  \"chain\": \"xxxx\",         (string) current network name as defined in BIP70 (main, test, regtest)\n"
@@ -861,7 +769,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
 
     if (nMaxVersionPreVB >= 2) {
         // If VB is supported by the client, nMaxVersionPreVB is -1, so we won't get here
-        // Because BIP 34 changed how the generation transaction is serialised, we can only use version/force back to v2 blocks
+        // Because BIP 34 changed how the generation transaction is serialized, we can only use version/force back to v2 blocks
         // This is safe to do [otherwise-]unconditionally only because we are throwing an exception above if a non-force deployment gets activated
         // Note that this can probably also be removed entirely after the first BIP9 non-force deployment (ie, probably segwit) gets activated
         aMutable.push_back("version/force");

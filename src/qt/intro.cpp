@@ -160,25 +160,20 @@ QString Intro::getDefaultDataDirectory()
     return GUIUtil::boostPathToQString(GetDefaultDataDir());
 }
 
-void Intro::pickDataDirectory( bool _bSetDataDirFromGUI )
+bool Intro::pickDataDirectory( bool _bSetDataDirFromGUI )
 {
     namespace fs = boost::filesystem;
     QSettings settings;
-
-    fprintf(stdout, "Intro.pickDataDirectory () :  %i.\n", _bSetDataDirFromGUI);
-
     /* If data directory provided on command line, no need to look at settings
        or show a picking dialog */
     if(!GetArg("-datadir", "").empty() /*&& ! _bSetDataDirFromGUI*/)
-        return;
+        return true;
     /* 1) Default data directory for operating system */
     QString dataDirDefaultCurrent = getDefaultDataDirectory();
     /* 2) Allow QSettings to override default dir */
     QString dataDir = settings.value("strDataDir", dataDirDefaultCurrent).toString();
     /* 3) Check to see if default datadir is the one we expect */
     QString dataDirDefaultSettings = settings.value("strDataDirDefault").toString();
-
-    fprintf(stdout, "Intro.pickDataDirectory () : 2 :  %i.\n", _bSetDataDirFromGUI);
 
     if(!fs::exists(GUIUtil::qstringToBoostPath(dataDir)) || GetBoolArg("-choosedatadir", DEFAULT_CHOOSE_DATADIR) ||
         dataDirDefaultCurrent != dataDirDefaultSettings || _bSetDataDirFromGUI)
@@ -197,7 +192,7 @@ void Intro::pickDataDirectory( bool _bSetDataDirFromGUI )
             if(!intro.exec())
             {
                 /* Cancel clicked */
-                exit(EXIT_SUCCESS);
+                return false;
             }
             dataDir = intro.getDataDirectory();
             try {
@@ -219,6 +214,7 @@ void Intro::pickDataDirectory( bool _bSetDataDirFromGUI )
      */
     if(dataDir != dataDirDefaultCurrent)
         SoftSetArg("-datadir", GUIUtil::qstringToBoostPath(dataDir).string()); // use OS locale for path setting
+    return true;
 }
 
 void Intro::setStatus(int status, const QString &message, quint64 bytesAvailable)

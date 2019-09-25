@@ -123,6 +123,7 @@ testScripts = [
     'sendheaders.py', # NOTE: needs dash_hash to pass
     'keypool.py',
     'keypool-hd.py',
+    'p2p-mempool.py',
     'prioritise_transaction.py',
     'invalidblockrequest.py', # NOTE: needs dash_hash to pass
     'invalidtxrequest.py', # NOTE: needs dash_hash to pass
