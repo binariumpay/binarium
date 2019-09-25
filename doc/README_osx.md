@@ -33,12 +33,28 @@ To obtain it, register for a developer account, then download the Xcode 6.1.1 dm
 https://developer.apple.com/devcenter/download.action?path=/Developer_Tools/xcode_6.1.1/xcode_6.1.1.dmg
 
 This file is several gigabytes in size, but only a single directory inside is
-needed: Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk
+needed: Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk
 
 Unfortunately, the usual linux tools (7zip, hpmount, loopback mount) are incapable of opening this file.
-To create a tarball suitable for Gitian input, mount the dmg in OS X, then create it with:
-  $ tar -C /Volumes/Xcode/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/ -czf MacOSX10.9.sdk.tar.gz MacOSX10.9.sdk
+To create a tarball suitable for Gitian input, there are two options:
 
+Using Mac OS X, you can mount the dmg, and then create it with:
+```
+  $ hdiutil attach Xcode_7.3.1.dmg
+  $ tar -C /Volumes/Xcode/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/ -czf MacOSX10.11.sdk.tar.gz MacOSX10.11.sdk
+```
+
+Alternatively, you can use 7zip and SleuthKit to extract the files one by one.
+The script contrib/macdeploy/extract-osx-sdk.sh automates this. First ensure
+the dmg file is in the current directory, and then run the script. You may wish
+to delete the intermediate 5.hfs file and MacOSX10.11.sdk (the directory) when
+you've confirmed the extraction succeeded.
+
+```bash
+apt-get install p7zip-full sleuthkit
+contrib/macdeploy/extract-osx-sdk.sh
+rm -rf 5.hfs MacOSX10.11.sdk
+```
 
 The Gitian descriptors build 2 sets of files: Linux tools, then Apple binaries
 which are created using these tools. The build process has been designed to
