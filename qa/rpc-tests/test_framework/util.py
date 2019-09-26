@@ -159,16 +159,7 @@ def initialize_datadir(dirname, n):
     return datadir
 
 def rpc_url(i, rpchost=None):
-    rpc_u, rpc_p = rpc_auth_pair(i)
-    host = '127.0.0.1'
-    port = rpc_port(i)
-    if rpchost:
-        parts = rpchost.split(':')
-        if len(parts) == 2:
-            host, port = parts
-        else:
-            host = rpchost
-    return "http://%s:%s@%s:%d" % (rpc_u, rpc_p, host, int(port))
+    return "http://rt:rt@%s:%d" % (rpchost or '127.0.0.1', rpc_port(i))
 
 def wait_for_bitcoind_start(process, url, i):
     '''
@@ -486,153 +477,135 @@ def assert_raises(exc, fun, *args, **kwds):
         raise AssertionError("No exception raised")
 
 def assert_is_hex_string(string):
- ash.conf
-
-def initialize_chain_clean(test_dir, num_nodes):
-    """
-    Create an empty blockchain and num_nodes wallets.
-    Useful if a test case wants complete control over initialization.
-    """
-    for i in range(num_nodes):
-        datadir=initialize_datadir(test_dir, i)
-
-
-def _rpchost_to_args(rpchost):
-    '''Convert optional IP:port spec to rpcconnect/rpcport args'''
-    if rpchost is None:
-        return []
-
-    match = re.match('(\[[0-9a-fA-f:]+\]|[^:]+)(?::([0-9]+))?$', rpchost)
-    if not match:
-        raise ValueError('Invalid RPC host spec ' + rpchost)
-
-    rpcconnect = match.group(1)
-    rpcport = match.group(2)
-
-    if rpcconnect.startswith('['): # remove IPv6 [...] wrapping
-        rpcconnect = rpcconnect[1:-1]
-
-    rv = ['-rpcconnect=' + rpcconnect]
-    if rpcport:
-        rv += ['-rpcport=' + rpcport]
-    return rv
-
-def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=None):
-    """
-    Start a dashd and return RPC connection to it
-    """
-    datadir = os.path.join(dirname, "node"+str(i))
-    if binary is None:
-        binary = os.getenv("DASHD", "dashd")
-    # RPC tests still depend on free transactions
-    args = [ binary, "-datadir="+datadir, "-server", "-keypool=1", "-discover=0", "-rest", "-blockprioritysize=50000", "-mocktime="+str(get_mocktime()) ]
-    if extra_args is not None: args.extend(extra_args)
-    bitcoind_processes[i] = subprocess.Popen(args)
-    if os.getenv("PYTHON_DEBUG", ""):
-        print "start_node: dashd started, waiting for RPC to come up"
-    url = rpc_url(i, rpchost)
-    wait_for_bitcoind_start(bitcoind_processes[i], url, i)
-    if os.getenv("PYTHON_DEBUG", ""):
-        print "start_node: RPC succesfully started"
-    proxy = get_rpc_proxy(url, i, timeout=timewait)
-
-    if COVERAGE_DIR:
-        coverage.write_all_rpc_commands(COVERAGE_DIR, proxy)
-
-    return proxy
-
-def start_nodes(num_nodes, dirname, extra_args=None, rpchost=None, binary=None):
-    """
-    Start multiple dashds, return RPC connections to them
-    """
-    if extra_args is None: extra_args = [ None for i in range(num_nodes) ]
-    if binary is None: binary = [ None for i in range(num_nodes) ]
-    rpcs = []
     try:
-        for i in range(num_nodes):
-            rpcs.append(start_node(i, dirname, extra_args[i], rpchost, binary=binary[i]))
-    except: # If one node failed to start, stop the others
-        stop_nodes(rpcs)
-        raise
-    return rpcs
+        int(string, 16)
+    except Exception as e:
+        raise AssertionError(
+            "Couldn't interpret %r as hexadecimal; raised: %s" % (string, e))
 
-def log_filename(dirname, n_node, logname):
-    return os.path.join(dirname, "node"+str(n_node), "regtest", logname)
+def assert_is_hash_string(string, length=64):
+    if not isinstance(string, basestring):
+        raise AssertionError("Expected a string, got type %r" % type(string))
+    elif length and len(string) != length:
+        raise AssertionError(
+            "String of length %d expected; got %d" % (length, len(string)))
+    elif not re.match('[abcdef0-9]+$', string):
+        raise AssertionError(
+            "String %r contains invalid characters for a hash." % string)
 
-def stop_node(node, i):
-    node.stop()
-    bitcoind_processes[i].wait()
-    del bitcoind_processes[i]
-
-def stop_nodes(nodes):
-    for node in nodes:
-        node.stop()
-    del nodes[:] # Emptying array closes connections as a side effect
-
-def set_node_times(nodes, t):
-    for node in nodes:
-        node.setmocktime(t)
-
-def wait_bitcoinds():
-    # Wait for all bitcoinds to cleanly exit
-    for bitcoind in bitcoind_processes.values():
-        bitcoind.wait()
-    bitcoind_processes.clear()
-
-def connect_nodes(from_connection, node_num):
-    ip_port = "127.0.0.1:"+str(p2p_port(node_num))
-    from_connection.addnode(ip_port, "onetry")
-    # poll until version handshake complete to avoid race conditions
-    # with transaction relaying
-    while any(peer['version'] == 0 for peer in from_connection.getpeerinfo()):
-        time.sleep(0.1)
-
-def connect_nodes_bi(nodes, a, b):
-    connect_nodes(nodes[a], b)
-    connect_nodes(nodes[b], a)
-
-def find_output(node, txid, amount):
+def assert_array_result(object_array, to_match, expected, should_not_find = False):
     """
-    Return index to output of txid with value amount
-    Raises exception if there is none.
-    """
-    txdata = node.getrawtransaction(txid, 1)
-    for i in range(len(txdata["vout"])):
-        if txdata["vout"][i]["value"] == amount:
-            return i
-    raise RuntimeError("find_output txid %s : %s not found"%(txid,str(amount)))
+        Pass in array of JSON objects, a dictionary with key/value pairs
+        to match against, and another dictionary with expected key/value
+        pairs.
+        If the should_not_find flag is true, to_match should not be found
+        in object_array
+        """
+    if should_not_find == True:
+        assert_equal(expected, { })
+    num_matched = 0
+    for item in object_array:
+        all_match = True
+        for key,value in to_match.items():
+            if item[key] != value:
+                all_match = False
+        if not all_match:
+            continue
+        elif should_not_find == True:
+            num_matched = num_matched+1
+        for key,value in expected.items():
+            if item[key] != value:
+                raise AssertionError("%s : expected %s=%s"%(str(item), str(key), str(value)))
+            num_matched = num_matched+1
+    if num_matched == 0 and should_not_find != True:
+        raise AssertionError("No objects matched %s"%(str(to_match)))
+    if num_matched > 0 and should_not_find == True:
+        raise AssertionError("Objects were found %s"%(str(to_match)))
 
+def satoshi_round(amount):
+    return Decimal(amount).quantize(Decimal('0.00000001'), rounding=ROUND_DOWN)
 
-def gather_inputs(from_node, amount_needed, confirmations_required=1):
-    """
-    Return a random set of unspent txouts that are enough to pay amount_needed
-    """
-    assert(confirmations_required >=0)
-    utxo = from_node.listunspent(confirmations_required)
-    random.shuffle(utxo)
-    inputs = []
-    total_in = Decimal("0.00000000")
-    while total_in < amount_needed and len(utxo) > 0:
-        t = utxo.pop()
-        total_in += t["amount"]
-        inputs.append({ "txid" : t["txid"], "vout" : t["vout"], "address" : t["address"] } )
-    if total_in < amount_needed:
-        raise RuntimeError("Insufficient funds: need %d, have %d"%(amount_needed, total_in))
-    return (total_in, inputs)
+# Helper to create at least "count" utxos
+# Pass in a fee that is sufficient for relay and mining new transactions.
+def create_confirmed_utxos(fee, node, count):
+    node.generate(int(0.5*count)+101)
+    utxos = node.listunspent()
+    iterations = count - len(utxos)
+    addr1 = node.getnewaddress()
+    addr2 = node.getnewaddress()
+    if iterations <= 0:
+        return utxos
+    for i in xrange(iterations):
+        t = utxos.pop()
+        inputs = []
+        inputs.append({ "txid" : t["txid"], "vout" : t["vout"]})
+        outputs = {}
+        send_value = t['amount'] - fee
+        outputs[addr1] = satoshi_round(send_value/2)
+        outputs[addr2] = satoshi_round(send_value/2)
+        raw_tx = node.createrawtransaction(inputs, outputs)
+        signed_tx = node.signrawtransaction(raw_tx)["hex"]
+        txid = node.sendrawtransaction(signed_tx)
 
-def make_change(from_node, amount_in, amount_out, fee):
-    """
-    Create change output(s), return them
-    """
-    outputs = {}
-    amount = amount_out+fee
-    change = amount_in - amount
-    if change > amount*2:
-        # Create an extra change output to break up big inputs
-        change_address = from_node.getnewaddress()
-        # Split change in two, being careful of rounding:
-        outputs[change_address] = Decimal(change/2).quantize(Decimal('0.00000001'), rounding=ROUND_DOWN)
-        change = amount_in - amount - outputs[change_address]
-    if change > 0:
-        outputs[from_node.getnewaddress()] = change
-   
+    while (node.getmempoolinfo()['size'] > 0):
+        node.generate(1)
+
+    utxos = node.listunspent()
+    assert(len(utxos) >= count)
+    return utxos
+
+# Create large OP_RETURN txouts that can be appended to a transaction
+# to make it large (helper for constructing large transactions).
+def gen_return_txouts():
+    # Some pre-processing to create a bunch of OP_RETURN txouts to insert into transactions we create
+    # So we have big transactions (and therefore can't fit very many into each block)
+    # create one script_pubkey
+    script_pubkey = "6a4d0200" #OP_RETURN OP_PUSH2 512 bytes
+    for i in xrange (512):
+        script_pubkey = script_pubkey + "01"
+    # concatenate 128 txouts of above script_pubkey which we'll insert before the txout for change
+    txouts = "81"
+    for k in xrange(128):
+        # add txout value
+        txouts = txouts + "0000000000000000"
+        # add length of script_pubkey
+        txouts = txouts + "fd0402"
+        # add script_pubkey
+        txouts = txouts + script_pubkey
+    return txouts
+
+def create_tx(node, coinbase, to_address, amount):
+    inputs = [{ "txid" : coinbase, "vout" : 0}]
+    outputs = { to_address : amount }
+    rawtx = node.createrawtransaction(inputs, outputs)
+    signresult = node.signrawtransaction(rawtx)
+    assert_equal(signresult["complete"], True)
+    return signresult["hex"]
+
+# Create a spend of each passed-in utxo, splicing in "txouts" to each raw
+# transaction to make it large.  See gen_return_txouts() above.
+def create_lots_of_big_transactions(node, txouts, utxos, fee):
+    addr = node.getnewaddress()
+    txids = []
+    for i in xrange(len(utxos)):
+        t = utxos.pop()
+        inputs = []
+        inputs.append({ "txid" : t["txid"], "vout" : t["vout"]})
+        outputs = {}
+        send_value = t['amount'] - fee
+        outputs[addr] = satoshi_round(send_value)
+        rawtx = node.createrawtransaction(inputs, outputs)
+        newtx = rawtx[0:92]
+        newtx = newtx + txouts
+        newtx = newtx + rawtx[94:]
+        signresult = node.signrawtransaction(newtx, None, None, "NONE")
+        txid = node.sendrawtransaction(signresult["hex"], True)
+        txids.append(txid)
+    return txids
+
+def get_bip9_status(node, key):
+    info = node.getblockchaininfo()
+    for row in info['bip9_softforks']:
+        if row['id'] == key:
+            return row
+    raise IndexError ('key:"%s" not found' % key)

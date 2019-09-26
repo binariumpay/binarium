@@ -123,7 +123,6 @@ testScripts = [
     'sendheaders.py', # NOTE: needs dash_hash to pass
     'keypool.py',
     'keypool-hd.py',
-    'p2p-mempool.py',
     'prioritise_transaction.py',
     'invalidblockrequest.py', # NOTE: needs dash_hash to pass
     'invalidtxrequest.py', # NOTE: needs dash_hash to pass
@@ -147,7 +146,7 @@ testScriptsExt = [
     # 'pruning.py', # Prune mode is incompatible with -txindex.
     'forknotify.py',
     'invalidateblock.py',
-    'rpcbind_test.py',
+#    'rpcbind_test.py', #temporary, bug in libevent, see #6655
     'smartfees.py',
     'maxblocksinflight.py',
     'p2p-acceptblock.py', # NOTE: needs dash_hash to pass
