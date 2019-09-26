@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Binarium
+Comment=Binarium P2P Cryptocurrency
+Comment[fr]=Binarium, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Binarium, eşten eşe kriptografik sanal para birimi
+Exec=binarium-qt %u
+Terminal=false
+Type=Application
+Icon=dash128
+MimeType=x-scheme-handler/binarium;
+Categories=Office;Finance;
