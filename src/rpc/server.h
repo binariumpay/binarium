@@ -308,9 +308,6 @@ extern UniValue invalidateblock(const UniValue& params, bool fHelp);
 extern UniValue reconsiderblock(const UniValue& params, bool fHelp);
 extern UniValue getspentinfo(const UniValue& params, bool fHelp);
 extern UniValue sentinelping(const UniValue& params, bool fHelp);
-//extern UniValue waitfornewblock(const UniValue& params, bool fHelp);
-//extern UniValue waitforblock(const UniValue& params, bool fHelp);
-//extern UniValue waitforblockheight(const UniValue& params, bool fHelp);
 
 bool StartRPC();
 void InterruptRPC();

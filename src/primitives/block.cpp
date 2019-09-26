@@ -153,8 +153,6 @@ uint256 CBlockHeader::GetHash_X11( void * _pPreviousBlockIndex, uint32_t _iTimeF
 uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_t _iTimeFromGenesisBlock ) const {
     //return HashX11_Generator_Blocks (BEGIN(nVersion), END(nNonce));
 
-    static unsigned char pblank[1];
-
     uint512 hash[11];
     uint512 uint512AdditionalHash;
 
@@ -178,10 +176,7 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
 
 
     // blake512
-    //aIntermediateHashFunctions [ 0 ] ( (pbegin == pend ? pblank : static_cast<const void*>(&pbegin[0])), (pend - pbegin) * sizeof(pbegin[0]), nullptr, hash[0].begin () );
     aIntermediateHashFunctions [ 0 ] ( & nVersion, ( ( unsigned char * ) & nNonce - ( unsigned char * ) & nVersion ) /* sizeof(pbegin[0])*/ + sizeof ( nNonce ), nullptr, hash[0].begin () );
-    //aIntermediateHashFunctions [ 0 ] ( & nVersion, ( ( unsigned char * ) & nHeightOfPreviousBlock - ( unsigned char * ) & nVersion ) /* sizeof(pbegin[0])*/ + sizeof ( nHeightOfPreviousBlock ), nullptr, hash[0].begin () );
-    //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : blake512 : %s .\n", hash[0].ToString ().c_str () );
 
     // bmw512
     //aIntermediateHashFunctions [ 1 ] ( static_cast<const void*>(&hash[0]), 64, nullptr, static_cast<void*>(&hash[1]) );

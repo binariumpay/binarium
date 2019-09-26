@@ -19,7 +19,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <signal.h>
-#include <future>
 
 #include <event2/event.h>
 #include <event2/http.h>
@@ -35,6 +34,9 @@
 #endif
 #endif
 
+#include <boost/algorithm/string/case_conv.hpp> // for to_lower()
+#include <boost/foreach.hpp>
+
 /** Maximum size of http request (request line + headers) */
 static const size_t MAX_HEADERS_SIZE = 8192;
 
@@ -42,8 +44,8 @@ static const size_t MAX_HEADERS_SIZE = 8192;
 class HTTPWorkItem : public HTTPClosure
 {
 public:
-    HTTPWorkItem(std::unique_ptr<HTTPRequest> _req, const std::string &_path, const HTTPRequestHandler& _func):
-        req(std::move(_req)), path(_path), func(_func)
+    HTTPWorkItem(HTTPRequest* req, const std::string &path, const HTTPRequestHandler& func):
+        req(req), path(path), func(func)
     {
     }
     void operator()()
@@ -51,7 +53,7 @@ public:
         func(req.get(), path);
     }
 
-    std::unique_ptr<HTTPRequest> req;
+    boost::scoped_ptr<HTTPRequest> req;
 
 private:
     std::string path;
@@ -66,9 +68,10 @@ class WorkQueue
 {
 private:
     /** Mutex protects entire object */
-    std::mutex cs;
-    std::condition_variable cond;
-    std::deque<std::unique_ptr<WorkItem>> queue;
+    CWaitableCriticalSection cs;
+    CConditionVariable cond;
+    /* XXX in C++11 we can use std::unique_ptr here and avoid manual cleanup */
+    std::deque<WorkItem*> queue;
     bool running;
     size_t maxDepth;
     int numThreads;
@@ -80,37 +83,41 @@ private:
         WorkQueue &wq;
         ThreadCounter(WorkQueue &w): wq(w)
         {
-            std::lock_guard<std::mutex> lock(wq.cs);
+            boost::lock_guard<boost::mutex> lock(wq.cs);
             wq.numThreads += 1;
         }
         ~ThreadCounter()
         {
-            std::lock_guard<std::mutex> lock(wq.cs);
+            boost::lock_guard<boost::mutex> lock(wq.cs);
             wq.numThreads -= 1;
             wq.cond.notify_all();
         }
     };
 
 public:
-    WorkQueue(size_t _maxDepth) : running(true),
-                                 maxDepth(_maxDepth),
+    WorkQueue(size_t maxDepth) : running(true),
+                                 maxDepth(maxDepth),
                                  numThreads(0)
     {
     }
-    /** Precondition: worker threads have all stopped
+    /*( Precondition: worker threads have all stopped
      * (call WaitExit)
      */
     ~WorkQueue()
     {
+        while (!queue.empty()) {
+            delete queue.front();
+            queue.pop_front();
+        }
     }
     /** Enqueue a work item */
     bool Enqueue(WorkItem* item)
     {
-        std::unique_lock<std::mutex> lock(cs);
+        boost::unique_lock<boost::mutex> lock(cs);
         if (queue.size() >= maxDepth) {
             return false;
         }
-        queue.emplace_back(std::unique_ptr<WorkItem>(item));
+        queue.push_back(item);
         cond.notify_one();
         return true;
     }
@@ -119,30 +126,31 @@ public:
     {
         ThreadCounter count(*this);
         while (true) {
-            std::unique_ptr<WorkItem> i;
+            WorkItem* i = 0;
             {
-                std::unique_lock<std::mutex> lock(cs);
+                boost::unique_lock<boost::mutex> lock(cs);
                 while (running && queue.empty())
                     cond.wait(lock);
                 if (!running)
                     break;
-                i = std::move(queue.front());
+                i = queue.front();
                 queue.pop_front();
             }
             (*i)();
+            delete i;
         }
     }
     /** Interrupt and exit loops */
     void Interrupt()
     {
-        std::unique_lock<std::mutex> lock(cs);
+        boost::unique_lock<boost::mutex> lock(cs);
         running = false;
         cond.notify_all();
     }
     /** Wait for worker threads to exit */
     void WaitExit()
     {
-        std::unique_lock<std::mutex> lock(cs);
+        boost::unique_lock<boost::mutex> lock(cs);
         while (numThreads > 0){
             cond.wait(lock);
         }
@@ -151,7 +159,7 @@ public:
     /** Return current depth of queue */
     size_t Depth()
     {
-        std::unique_lock<std::mutex> lock(cs);
+        boost::unique_lock<boost::mutex> lock(cs);
         return queue.size();
     }
 };
@@ -159,8 +167,8 @@ public:
 struct HTTPPathHandler
 {
     HTTPPathHandler() {}
-    HTTPPathHandler(std::string _prefix, bool _exactMatch, HTTPRequestHandler _handler):
-        prefix(_prefix), exactMatch(_exactMatch), handler(_handler)
+    HTTPPathHandler(std::string prefix, bool exactMatch, HTTPRequestHandler handler):
+        prefix(prefix), exactMatch(exactMatch), handler(handler)
     {
     }
     std::string prefix;
@@ -188,7 +196,7 @@ static bool ClientAllowed(const CNetAddr& netaddr)
 {
     if (!netaddr.IsValid())
         return false;
-    for (const CSubNet& subnet : rpc_allow_subnets)
+    BOOST_FOREACH (const CSubNet& subnet, rpc_allow_subnets)
         if (subnet.Match(netaddr))
             return true;
     return false;
@@ -206,7 +214,7 @@ static bool InitHTTPAllowList()
     rpc_allow_subnets.push_back(CSubNet(localv6));         // always allow IPv6 localhost
     if (mapMultiArgs.count("-rpcallowip")) {
         const std::vector<std::string>& vAllow = mapMultiArgs["-rpcallowip"];
-        for (std::string strAllow : vAllow) {
+        BOOST_FOREACH (std::string strAllow, vAllow) {
             CSubNet subnet;
             LookupSubNet(strAllow.c_str(), subnet);
             if (!subnet.IsValid()) {
@@ -219,7 +227,7 @@ static bool InitHTTPAllowList()
         }
     }
     std::string strAllowed;
-    for (const CSubNet& subnet : rpc_allow_subnets)
+    BOOST_FOREACH (const CSubNet& subnet, rpc_allow_subnets)
         strAllowed += subnet.ToString() + " ";
     LogPrint("http", "Allowing HTTP connections from: %s\n", strAllowed);
     return true;
@@ -285,14 +293,12 @@ static void http_request_cb(struct evhttp_request* req, void* arg)
 
     // Dispatch to worker thread
     if (i != iend) {
-        std::unique_ptr<HTTPWorkItem> item(new HTTPWorkItem(std::move(hreq), path, i->handler));
+        std::unique_ptr<HTTPWorkItem> item(new HTTPWorkItem(hreq.release(), path, i->handler));
         assert(workQueue);
         if (workQueue->Enqueue(item.get()))
             item.release(); /* if true, queue took ownership */
-        else {
-            LogPrintf("WARNING: request rejected because http work queue depth exceeded, it can be increased with the -rpcworkqueue= setting\n");
+        else
             item->req->WriteReply(HTTP_INTERNAL, "Work queue depth exceeded");
-        }
     } else {
         hreq->WriteReply(HTTP_NOTFOUND);
     }
@@ -306,14 +312,13 @@ static void http_reject_request_cb(struct evhttp_request* req, void*)
 }
 
 /** Event dispatcher thread */
-static bool ThreadHTTP(struct event_base* base, struct evhttp* http)
+static void ThreadHTTP(struct event_base* base, struct evhttp* http)
 {
     RenameThread("binarium-http");
     LogPrint("http", "Entering http event loop\n");
     event_base_dispatch(base);
     // Event loop will be interrupted by InterruptHTTPServer()
     LogPrint("http", "Exited http event loop\n");
-    return event_base_got_break(base) == 0;
 }
 
 /** Bind HTTP server to specified addresses */
@@ -442,22 +447,17 @@ bool InitHTTPServer()
     return true;
 }
 
-std::thread threadHTTP;
-std::future<bool> threadResult;
+boost::thread threadHTTP;
 
 bool StartHTTPServer()
 {
     LogPrint("http", "Starting HTTP server\n");
     int rpcThreads = std::max((long)GetArg("-rpcthreads", DEFAULT_HTTP_THREADS), 1L);
     LogPrintf("HTTP: starting %d worker threads\n", rpcThreads);
-    std::packaged_task<bool(event_base*, evhttp*)> task(ThreadHTTP);
-    threadResult = task.get_future();
-    threadHTTP = std::thread(std::move(task), eventBase, eventHTTP);
+    threadHTTP = boost::thread(boost::bind(&ThreadHTTP, eventBase, eventHTTP));
 
-    for (int i = 0; i < rpcThreads; i++) {
-        std::thread rpc_worker(HTTPWorkQueueRun, workQueue);
-        rpc_worker.detach();
-    }
+    for (int i = 0; i < rpcThreads; i++)
+        boost::thread(boost::bind(&HTTPWorkQueueRun, workQueue));
     return true;
 }
 
@@ -466,7 +466,7 @@ void InterruptHTTPServer()
     LogPrint("http", "Interrupting HTTP server\n");
     if (eventHTTP) {
         // Unlisten sockets
-        for (evhttp_bound_socket *socket : boundSockets) {
+        BOOST_FOREACH (evhttp_bound_socket *socket, boundSockets) {
             evhttp_del_accept_socket(eventHTTP, socket);
         }
         // Reject requests on current connections
@@ -497,11 +497,16 @@ void StopHTTPServer()
         // master that appears to be solved, so in the future that solution
         // could be used again (if desirable).
         // (see discussion in https://github.com/bitcoin/bitcoin/pull/6990)
-        if (threadResult.valid() && threadResult.wait_for(std::chrono::milliseconds(2000)) == std::future_status::timeout) {
+#if BOOST_VERSION >= 105000
+        if (!threadHTTP.try_join_for(boost::chrono::milliseconds(2000))) {
+#else
+        if (!threadHTTP.timed_join(boost::posix_time::milliseconds(2000))) {
+#endif
+
             LogPrintf("HTTP event loop did not exit within allotted time, sending loopbreak\n");
             event_base_loopbreak(eventBase);
+            threadHTTP.join();
         }
-        threadHTTP.join();
     }
     if (eventHTTP) {
         evhttp_free(eventHTTP);
@@ -528,8 +533,8 @@ static void httpevent_callback_fn(evutil_socket_t, short, void* data)
         delete self;
 }
 
-HTTPEvent::HTTPEvent(struct event_base* base, bool _deleteWhenTriggered, const std::function<void(void)>& _handler):
-    deleteWhenTriggered(_deleteWhenTriggered), handler(_handler)
+HTTPEvent::HTTPEvent(struct event_base* base, bool deleteWhenTriggered, const boost::function<void(void)>& handler):
+    deleteWhenTriggered(deleteWhenTriggered), handler(handler)
 {
     ev = event_new(base, -1, 0, httpevent_callback_fn, this);
     assert(ev);
@@ -545,7 +550,7 @@ void HTTPEvent::trigger(struct timeval* tv)
     else
         evtimer_add(ev, tv); // trigger after timeval passed
 }
-HTTPRequest::HTTPRequest(struct evhttp_request* _req) : req(_req),
+HTTPRequest::HTTPRequest(struct evhttp_request* req) : req(req),
                                                        replySent(false)
 {
 }
@@ -610,7 +615,7 @@ void HTTPRequest::WriteReply(int nStatus, const std::string& strReply)
     assert(evb);
     evbuffer_add(evb, strReply.data(), strReply.size());
     HTTPEvent* ev = new HTTPEvent(eventBase, true,
-        std::bind(evhttp_send_reply, req, nStatus, (const char*)NULL, (struct evbuffer *)NULL));
+        boost::bind(evhttp_send_reply, req, nStatus, (const char*)NULL, (struct evbuffer *)NULL));
     ev->trigger(0);
     replySent = true;
     req = 0; // transferred back to main thread
@@ -675,3 +680,4 @@ void UnregisterHTTPHandler(const std::string &prefix, bool exactMatch)
         pathHandlers.erase(i);
     }
 }
+

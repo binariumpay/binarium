@@ -1425,6 +1425,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     LogPrintf("Using data directory %s\n", strDataDir);
     LogPrintf("Using config file %s\n", GetConfigFile().string());
     LogPrintf("Using at most %i connections (%i file descriptors available)\n", nMaxConnections, nFD);
+	std::ostringstream strErrors;
 
     LogPrintf("Using %u threads for script verification\n", nScriptCheckThreads);
     if (nScriptCheckThreads) {
@@ -2251,7 +2252,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     // ********************************************************* Step 13: finished
 	
     // Generate coins in the background
-    int iAmountOfThreads = min(DEFAULT_GENERATE_THREADS, I_MAX_GENERATE_THREADS ;
+    int iAmountOfThreads = min(DEFAULT_GENERATE_THREADS, I_MAX_GENERATE_THREADS);
     iAmountOfThreads = GetArg("-genproclimit", iAmountOfThreads);
     if (g_iAmountOfMiningThreads >= -1) {
         iAmountOfThreads = g_iAmountOfMiningThreads;

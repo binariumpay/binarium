@@ -2600,7 +2600,7 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
     // Remove conflicting transactions from the mempool.;
     mempool.removeForBlock(pblock->vtx, pindexNew->nHeight, txConflicted, !IsInitialBlockDownload());
     // Update chainActive & related variables.
-    UpdateTip(pindexNew, chainparams);
+    UpdateTip(pindexNew);
 
     for(unsigned int i=0; i < pblock->vtx.size(); i++)
         txChanged.emplace_back(pblock->vtx[i], pindexNew, i);

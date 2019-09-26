@@ -651,8 +651,6 @@ private:
 
     /* HD derive new child key (on internal or external chain) */
     void DeriveNewChildKey(const CKeyMetadata& metadata, CKey& secretRet, uint32_t nAccountIndex, bool fInternal /*= false*/);
-
-    bool fFileBacked;
 public:
     /*
      * Main wallet lock.
@@ -661,6 +659,7 @@ public:
      *      fFileBacked (immutable after instantiation)
      *      strWalletFile (immutable after instantiation)
      */
+    bool fFileBacked;
     mutable CCriticalSection cs_wallet;
 
     const std::string strWalletFile;

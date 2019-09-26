@@ -23,14 +23,9 @@
 #include <atomic>
 #include <deque>
 #include <stdint.h>
-//#include <thread>
-#include "/usr/include/boost/thread/thread.hpp"
-//#include "/usr/include/boost/asio/detail/std_thread.hpp"
-//#include "/usr/include/c++/7/bits/std_thread.hpp"
+#include <boost/thread/thread.hpp>
 #include <memory>
-//#include <condition_variable>
-#include "/usr/include/boost/thread/condition_variable.hpp"
-//#include "/usr/include/c++/7/bits/std_mutex.h"
+#include <boost/thread/condition_variable.hpp>
 
 #ifndef WIN32
 #include <arpa/inet.h>
@@ -39,10 +34,6 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/foreach.hpp>
 #include <boost/signals2/signal.hpp>
-
-//#include "/home/rodion/Desktop/SSD/Dash/dash/mingw-std-threads-master/mingw.mutex.h"
-//#include "/home/rodion/Desktop/SSD/Dash/dash/mingw-std-threads-master/mingw.thread.h"
-//#include "/home/rodion/Desktop/SSD/Dash/dash/mingw-std-threads-master/mingw.condition_variable.h"
 
 class CAddrMan;
 class CScheduler;

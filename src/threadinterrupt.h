@@ -7,15 +7,8 @@
 
 #include <atomic>
 #include <chrono>
-//#include <condition_variable>
-#include "/usr/include/boost/thread/condition_variable.hpp"
-//#include <mutex>
-#include "/usr/include/boost/thread/mutex.hpp"
-//#include "/usr/include/c++/7/bits/std_mutex.h"
-
-//#include "/home/rodion/Desktop/SSD/Dash/dash/mingw-std-threads-master/mingw.mutex.h"
-//#include "/home/rodion/Desktop/SSD/Dash/dash/mingw-std-threads-master/mingw.thread.h"
-//#include "/home/rodion/Desktop/SSD/Dash/dash/mingw-std-threads-master/mingw.condition_variable.h"
+#include <boost/thread/condition_variable.hpp>
+#include <boost/thread/mutex.hpp>
 
 /*
     A helper class for interruptible sleeps. Calling operator() will interrupt
@@ -33,10 +26,8 @@ public:
     bool sleep_for(boost::chrono::minutes rel_time);
 
 private:
-    //std::condition_variable cond;
     boost::condition_variable cond;
-    //std::mutex mut;
-    boost::mutex mut;    
+    boost::mutex mut;
     std::atomic<bool> flag;
 };
 
