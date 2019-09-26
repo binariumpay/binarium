@@ -20,13 +20,14 @@ created. To use it for Binarium:
 
 Common `host-platform-triplets` for cross compilation are:
 
-- `i686-unknown-linux-gnu` for Linux 32 bit (Debian, Ubuntu)
-- `x86_64-unknown-linux-gnu` for Linux 64 bit (Debian, Ubuntu)
+- `i686-pc-linux-gnu` for Linux 32 bit (Debian, Ubuntu), (maybe `i686-unknown-linux-gnu`)
+- `x86_64-pc-linux-gnu` for Linux 64 bit (Debian, Ubuntu), (maybe `x86_64-unknown-linux-gnu`)
 - `i686-w64-mingw32` for Win32
 - `x86_64-w64-mingw32` for Win64
 - `x86_64-apple-darwin11` for MacOSX
 - `arm-linux-gnueabihf` for Linux ARM
 
+Support for i686 (32bit) platforms has been deprecated in future releases.
 No other options are needed, the paths are automatically configured.
 
 Dependency Options:
