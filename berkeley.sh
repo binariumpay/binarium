@@ -2,7 +2,7 @@
 
 BINARIUM_ROOT=$(pwd)
 
-# Pick some path to install BDB to, here we create a directory within the dash directory
+# Pick some path to install BDB to, here we create a directory within the binarium directory
 BDB_PREFIX="${BINARIUM_ROOT}/db4"
 mkdir -p $BDB_PREFIX
 
