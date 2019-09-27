@@ -78,7 +78,7 @@ code. This is especially important for large or high-risk changes. It is useful
 to add a test plan to the pull request description if testing the changes is
 not straightforward.
 
-Developers wallets addresses :
-Binarium: XsCBTWrbqj9DZdGGysVRRRbphumuxDGa9c .
-BTC: 33Er8o26Z6UtYVH9qEqne6WRT5uzFvbQ9Y .
-Ethereum: 0x1f269d24e782b8034e9a06894eda88e7853ce012 .
+Developers wallets addresses
+----------------------------
+Binarium: XsCBTWrbqj9DZdGGysVRRRbphumuxDGa9c
+BTC: 33Er8o26Z6UtYVH9qEqne6WRT5uzFvbQ9Y
