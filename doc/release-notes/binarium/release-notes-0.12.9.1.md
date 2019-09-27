@@ -11,7 +11,7 @@ Dash and Bitcoin up to end of 0.12.* branches.
 3. Add backport for 0.12.* compatibility. This release does not include any
 changes that affect mainnet.
 
-## These commits has been merged with Binarium & Dash code ==
+## These commits has been merged with Binarium & Dash code
 
 Merge bitcoin#8272: [R] Make the dummy argument to getaddednodeinfo optional\
 Merge bitcoin#8629: [R] C++11 Replace boost::scoped_ptr to std::unique_ptr\
