@@ -1,7 +1,5 @@
 DIST_SUBDIRS = secp256k1 univalue
 
-#/media/rodion/SSD_Linux/Dash/dash/depends/x86_64-w64-mingw32/bin/cpuminer.dll
-# -L/media/rodion/WindowsPC/GB2_SSD/drmingw-0.8.2-win64/bin/ -lexchndl
 AM_LDFLAGS = $(PTHREAD_CFLAGS) $(LIBTOOL_LDFLAGS) $(HARDENED_LDFLAGS) -std=c++11 -lstdc++
 AM_CXXFLAGS = $(HARDENED_CXXFLAGS) -std=c++11
 AM_CPPFLAGS = $(HARDENED_CPPFLAGS) -std=c++11
