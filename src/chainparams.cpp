@@ -395,45 +395,8 @@ public:
         uint32_t nNonce = 0;
         uint32_t nBits = 0x207fffff;
 
-        //genesis = CreateGenesisBlock(1417713337, 1096447, 0x207fffff, 1, 50 * COIN);
-        //genesis = CreateGenesisBlock(1516595232, 1096447, 0x207fffff, 1, 50 * COIN);
-        //genesis = CreateGenesisBlock(1516595234, 0, 0x207fffff, 1, 50 * COIN);
         genesis = CreateGenesisBlock(nTime, 0, nBits, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetGenesisInitializationHash();
-
-        /*bool fNegative;
-        bool fOverflow;
-        arith_uint256 bnTarget;
-
-        bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
-
-        // Check range
-        if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(consensus.powLimit)) {
-            fprintf(stdout, "CMainParams.CMainParams () : nBits below minimum work : %s, %i, %i, %i, %i .\n", consensus.powLimit.ToString().c_str(),
-              nBits, fNegative, fOverflow, bnTarget );
-
-        } else fprintf(stdout, "CMainParams.CMainParams () : nBits check successfull : %s, %i, %i, %i, %i .\n", consensus.powLimit.ToString().c_str(),
-              nBits, fNegative, fOverflow, bnTarget );
-
-        while (UintToArith256(genesis.GetHash()) > bnTarget) {
-            genesis = CreateGenesisBlock(nTime, nNonce, nBits, 1, 50 * COIN);
-            //consensus.hashGenesisBlock = genesis.GetHash();
-            nNonce = nNonce + 1;
-
-        } //-while
-
-        consensus.hashGenesisBlock = genesis.GetHash();*/
-
-        fprintf(stdout, "CMainParams.CMainParams () : %s .\n", "RegTest");  // strUsage.c_str()
-        fprintf(stdout, "CMainParams.CMainParams () : scriptSig.size() : %i .\n", genesis.vtx[0].vin[0].scriptSig.size());
-        fprintf(stdout, "CMainParams.CMainParams () : %s .\n", consensus.hashGenesisBlock.ToString().c_str());
-        fprintf(stdout, "CMainParams.CMainParams () : %s .\n", genesis.hashMerkleRoot.ToString().c_str());
-        fprintf(stdout, "CMainParams.CMainParams () : nNonce : %i .\n", nNonce);
-
-        //assert(consensus.hashGenesisBlock == uint256S("0xcef8c3397abc0fd4bc1cd21b2b0d7aea2a833958faa49a9ea7716881e9e0051c")); // 000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e
-        //assert(genesis.hashMerkleRoot == uint256S("0x8a0510ff8dc69bc7e9a33597be92c29aefd30acb7b67b77c03c3edd7b3727b7c")); // e0028eb9648db56b1ac77cf090b99048a8007e2bb64b68f092c03c7f56a662c7
-
-        //assert (false);
 
         vFixedSeeds.clear(); //! Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();  //! Regtest mode doesn't have any DNS seeds.
@@ -445,14 +408,6 @@ public:
         fTestnetToBeDeprecatedFieldRPC = false;
 
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
-
-        /*checkpointData = (CCheckpointData){
-            boost::assign::map_list_of
-            ( 0, uint256S("0x000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e")),
-            0,
-            0,
-            0
-        };*/
 
         checkpointData = (CCheckpointData){
             boost::assign::map_list_of
