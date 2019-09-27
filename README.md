@@ -80,5 +80,5 @@ not straightforward.
 
 Developers wallets addresses
 ----------------------------
-Binarium: XsCBTWrbqj9DZdGGysVRRRbphumuxDGa9c
+Binarium: XsCBTWrbqj9DZdGGysVRRRbphumuxDGa9c\
 BTC: 33Er8o26Z6UtYVH9qEqne6WRT5uzFvbQ9Y
