@@ -1,5 +1,5 @@
 ---
-name: "binarium-osx-0.13"
+name: "binarium-osx-0.12.9"
 enable_cache: true
 suites:
 - "trusty"
