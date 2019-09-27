@@ -13,7 +13,6 @@ endif
 BITCOIND_BIN=$(top_builddir)/src/binariumd$(EXEEXT)
 BITCOIN_QT_BIN=$(top_builddir)/src/qt/binarium-qt$(EXEEXT)
 BITCOIN_CLI_BIN=$(top_builddir)/src/binarium-cli$(EXEEXT)
-BITCOIN_WIN_INSTALLER=$(PACKAGE)-$(PACKAGE_VERSION)-win$(WINDOWS_BITS)-setup$(EXEEXT)
 
 OSX_APP=Binarium-Qt.app
 OSX_DMG=Binarium-Core.dmg
@@ -58,15 +57,6 @@ distcheck-hook:
 
 distcleancheck:
 	@:
-
-$(BITCOIN_WIN_INSTALLER): all-recursive
-	$(MKDIR_P) $(top_builddir)/release
-	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(BITCOIND_BIN) $(top_builddir)/release
-	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(BITCOIN_QT_BIN) $(top_builddir)/release
-	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(BITCOIN_CLI_BIN) $(top_builddir)/release
-	@test -f $(MAKENSIS) && $(MAKENSIS) -V2 $(top_builddir)/share/setup.nsi || \
-	  echo error: could not build $@
-	@echo built $@
 
 $(if $(findstring src/,$(MAKECMDGOALS)),$(MAKECMDGOALS), none): FORCE
 	$(MAKE) -C src $(patsubst src/%,%,$@)
