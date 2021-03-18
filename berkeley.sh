@@ -12,8 +12,11 @@ wget 'http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz'
 # -> db-4.8.30.NC.tar.gz: OK
 tar -xzvf db-4.8.30.NC.tar.gz
 
+# Patch for compatibility
+sed -i 's/__atomic_compare_exchange/__atomic_compare_exchange_db/g' db-4.8.30.NC/dbinc/atomic.h
+
 # Build the library and install to our prefix
 cd db-4.8.30.NC/build_unix/
 #  Note: Do a static build so that it can be embedded into the executable, instead of having to find a .so at runtime
-../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
+../dist/configure --enable-cxx --disable-shared --with-pic  --prefix=$BDB_PREFIX
 make install

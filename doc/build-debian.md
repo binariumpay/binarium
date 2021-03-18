@@ -30,12 +30,14 @@ Use flag CFLAGS='-std=c11' for successfully build some components (kuznetchik).
 
 	./configure --enable-cxx --disable-shared \
 	--without-gui \
-	--prefix='/usr/bin/' \
+	--prefix='/usr/' \
 	CFLAGS='-std=c11' \
+    LIBS='-ldl' \
 	CPPFLAGS='-I/full/path/to/binarium/db4/include/ -O2' \
 	LDFLAGS='-L/full/path/to/binarium/db4/lib/'
 	
 	make
 	make install
-	
+
 Tested on Debian GNU/Linux 8.10 (jessie) x86_64 (gcc 4.9.2)
+Tested on Debian GNU/Linux 10 (buster) x86_64 (gcc 8.3.0-6)
