@@ -761,19 +761,6 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="labelLinkUbitPW">
-                  <property name="text">
-                   <string>&lt;a href=&quot;https://ubit.pw&quot;&gt;ubit.pw&lt;/a&gt;</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="openExternalLinks">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
                  <spacer name="horizontalSpacer_3">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -829,7 +816,7 @@
             <item>
              <widget class="QLabel" name="lbBinariumBCE">
               <property name="text">
-               <string>&lt;a href=&quot;https://binarium.money/explorer/&quot; class=&quot;classLink&quot;&gt;BCE&lt;/a&gt;</string>
+               <string>&lt;a href=&quot;https://binarium.money/explorer/&quot; class=&quot;classLink&quot;&gt;Explorer&lt;/a&gt;</string>
               </property>
               <property name="openExternalLinks">
                <bool>true</bool>
