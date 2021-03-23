@@ -753,7 +753,7 @@
                 <item>
                  <widget class="QLabel" name="label_6">
                   <property name="text">
-                   <string>&lt;a href=&quot;https://crex24.com/exchange/BIN-BTC/?refid=fem0zzxd3njvjw7of9v0&quot;&gt;Crex24.com&lt;/a&gt;</string>
+                   <string>&lt;a href=&quot;https://crex24.com/ru/exchange/BIN-BTC?refid=fem0zzxd3njvjw7of9v0&quot;&gt;Crex24.com&lt;/a&gt;</string>
                   </property>
                   <property name="openExternalLinks">
                    <bool>true</bool>
