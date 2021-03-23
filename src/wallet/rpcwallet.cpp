@@ -1215,9 +1215,7 @@ UniValue ListReceived(const UniValue& params, bool fByAccounts, bool _bOnlyForGi
 {
     UniValue ret(UniValue::VARR);
 
-
-
-    if ( _bOnlyForGivenAddress ) {
+    if (_bOnlyForGivenAddress) {
         string sAddress = params[0].get_str ();
 
         // Minimum confirmations
@@ -1226,81 +1224,51 @@ UniValue ListReceived(const UniValue& params, bool fByAccounts, bool _bOnlyForGi
             nMinDepth = params[1].get_int();
         bool fAddLockConf = (params.size() > 2 && params[2].get_bool());
 
-        // Whether to include empty accounts
-        bool fIncludeEmpty = false;
-        if (params.size() > 3)
-            fIncludeEmpty = params[3].get_bool();
-
         isminefilter filter = ISMINE_SPENDABLE;
         if(params.size() > 4)
             if(params[4].get_bool())
                 filter = filter | ISMINE_WATCH_ONLY;
 
-
-
         for (map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin(); it != pwalletMain->mapWallet.end(); ++it)
         {
-        const CWalletTx& wtx = (*it).second;
-
-        if (wtx.IsCoinBase() || !CheckFinalTx(wtx))
-            continue;
-
-        int nDepth = wtx.GetDepthInMainChain(fAddLockConf);
-        if (nDepth < nMinDepth)
-            continue;
-
-        tallyitem item;
-        BOOST_FOREACH(const CTxOut& txout, wtx.vout)
-        {
-            CTxDestination address;
-            if (!ExtractDestination(txout.scriptPubKey, address))
+            const CWalletTx& wtx = (*it).second;
+            if (wtx.IsCoinBase() || !CheckFinalTx(wtx))
                 continue;
 
-            isminefilter mine = IsMine(*pwalletMain, address);
-            if(!(mine & filter))
+            int nDepth = wtx.GetDepthInMainChain(fAddLockConf);
+            if (nDepth < nMinDepth)
                 continue;
-            
-            //item.nAmount += txout.nValue;
-            //item.nConf = min(item.nConf, nDepth);
-            //item.txids.push_back(wtx.GetHash());
-            //if (mine & ISMINE_WATCH_ONLY)
-            //    item.fIsWatchonly = true;        
 
-            if ( ( CBitcoinAddress ( address ).ToString () == sAddress ) &&
-                 ( pwalletMain->mapAddressBook.count ( address ) )
-                 //( pwalletMain->mapAddressBook [ address ] != nullptr )
-               ) {
-                CAddressBookData pAddressBookData = pwalletMain->mapAddressBook [ address ];
+            tallyitem item;
+            BOOST_FOREACH(const CTxOut& txout, wtx.vout)
+            {
+                CTxDestination address;
+                if (!ExtractDestination(txout.scriptPubKey, address))
+                    continue;
 
-            UniValue obj(UniValue::VOBJ);
-            if(mine & ISMINE_WATCH_ONLY)
-                obj.push_back(Pair("involvesWatchonly", true));
-            obj.push_back(Pair("address",       CBitcoinAddress ( address ).ToString()));
-            obj.push_back(Pair("account",       pAddressBookData.name));
-            obj.push_back(Pair("amount",        ValueFromAmount(txout.nValue)));
-            obj.push_back ( Pair ( "confirmations", nDepth ) ); // min(item.nConf, nDepth)
-            //obj.push_back ( Pair ( "transaction", txout.ToString () ) );
-            if (!fByAccounts)
-                obj.push_back(Pair("label", pAddressBookData.name));
-            //UniValue transactions(UniValue::VARR);
-            //if (it != mapTally.end())
-            //{
-            //    BOOST_FOREACH(const uint256& item_hash, item.txids)
-            //    {
-            //        transactions.push_back(item_hash.GetHex());
-            //    }
-            //}
-            obj.push_back(Pair("hash", wtx.GetHash().GetHex ()));
-            ret.push_back(obj);
+                isminefilter mine = IsMine(*pwalletMain, address);
+                if(!(mine & filter))
+                    continue;
 
-            } //-if  
+                if ((CBitcoinAddress (address).ToString() == sAddress) && (pwalletMain->mapAddressBook.count(address))) {
+                    CAddressBookData pAddressBookData = pwalletMain->mapAddressBook[address];
 
-        } //-BOOST_FOREACH      
+                    UniValue obj(UniValue::VOBJ);
+                    if (mine & ISMINE_WATCH_ONLY)
+                        obj.push_back(Pair("involvesWatchonly", true));
+                    obj.push_back(Pair("address", CBitcoinAddress(address).ToString()));
+                    obj.push_back(Pair("account", pAddressBookData.name));
+                    obj.push_back(Pair("amount", ValueFromAmount(txout.nValue)));
+                    obj.push_back(Pair("confirmations", nDepth)); // min(item.nConf, nDepth)
 
-        } //-for
+                    if (!fByAccounts)
+                        obj.push_back(Pair("label", pAddressBookData.name));
 
-
-
+                    obj.push_back(Pair("hash", wtx.GetHash().GetHex()));
+                    ret.push_back(obj);
+                }
+            }
+        }
     } else {
         // Minimum confirmations
         int nMinDepth = 1;
@@ -1318,117 +1286,110 @@ UniValue ListReceived(const UniValue& params, bool fByAccounts, bool _bOnlyForGi
             if(params[3].get_bool())
                 filter = filter | ISMINE_WATCH_ONLY;    
 
-
-
-    // Tally
-    map<CBitcoinAddress, tallyitem> mapTally;
-    for (map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin(); it != pwalletMain->mapWallet.end(); ++it)
-    {
-        const CWalletTx& wtx = (*it).second;
-
-        if (wtx.IsCoinBase() || !CheckFinalTx(wtx))
-            continue;
-
-        int nDepth = wtx.GetDepthInMainChain(fAddLockConf);
-        if (nDepth < nMinDepth)
-            continue;
-
-        BOOST_FOREACH(const CTxOut& txout, wtx.vout)
+        // Tally
+        map<CBitcoinAddress, tallyitem> mapTally;
+        for (map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin(); it != pwalletMain->mapWallet.end(); ++it)
         {
-            CTxDestination address;
-            if (!ExtractDestination(txout.scriptPubKey, address))
+            const CWalletTx& wtx = (*it).second;
+
+            if (wtx.IsCoinBase() || !CheckFinalTx(wtx))
                 continue;
 
-            isminefilter mine = IsMine(*pwalletMain, address);
+            int nDepth = wtx.GetDepthInMainChain(fAddLockConf);
+            if (nDepth < nMinDepth)
+                continue;
+
+            BOOST_FOREACH(const CTxOut& txout, wtx.vout)
+            {
+                CTxDestination address;
+                if (!ExtractDestination(txout.scriptPubKey, address))
+                    continue;
+
+                isminefilter mine = IsMine(*pwalletMain, address);
+                if(!(mine & filter))
+                    continue;
+
+                tallyitem& item = mapTally[address];
+                item.nAmount += txout.nValue;
+                item.nConf = min(item.nConf, nDepth);
+                item.txids.push_back(wtx.GetHash());
+                if (mine & ISMINE_WATCH_ONLY)
+                    item.fIsWatchonly = true;
+            }
+        }
+
+        // Reply
+        //UniValue ret(UniValue::VARR);
+        map<string, tallyitem> mapAccountTally;
+        BOOST_FOREACH(const PAIRTYPE(CBitcoinAddress, CAddressBookData)& item, pwalletMain->mapAddressBook)
+        {
+            const CBitcoinAddress& address = item.first;
+            const string& strAccount = item.second.name;
+            map<CBitcoinAddress, tallyitem>::iterator it = mapTally.find(address);
+            if (it == mapTally.end() && !fIncludeEmpty)
+                continue;
+
+            isminefilter mine = IsMine(*pwalletMain, address.Get());
             if(!(mine & filter))
                 continue;
 
-            tallyitem& item = mapTally[address];
-            item.nAmount += txout.nValue;
-            item.nConf = min(item.nConf, nDepth);
-            item.txids.push_back(wtx.GetHash());
-            if (mine & ISMINE_WATCH_ONLY)
-                item.fIsWatchonly = true;
-        }
-    }
+            CAmount nAmount = 0;
+            int nConf = std::numeric_limits<int>::max();
+            bool fIsWatchonly = false;
+            if (it != mapTally.end())
+            {
+                nAmount = (*it).second.nAmount;
+                nConf = (*it).second.nConf;
+                fIsWatchonly = (*it).second.fIsWatchonly;
+            }
 
-    // Reply
-    //UniValue ret(UniValue::VARR);
-    map<string, tallyitem> mapAccountTally;
-    BOOST_FOREACH(const PAIRTYPE(CBitcoinAddress, CAddressBookData)& item, pwalletMain->mapAddressBook)
-    {
-        const CBitcoinAddress& address = item.first;
-        const string& strAccount = item.second.name;
-        map<CBitcoinAddress, tallyitem>::iterator it = mapTally.find(address);
-        if (it == mapTally.end() && !fIncludeEmpty)
-            continue;
-
-        isminefilter mine = IsMine(*pwalletMain, address.Get());
-        if(!(mine & filter))
-            continue;
-
-        CAmount nAmount = 0;
-        int nConf = std::numeric_limits<int>::max();
-        bool fIsWatchonly = false;
-        if (it != mapTally.end())
-        {
-            nAmount = (*it).second.nAmount;
-            nConf = (*it).second.nConf;
-            fIsWatchonly = (*it).second.fIsWatchonly;
+            if (fByAccounts)
+            {
+                tallyitem& _item = mapAccountTally[strAccount];
+                _item.nAmount += nAmount;
+                _item.nConf = min(_item.nConf, nConf);
+                _item.fIsWatchonly = fIsWatchonly;
+            }
+            else
+            {
+                UniValue obj(UniValue::VOBJ);
+                if(fIsWatchonly)
+                    obj.push_back(Pair("involvesWatchonly", true));
+                obj.push_back(Pair("address",       address.ToString()));
+                obj.push_back(Pair("account",       strAccount));
+                obj.push_back(Pair("amount",        ValueFromAmount(nAmount)));
+                obj.push_back(Pair("confirmations", (nConf == std::numeric_limits<int>::max() ? 0 : nConf)));
+                if (!fByAccounts)
+                    obj.push_back(Pair("label", strAccount));
+                UniValue transactions(UniValue::VARR);
+                if (it != mapTally.end())
+                {
+                    BOOST_FOREACH(const uint256& _item, (*it).second.txids)
+                    {
+                        transactions.push_back(_item.GetHex());
+                    }
+                }
+                obj.push_back(Pair("txids", transactions));
+                ret.push_back(obj);
+            }
         }
 
         if (fByAccounts)
         {
-            tallyitem& _item = mapAccountTally[strAccount];
-            _item.nAmount += nAmount;
-            _item.nConf = min(_item.nConf, nConf);
-            _item.fIsWatchonly = fIsWatchonly;
-        }
-        else
-        {
-            UniValue obj(UniValue::VOBJ);
-            if(fIsWatchonly)
-                obj.push_back(Pair("involvesWatchonly", true));
-            obj.push_back(Pair("address",       address.ToString()));
-            obj.push_back(Pair("account",       strAccount));
-            obj.push_back(Pair("amount",        ValueFromAmount(nAmount)));
-            obj.push_back(Pair("confirmations", (nConf == std::numeric_limits<int>::max() ? 0 : nConf)));
-            if (!fByAccounts)
-                obj.push_back(Pair("label", strAccount));
-            UniValue transactions(UniValue::VARR);
-            if (it != mapTally.end())
+            for (map<string, tallyitem>::iterator it = mapAccountTally.begin(); it != mapAccountTally.end(); ++it)
             {
-                BOOST_FOREACH(const uint256& _item, (*it).second.txids)
-                {
-                    transactions.push_back(_item.GetHex());
-                }
+                CAmount nAmount = (*it).second.nAmount;
+                int nConf = (*it).second.nConf;
+                UniValue obj(UniValue::VOBJ);
+                if((*it).second.fIsWatchonly)
+                    obj.push_back(Pair("involvesWatchonly", true));
+                obj.push_back(Pair("account",       (*it).first));
+                obj.push_back(Pair("amount",        ValueFromAmount(nAmount)));
+                obj.push_back(Pair("confirmations", (nConf == std::numeric_limits<int>::max() ? 0 : nConf)));
+                ret.push_back(obj);
             }
-            obj.push_back(Pair("txids", transactions));
-            ret.push_back(obj);
         }
     }
-
-    if (fByAccounts)
-    {
-        for (map<string, tallyitem>::iterator it = mapAccountTally.begin(); it != mapAccountTally.end(); ++it)
-        {
-            CAmount nAmount = (*it).second.nAmount;
-            int nConf = (*it).second.nConf;
-            UniValue obj(UniValue::VOBJ);
-            if((*it).second.fIsWatchonly)
-                obj.push_back(Pair("involvesWatchonly", true));
-            obj.push_back(Pair("account",       (*it).first));
-            obj.push_back(Pair("amount",        ValueFromAmount(nAmount)));
-            obj.push_back(Pair("confirmations", (nConf == std::numeric_limits<int>::max() ? 0 : nConf)));
-            ret.push_back(obj);
-        }
-    }
-
-
-
-    } //-else [ for if ( _bOnlyForGivenAddress ) ]
-
-
 
     return ret;
 }

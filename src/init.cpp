@@ -1826,7 +1826,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         LogPrintf("Shutdown requested. Exiting.\n");
         return false;
     }
-    LogPrintf(" block index %15dms\n", GetTimeMillis() - nStart);
 
     boost::filesystem::path est_path = GetDataDir() / FEE_ESTIMATES_FILENAME;
     CAutoFile est_filein(fopen(est_path.string().c_str(), "rb"), SER_DISK, CLIENT_VERSION);
@@ -1861,7 +1860,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
         uiInterface.InitMessage(_("Loading wallet..."));
 
-        nStart = GetTimeMillis();
         bool fFirstRun = true;
         pwalletMain = new CWallet(strWalletFile);
         DBErrors nLoadWalletRet = pwalletMain->LoadWallet(fFirstRun);

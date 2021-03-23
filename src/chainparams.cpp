@@ -153,7 +153,6 @@ public:
         nPruneAfterHeight = 100000;
 
         uint32_t nTime = 1516957200; // 1516595232
-        uint32_t nNonce = 0;
         uint32_t nBits = 0x1e0ffff0;
 
         genesis = CreateGenesisBlock(nTime, 3670997, nBits, 1, 50 * COIN);
@@ -268,7 +267,6 @@ public:
         nPruneAfterHeight = 1000;
 
         uint32_t nTime = 1516957201; // 1516595233
-        uint32_t nNonce = 0;
         uint32_t nBits = 0x1e0ffff0;
 
         genesis = CreateGenesisBlock(nTime, 53186UL, nBits, 1, 50 * COIN); // 53186UL 288307UL
@@ -392,7 +390,6 @@ public:
         nPruneAfterHeight = 1000;
 
         uint32_t nTime = 1516957202; // 1516595234
-        uint32_t nNonce = 0;
         uint32_t nBits = 0x207fffff;
 
         genesis = CreateGenesisBlock(nTime, 0, nBits, 1, 50 * COIN);

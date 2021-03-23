@@ -118,6 +118,7 @@ share/BitcoindComparisonTool.jar
 
 !src/leveldb*/Makefile
 
+.idea
 .cproject
 .project
 .autotools
@@ -130,7 +131,6 @@ qa/pull-tester/tests-config.sh
 #development symlinks
 binarium-cli
 binariumd
-binarium-qt
 make
 /db4
 /db-4.8.30.NC
