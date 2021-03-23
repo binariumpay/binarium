@@ -1055,7 +1055,7 @@ void BitcoinGUI::showPrivateSendHelpClicked()
 }
 
 void BitcoinGUI :: qactionDiscord_Triggered () {
-    QDesktopServices :: openUrl ( QUrl ( "https://discord.gg/NThv2yn", QUrl::TolerantMode ) );
+    QDesktopServices :: openUrl ( QUrl ( "https://discord.com/invite/KagmMWW", QUrl::TolerantMode ) );
 }
 
 void BitcoinGUI :: qactionFacebook_Triggered () {
