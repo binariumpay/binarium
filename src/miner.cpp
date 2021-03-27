@@ -700,7 +700,7 @@ void GenerateBitcoins(bool fGenerate, int nThreads, const CChainParams& chainpar
         return;
 
     minerThreads = new boost::thread_group();
-    for (unsigned int j = 0; j < nThreads; j++) {
+    for (int j = 0; j < nThreads; j++) {
         minerThreads->create_thread(boost::bind(&BitcoinMiner, boost::cref(chainparams), boost::ref(connman), j));
     }
 }
@@ -720,7 +720,7 @@ UniValue GetClientHashesPerSecond ()
 {
     THashRateCounter structureHashRateCounter;
     float fHashRateSum = 0.0f;
-    for (unsigned int i = 0; i < g_iAmountOfMiningThreads; i++) {
+    for (int i = 0; i < g_iAmountOfMiningThreads; i++) {
         structureHashRateCounter = aHashRateCounters[i].load();
         fHashRateSum = fHashRateSum + structureHashRateCounter.fHashRate;
     }

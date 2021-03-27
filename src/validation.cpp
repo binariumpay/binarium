@@ -1285,12 +1285,8 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
     CAmount ret = blockValue/5; // start at 20% (blockValue at 11.2008 is 25 BIN, then ret = 5)
 
     int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock;		// 158000
-    int nMNPIPeriod = Params().GetConsensus().nMasternodePaymentsIncreasePeriod;	// 17280
-
                                                                               // mainnet:
     if (nHeight > nMNPIBlock)                      ret += blockValue / 20;    // 158000 - 25.0% - 2018-11-07 (5 + 25 / 20 = 6.25)
-    //if (nHeight > nMNPIBlock + (nMNPIPeriod * 3))  ret = blockValue / 5;      // 209840 - 20.0% - 2019-01-09 Return back
-
     return ret;
 }
 

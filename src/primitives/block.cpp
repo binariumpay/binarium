@@ -41,16 +41,6 @@ CBlockIndex * pWeekChangeBlock = nullptr;
 
 //---Utility functions.---------------------------------------------------
 inline uint64_t GetUint64IndexFrom512BitsKey ( const unsigned char * _pKey, int pos ) {
-    //const uint8_t* ptr = ( const uint8_t * ) _pKey + pos * 8;
-    //return ((uint64_t)ptr[0]) | \
-           ((uint64_t)ptr[1]) << 8 | \
-           ((uint64_t)ptr[2]) << 16 | \
-           ((uint64_t)ptr[3]) << 24 | \
-           ((uint64_t)ptr[4]) << 32 | \
-           ((uint64_t)ptr[5]) << 40 | \
-           ((uint64_t)ptr[6]) << 48 | \
-           ((uint64_t)ptr[7]) << 56;
-
     uint64_t * pAdress = ( uint64_t * ) ( _pKey + pos );
     return pAdress [ 0 ] ^ pAdress [ 1 ] ^ pAdress [ 2 ] ^ pAdress [ 3 ] ^
            pAdress [ 4 ] ^ pAdress [ 5 ] ^ pAdress [ 6 ] ^ pAdress [ 7 ];
@@ -71,57 +61,17 @@ uint512 GetBlockData ( uint64_t _iIndex, uint64_t _iHeightOfBlockchain ) {
 
 }
 
-void PrintMemoryArea ( uint64_t * _pMemoryArea, uint64_t _iAmount ) {
-    int i;
-
-    fprintf ( stdout, "block.cpp  : PrintMemoryArea () : " );
-    for ( i = 0; i < _iAmount; i ++ ) {
-        fprintf ( stdout, "%" PRIu64 " ", _pMemoryArea [ i ] );
-
-    } //-for
-
-    fprintf ( stdout, ".\n" );
-
-}
-
-
-
 //---Member functions.----------------------------------------------------
 uint256 CBlockHeader::GetHash() const
 {
-    //CBlockIndex* pGenesisBlock = Params ().GenesisBlock(); // chainActive.Genesis()
     uint32_t iTimeFromGenesisBlock;
     uint32_t iAlgorithmSelector;
-    uint32_t iHashFunctionsAmount;
 
-    //assert ( pGenesisBlock != nullptr );
+    CBlockIndex *pPrevBlockIndex = nullptr;
+    iTimeFromGenesisBlock = nTime - Params().GenesisBlock().nTime;
+    iAlgorithmSelector = iTimeFromGenesisBlock < 3528000 ? 0 : 1;
 
-    CBlockIndex * pPrevBlockIndex = nullptr;
-    /*BlockMap::const_iterator t = mapBlockIndex.find(hashPrevBlock);
-    if (t != mapBlockIndex.end()) {
-        pPrevBlockIndex = t->second;
-        //m_pPreviousBlockIndex = t->second;
-    }*/
-
-    iTimeFromGenesisBlock = nTime - Params ().GenesisBlock().nTime; // Params ().GenesisBlock() chainActive.Genesis ()
-    //iHashFunctionsAmount = nTime > Params ().aHashFunctionsAdditionsHistory [ 0 ].iBlockTime ? 2 : 2;
-    iHashFunctionsAmount = 2;
-    //iAlgorithmSelector = ( iTimeFromGenesisBlock / Params ().iHashAlgorithmChangeInterval ) % iHashFunctionsAmount;
-    //iAlgorithmSelector = iTimeFromGenesisBlock < 20 || pPrevBlockIndex -> nHeight == 0 ? 0 : 1; // chainActive == nullptr ||  nHeightOfPreviousBlock <= 1 ;  chainActive.Height () <= 1    pPrevBlockIndex == nullptr
-    iAlgorithmSelector = iTimeFromGenesisBlock < 3528000 ? 0 : 1; // chainActive == nullptr ||  nHeightOfPreviousBlock <= 1 ;  chainActive.Height () <= 1    pPrevBlockIndex == nullptr  // 20
-    //iAlgorithmSelector = 0;
-
-    //fprintf(stdout, "CBlockHeader.GetHash () : iAlgorithmSelector = %i : %i .\n", iTimeFromGenesisBlock, iAlgorithmSelector);  // strUsage.c_str()
-    /*if ( iAlgorithmSelector == 0 )
-        return HashX11(BEGIN(nVersion), END(nNonce));
-    else
-        return Hash(BEGIN(nVersion), END(nNonce));*/
-
-    //if ( ( pWeekChangeBlock == nullptr ) || (  ) ) 
-
-    //return ( this -> * aHashFunctions [ iAlgorithmSelector ] ) ();
-    return (this->*(aHashFunctions[iAlgorithmSelector]))( pPrevBlockIndex, iTimeFromGenesisBlock );
-
+    return (this->*(aHashFunctions[iAlgorithmSelector]))(pPrevBlockIndex, iTimeFromGenesisBlock);
 }
 
 uint256 CBlockHeader::GetGenesisInitializationHash() const
@@ -285,7 +235,6 @@ uint256 CBlockHeader::GetHash_SHA256AndX11( void * _pPreviousBlockIndex, uint32_
 
     } //-for
     
-    //PrintMemoryArea ( ( uint64_t * ) & ( aMemoryArea [ 0 ] ), 128 );
     //fprintf(stdout, "hash.cpp : GetHash_SHA256AndX11 () : hash [ 3 ] : %s .\n", hash[3].ToString ().c_str () );
 
     // Veryfying that memory is allocated and making random read accesses to it.    

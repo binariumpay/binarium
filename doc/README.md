@@ -24,7 +24,7 @@ Drag Binarium-Qt to your applications folder, and then run Binarium-Qt.
 
 ### Need Help?
 
-* Discuss on the [Discord](https://discord.gg/qgKQv8s) in the Development & Technical Discussion board.
+* Discuss on the [Discord](https://discord.com/invite/KagmMWW) in the Development & Technical Discussion board.
 
 Building
 ---------------------
@@ -54,7 +54,7 @@ The Binarium Core repo's [root README](/README.md) contains relevant information
 - [Dnsseed Policy](dnsseed-policy.md)
 
 ### Resources
-* Discuss on the [Discord](https://discord.gg/qgKQv8s) in the Development & Technical Discussion board.
+* Discuss on the [Discord](https://discord.com/invite/KagmMWW) in the Development & Technical Discussion board.
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)
